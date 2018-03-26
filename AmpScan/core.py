@@ -10,17 +10,6 @@ Remove pd dependency and instead just use numpy arrays
 
 Requires numpy 1.13
 
-import os
-path = (r'J:\\Shared Resources\\AmpScan IfLS Team\\'
-        '100 PYTHON\\STLReader')
-path = r'\\filestore.soton.ac.uk\SharedResources\AmpScan IfLS Team\100 PYTHON\STLReader'
-path = (r'C:\Users\js22g12\OneDrive - University of Southampton\Documents ' 
-        r'(OneDrive)\AmpScan\Code\2017_09\02_Code\AmpScan')
-path = (r'C:\Users\Josh\OneDrive - University of Southampton\Documents '
-        r'(OneDrive)\AmpScan\Code\2017_09\02_Code\AmpScan')
-filename = '01_PhantomShell_ICEM_3mm.stl'
-filename2 = '01_PhantomShell_ICEM_3mm_write.stl'
-os.chdir(path)
 
 AmpObject
     Read
@@ -75,7 +64,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
 
     
     def addData(self, Data, stype):
-        if isinstance(Data, basestring):
+        if isinstance(Data, str):
             self.stype.append(stype)
             self.read_stl(Data, stype)
             # Import stl as filename

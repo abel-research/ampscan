@@ -90,7 +90,7 @@ class ampVTK(object):
         self.axes[viewport].SetBounds(tuple(lim.max(axis=0)))
         self.axes[viewport].SetCamera(self.cams[viewport])
         self.axes[viewport].SetFlyModeToClosestTriad()
-        for axes in xrange(3):
+        for axes in range(3):
             self.axes[viewport].GetTitleTextProperty(axes).SetColor(color)
             self.axes[viewport].GetLabelTextProperty(axes).SetColor(color)
             self.axes[viewport].GetTitleTextProperty(axes).SetFontFamilyToCourier()
@@ -134,7 +134,7 @@ class qtVtkWindow(QVTKRenderWindowInteractor, ampVTK):
                 self.GetRenderWindow().RemoveRenderer(ren)
             self.rens = self.rens[:n]
         elif dif > 0:
-            for i in xrange(dif):
+            for i in range(dif):
                 self.rens.append(vtkRender())
                 self.axes.append(vtk.vtkCubeAxesActor())
                 self.GetRenderWindow().AddRenderer(self.rens[-1])
@@ -174,7 +174,7 @@ class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
                 self.RemoveRenderer(ren)
             self.rens = self.rens[:n]
         elif dif > 0:
-            for i in xrange(dif):
+            for i in range(dif):
                 self.rens.append(vtkRender())
                 self.axes.append(vtk.vtkCubeAxesActor())
                 self.AddRenderer(self.rens[-1])
@@ -295,7 +295,7 @@ class visMixin(object):
             self.lut = vtk.vtkLookupTable()
             self.lut.SetNumberOfTableValues(bands)
             self.lut.Build()
-            for i in xrange(bands):
+            for i in range(bands):
                 rgb = list(self.ctf.GetColor(float(i) / bands)) + [1]
                 self.lut.SetTableValue(i, rgb)
         

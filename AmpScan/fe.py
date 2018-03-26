@@ -11,7 +11,7 @@ class feMixin(object):
     
     def addFE(self, files):
         if len(files) == 1:
-            data = np.load(files[0]).item()
+            data = np.load(files[0], encoding='bytes').item()
         if len(files) == 3:
             data = {}
             names = ['vert', 'faces', 'values']

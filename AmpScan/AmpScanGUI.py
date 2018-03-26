@@ -146,10 +146,9 @@ class AmpScanGUI(QMainWindow):
         self.analyseMenu.addAction(self.analyse)
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
-        
-def runAmpScanGUI():        
-#    if __name__ == "__main__":
-        app = QApplication(sys.argv)
-        mainWin = AmpScanGUI()
-        mainWin.show()
-        sys.exit(app.exec_())
+           
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    mainWin = AmpScanGUI()
+    mainWin.show()
+    sys.exit(app.exec_())
