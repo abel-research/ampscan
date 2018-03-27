@@ -155,7 +155,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         data['edgesFace']  = indC[data['edgesFace'] ]
         #Initiate the faceEdges array
         data['faceEdges'] = np.empty([len(data['edges']), 2])
-        data['faceEdges'].fill(np.nan)
+        data['faceEdges'].fill(-99999)
         # Denote the face index for flattened edge array
         fInd = np.repeat(np.array(range(len(data['faces']))), 3)
         # Flatten edge array

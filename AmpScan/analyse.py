@@ -136,7 +136,7 @@ class analyseMixin(object):
         faceOrder = np.zeros(len(validEdgeInd), dtype=int)
         # Run eularian path algorithm to order faces
         v = validfE[0,0]
-        for i in xrange(len(validEdgeInd)):
+        for i in range(len(validEdgeInd)):
             w = h[v].pop()
             h[w].remove(v)
             faceOrder[i] = v
