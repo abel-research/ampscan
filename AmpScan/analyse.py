@@ -30,7 +30,7 @@ class analyseMixin(object):
         #Z position of slices 
         slices = np.arange(data['vert'][:,2].min() + slWidth,
                            maxZ, slWidth)
-        polys = analyseMixin.create_slices(data, slices, axis)
+        polys = analyseMixin.create_slices_cy(data, slices, axis)
         PolyArea = np.zeros([len(polys)])
         for i, poly in enumerate(polys):
             ax1.plot(poly[:,0],
@@ -144,7 +144,8 @@ class analyseMixin(object):
             EdgePoints = np.c_[data['vert'][polyEdge[:,0], :], 
                                data['vert'][polyEdge[:,1], :]]
             # Create poly from
-            polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
+#            polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
+            polys.append(cyext.planeEdgeIntersect(EdgePoints, plane, 2))
         return polys
 
 
