@@ -6,3 +6,6 @@
 *.STL
 
 AmpScan/*.pyc
+*.tiff
+*.c
+AmpScan/Build
