@@ -27,7 +27,7 @@ class analyseMixin(object):
 
         ax1 = fig.add_subplot(221, projection='3d')
         ax2 = fig.add_subplot(222)
-        Z position of slices 
+        #Z position of slices 
         slices = np.arange(data['vert'][:,2].min() + slWidth,
                            maxZ, slWidth)
         polys = analyseMixin.create_slices(data, slices, axis)
