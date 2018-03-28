@@ -5,6 +5,7 @@
 
 *.STL
 
+AmpScan/AmpScan/*.pyd
 AmpScan/*.pyc
 *.tiff
 *.c
