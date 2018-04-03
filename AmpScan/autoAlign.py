@@ -24,7 +24,7 @@ class alignMixin(object):
         
     def calcDistError(self, rot, tTree):
         Id = np.identity(3)
-        for i in xrange(3):
+        for i in range(3):
             if rot[i] != 0:
                 ax = Id[i, :]
                 ang = np.deg2rad(rot[i])
