@@ -5,8 +5,11 @@
 
 *.STL
 !ipynb tests/*.stl
-AmpScan/AmpScan/*.pyd
+AmpScan/AmpScan
 AmpScan/*.pyc
 *.tiff
 *.c
 AmpScan/Build
+.ipynb_checkpoints
+ipynb tests/.ipynb_checkpoints
+AmpScan/.ipynb_checkpoints
