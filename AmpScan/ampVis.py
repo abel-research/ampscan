@@ -197,7 +197,7 @@ class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
     def getScreenshot(self, fname, mag=10):
         w2if = vtk.vtkWindowToImageFilter()
         w2if.SetInput(self)
-        w2if.SetMagnification(mag)
+        w2if.SetScale(mag)
         w2if.Update()
         
         writer = vtk.vtkTIFFWriter()
@@ -268,7 +268,7 @@ class visMixin(object):
             self.mesh.SetPoints(self.points)
             
         def setFaces(self, faces):
-            f = np.c_[np.tile(faces.shape[1], faces.shape[0]), faces].flatten()
+            f = np.c_[np.tile(faces.shape[1], faces.shape[0]), faces].flatten().astype(np.int64)
             self.polys.SetCells(len(faces), 
                                 numpy_support.numpy_to_vtkIdTypeArray(f, deep=1))
             self.mesh.SetPolys(self.polys)

@@ -127,7 +127,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         data = getattr(self, stype)
         data['vert'], indC = np.unique(data['vert'], return_inverse=True, axis=0)
         # Maps the new vertices index to the face array
-        data['faces'] = np.resize(indC[data['faces']], (len(data['norm']), 3))
+        data['faces'] = np.resize(indC[data['faces']], (len(data['norm']), 3)).astype(np.int32)
 
     def computeEdges(self, stype=0):
         """
@@ -152,10 +152,10 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         # Unify the edges
         data['edges'], indC = np.unique(data['edges'], return_inverse=True, axis=0)
         #Remap the edgesFace array 
-        data['edgesFace']  = indC[data['edgesFace'] ]
+        data['edgesFace']  = indC[data['edgesFace'] ].astype(np.int32)
         #Initiate the faceEdges array
-        data['faceEdges'] = np.empty([len(data['edges']), 2])
-        data['faceEdges'].fill(np.nan)
+        data['faceEdges'] = np.empty([len(data['edges']), 2], dtype=np.int32)
+        data['faceEdges'].fill(-99999)
         # Denote the face index for flattened edge array
         fInd = np.repeat(np.array(range(len(data['faces']))), 3)
         # Flatten edge array
