@@ -177,10 +177,10 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         row, col = np.unravel_index(o_idx, data['faces'].shape)
         ndx = np.searchsorted(f[o_idx], range(data['vert'].shape[0]), side='right')
         ndx = np.r_[0, ndx]
-        norms = data['norm'][row, col]
-        data['vNorm'] = np.zeros(data['vert'].shape[0])
+        norms = data['norm'][data['faces'], :][row, col, :]
+        data['vNorm'] = np.zeros(data['vert'].shape)
         for i in range(data['vert'].shape[0]):
-            data['vNorm'][i] = norms[ndx[i]:ndx[i+1]].mean()
+            data['vNorm'][i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
 
     def save(self, filename, stype=0):
         """
