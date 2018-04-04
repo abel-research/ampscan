@@ -72,7 +72,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
             self.stype.append(stype)
             setattr(self, stype, Data)
 
-    def read_stl(self, filename, stype=0, unify=True, edges=True):
+    def read_stl(self, filename, stype=0, unify=True, edges=True, vNorm=True):
         """
         Function to read .stl file from filename and import data into 
         the AmpObj 
@@ -115,6 +115,8 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         # Call function to calculate the edges array
         if edges is True:
             self.computeEdges(stype)
+        if vNorm is True:
+            self.vNorm(stype)
 
     def unify_vertices(self, stype=0):
         """
@@ -165,6 +167,20 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         logic[eFInd] = True
         data['faceEdges'][eF[logic], 0] = fInd[logic]
         data['faceEdges'][eF[~logic], 1] = fInd[~logic]
+        
+    def vNorm(self, stype=0):
+        if isinstance(stype, int):
+            stype = self.stype[stype]
+        data = getattr(self, stype)
+        f = data['faces'].flatten()
+        o_idx = f.argsort()
+        row, col = np.unravel_index(o_idx, data['faces'].shape)
+        ndx = np.searchsorted(f[o_idx], range(data['vert'].shape[0]), side='right')
+        ndx = np.r_[0, ndx]
+        norms = data['norm'][row, col]
+        data['vNorm'] = np.zeros(data['vert'].shape[0])
+        for i in range(data['vert'].shape[0]):
+            data['vNorm'][i] = norms[ndx[i]:ndx[i+1]].mean()
 
     def save(self, filename, stype=0):
         """
