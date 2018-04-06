@@ -96,16 +96,16 @@ class ampVTK(object):
             self.axes[viewport].GetTitleTextProperty(axes).SetFontFamilyToCourier()
             self.axes[viewport].GetLabelTextProperty(axes).SetFontFamilyToCourier()
              
-        self.axes[viewport].GetXAxesLinesProperty().SetColor(color)
-        self.axes[viewport].GetYAxesLinesProperty().SetColor(color)
-        self.axes[viewport].GetZAxesLinesProperty().SetColor(color)
-
-        self.axes[viewport].SetGridLineLocation(self.axes[viewport].VTK_GRID_LINES_FURTHEST)
-        
-        self.axes[viewport].XAxisMinorTickVisibilityOff()
-        self.axes[viewport].YAxisMinorTickVisibilityOff()
-        self.axes[viewport].ZAxisMinorTickVisibilityOff()
-        self.rens[viewport].AddActor(self.axes[viewport])
+#        self.axes[viewport].GetXAxesLinesProperty().SetColor(color)
+#        self.axes[viewport].GetYAxesLinesProperty().SetColor(color)
+#        self.axes[viewport].GetZAxesLinesProperty().SetColor(color)
+#
+#        self.axes[viewport].SetGridLineLocation(self.axes[viewport].VTK_GRID_LINES_FURTHEST)
+#        
+#        self.axes[viewport].XAxisMinorTickVisibilityOff()
+#        self.axes[viewport].YAxisMinorTickVisibilityOff()
+#        self.axes[viewport].ZAxisMinorTickVisibilityOff()
+#        self.rens[viewport].AddActor(self.axes[viewport])
 
 
 class qtVtkWindow(QVTKRenderWindowInteractor, ampVTK):
@@ -195,12 +195,14 @@ class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
                                        [self.winWidth, self.winHeight, 3])) / 255.0
                                        
     def getScreenshot(self, fname, mag=10):
+        self.SetAlphaBitPlanes(1)
         w2if = vtk.vtkWindowToImageFilter()
         w2if.SetInput(self)
         w2if.SetScale(mag)
+        w2if.SetInputBufferTypeToRGBA()
         w2if.Update()
         
-        writer = vtk.vtkTIFFWriter()
+        writer = vtk.vtkPNGWriter()
         writer.SetFileName(fname)
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
@@ -210,7 +212,7 @@ class visMixin(object):
 
     def genIm(self, actor=['limb'], winWidth=512, winHeight=512,
               views=[[0, -1, 0]], background=[1.0, 1.0, 1.0], projection=True,
-              shading=True, mag=10):
+              shading=True, mag=10, out='im', name='test.tiff'):
         """
         
         """
@@ -224,7 +226,13 @@ class visMixin(object):
             win.setProjection(projection, viewport=i)
             win.renderActors(self.actors, actor, viewport=i, shading=shading, zoom=1.3)
         win.Render()
-        win.getScreenshot('test.tiff')
+        win.getImage()
+        if out == 'im':
+            return win.im
+        elif out == 'fh':
+            win.getScreenshot(name)
+            return
+#        win.getScreenshot('test.tiff')
 #        return win.im
 
     def addActor(self, stype=0, CMap=None):
