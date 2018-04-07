@@ -12,7 +12,7 @@ class feMixin(object):
     def addFE(self, files):
         if len(files) == 1:
             data = np.load(files[0], encoding='bytes').item()
-            for k, v in data.items():
+            for k in list(data.keys()):
                 data[str(k, 'utf-8')] = data.pop(k)
         if len(files) == 3:
             data = {}
