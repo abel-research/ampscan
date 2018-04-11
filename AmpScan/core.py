@@ -47,6 +47,14 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
                 visMixin, feMixin, socketDesignMixin):
 
     def __init__(self, Data, stype):
+        c1 = [31.0, 73.0, 125.0]
+        c3 = [170.0, 75.0, 65.0]
+        c2 = [212.0, 221.0, 225.0]
+        CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+        CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
+        CMap = np.c_[CMap1[:, :-1], CMap2]
+        self.CMapN2P = np.transpose(CMap)/255.0
+        self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
         self.stype = []
         self.actors = {}
         if stype in ['limb', 'socket', 'reglimb', 'regsocket', 'MRI']:

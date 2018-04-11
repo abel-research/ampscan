@@ -91,16 +91,16 @@ class pressSense(object):
         # Define face 
         f0 = np.array([[0, cols+1, 1],
                        [1, cols+1, cols+2]])
-        for row in xrange(rows):
-            for col in xrange(cols):
+        for row in range(rows):
+            for col in range(cols):
                 ind = row*cols*2 + col*2
                 ind2 = row*(cols+1) + col
                 f[[ind, ind+1], :] = f0 + ind2
         ind = np.arange(0, cols*2*d, cols*2)[:, None]
-        for row in xrange(15):
+        for row in range(15):
             inds = np.array([np.arange(2*d) + d*row*cols*2]*d)
             inds += np.arange(0, cols*2*d, cols*2)[:, None]
-            for col in xrange(3):
+            for col in range(3):
                 sF[row*3 + col, :] = inds.flatten()
                 inds += 2*d
         self.antS['faces'] = f
@@ -120,16 +120,16 @@ class pressSense(object):
         sF = np.zeros([45, 2*d**2], dtype=np.int64)
         f0 = np.array([[0, cols+1, 1],
                        [1, cols+1, 2]])
-        for row in xrange(rows):
-            for col in xrange(cols):
+        for row in range(rows):
+            for col in range(cols):
                 ind = row*cols*2 + col*2
                 ind2 = row*(cols+1) + col
                 f[[ind, ind+1], :] = f0 + ind2
         ind = np.arange(0, cols*2*d, cols*2)[:, None]
-        for row in xrange(15):
+        for row in range(15):
             inds = np.array([np.arange(2*d) + d*row*cols*2]*d)
             inds += np.arange(0, cols*2*d, cols*2)[:, None]
-            for col in xrange(3):
+            for col in range(3):
                 sF[row*3 + col, :] = inds.flatten()
                 inds += 2*d
         self.antS['faces'] = f
@@ -199,7 +199,7 @@ class pressSense(object):
             self.lut = vtk.vtkLookupTable()
             self.lut.SetNumberOfTableValues(bands)
             self.lut.Build()
-            for i in xrange(bands):
+            for i in range(bands):
                 rgb = list(self.ctf.GetColor(float(i) / bands)) + [1]
                 self.lut.SetTableValue(i, rgb)
 

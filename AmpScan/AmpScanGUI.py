@@ -20,8 +20,8 @@ class AmpScanGUI(QMainWindow):
         self.vtkWidget = qtVtkWindow()
         self.mainWidget = QWidget()
         self.AmpObj = None
-        self.CMap = np.array([[212.0, 221.0, 225.0],
-                              [31.0, 73.0, 125.0]])/255.0
+#        self.CMap = np.array([[212.0, 221.0, 225.0],
+#                              [31.0, 73.0, 125.0]])/255.0
         self.setCentralWidget(self.mainWidget)
         self.createActions()
         self.createMenus()
@@ -76,7 +76,7 @@ class AmpScanGUI(QMainWindow):
         self.RegObj = regObject(self.AmpObj)
         self.RegObj.registration(steps=5, baseline='socket', target='limb', 
                                  reg = 'reglimb', direct=True)
-        self.RegObj.addActor(stype='reglimb', CMap=self.CMap)
+        self.RegObj.addActor(stype='reglimb', CMap=self.AmpObj.CMapN2P)
         self.vtkWidget.renderActors(self.AmpObj.actors, ['reglimb',], shading=False)
         self.vtkWidget.setScalarBar(self.AmpObj.actors['reglimb'])
     
@@ -89,7 +89,7 @@ class AmpScanGUI(QMainWindow):
         self.vtkWidget.setnumViewports(1)
         self.AmpObj.addFE([FEname[0],])
         self.AmpObj.lp_smooth('FE', n=1)
-        self.AmpObj.addActor(stype='FE', CMap=self.CMap)
+        self.AmpObj.addActor(stype='FE', CMap=self.AmpObj.CMap02P)
         self.AmpObj.actors['FE'].setScalarRange(smin=0.0, smax=50)
         self.vtkWidget.renderActors(self.AmpObj.actors, ['FE',])
         self.vtkWidget.setScalarBar(self.AmpObj.actors['FE'])
@@ -104,7 +104,7 @@ class AmpScanGUI(QMainWindow):
         self.pSense.calcFaces(d=5)
         self.pSense.importVert(vName[0])
         self.pSense.importPress(pName[0])
-        self.pSense.addActor(CMap=self.CMap)
+        self.pSense.addActor(CMap=self.AmpObj.CMap02P)
         self.AmpObj.actors['antS'] = self.pSense.actors['antS']
         self.AmpObj.actors['socket'].setColor([1.0, 1.0, 1.0])
         self.AmpObj.actors['socket'].setOpacity(1.0)

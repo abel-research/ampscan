@@ -15,7 +15,7 @@ import AmpScan.cython_ext as cyext
 
 class analyseMixin(object):
 
-    def plot_slices(self, axis='Z', slWidth=3, stype=0):
+    def plot_slices(self, axis='Z', slWidth=10, stype=0):
         if isinstance(stype, int):
             stype = self.stype[stype]
         data = getattr(self, stype)
@@ -24,7 +24,7 @@ class analyseMixin(object):
         # Define max Z from lowest point on brim
         maxZ = data['vert'][data['edges'][ind, :], 2].min()
         fig = plt.figure()
-        fig.set_size_inches(12, 9)
+        fig.set_size_inches(6, 4.5)
 
         ax1 = fig.add_subplot(221, projection='3d')
         ax2 = fig.add_subplot(222)
@@ -60,13 +60,12 @@ class analyseMixin(object):
         ax3.set_axis_off()
         # Rendering of the rectification map 
         ax4 = fig.add_subplot(2,2,4)
-        CMap = np.array([[212.0, 221.0, 225.0],
-                         [31.0, 73.0, 125.0]])/255.0
-        self.addActor(stype='reglimb', CMap = CMap)
+        self.addActor(stype='reglimb', CMap = self.CMapN2P)
         Im = self.genIm(actor=['reglimb'])
         ax4.imshow(Im, None)
         ax4.set_axis_off()
         plt.tight_layout()
+        plt.show()
         
     @staticmethod
     def create_slices(data, slices, axis='Z'):
