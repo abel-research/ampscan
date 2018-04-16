@@ -266,7 +266,6 @@ class visMixin(object):
             if CMap is not None:
                 self.setRect(data['values'])
                 self.setCMap(CMap, bands)
-            self.GetProperty().SetInterpolationToGouraud()
             self.Mapper = vtk.vtkPolyDataMapper()
             self.Mapper.SetInputData(self.mesh)
             if CMap is not None:
@@ -291,6 +290,7 @@ class visMixin(object):
             self.norm.SetFeatureAngle(30.0)
             self.norm.Update()
             self.mesh.DeepCopy(self.norm.GetOutput())
+            self.GetProperty().SetInterpolationToGouraud()
 
         def setRect(self, rect):
             self.scalars = numpy_support.numpy_to_vtk(rect, deep=1)
