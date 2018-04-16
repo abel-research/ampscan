@@ -89,7 +89,7 @@ class AmpScanGUI(QMainWindow):
         self.vtkWidget.setnumViewports(1)
         self.AmpObj.addFE([FEname[0],])
         self.AmpObj.lp_smooth('FE', n=1)
-        self.AmpObj.addActor(stype='FE', CMap=self.AmpObj.CMap02P)
+        self.AmpObj.addActor(stype='FE', CMap=self.AmpObj.CMap02P, bands=5)
         self.AmpObj.actors['FE'].setScalarRange(smin=0.0, smax=50)
         self.vtkWidget.renderActors(self.AmpObj.actors, ['FE',])
         self.vtkWidget.setScalarBar(self.AmpObj.actors['FE'])

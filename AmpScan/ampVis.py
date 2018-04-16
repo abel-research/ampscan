@@ -37,7 +37,8 @@ class ampVTK(object):
         self.cams.append(vtk.vtkCamera())
         self.setView()
         self.rens.append(vtkRender())
-        self.rens[0].SetBackground(0.1, 0.2, 0.4)
+        #self.rens[0].SetBackground(0.1, 0.2, 0.4)
+        self.rens[0].SetBackground(1.0,1.0,1.0)
         self.rens[0].SetActiveCamera(self.cams[0])
         self.axes.append(vtk.vtkCubeAxesActor())
         
@@ -235,7 +236,7 @@ class visMixin(object):
 #        win.getScreenshot('test.tiff')
 #        return win.im
 
-    def addActor(self, stype=0, CMap=None):
+    def addActor(self, stype=0, CMap=None, bands=128):
         """
         Function to insert a vtk actor into the actors dictionary within 
         the AmpObject 
@@ -244,7 +245,7 @@ class visMixin(object):
         if isinstance(stype, int):
             stype = self.stype[stype]
         data = getattr(self, stype)
-        self.actors[stype] = self.ampActor(data, CMap=CMap)
+        self.actors[stype] = self.ampActor(data, CMap=CMap, bands=bands)
 
     class ampActor(vtk.vtkActor):
         """
@@ -255,21 +256,24 @@ class visMixin(object):
         Add functions to add vert, add faces, cmap and make LUT
         """
 
-        def __init__(self, data, CMap=None, bands=None):
+        def __init__(self, data, CMap=None, bands=128):
             self.mesh = vtk.vtkPolyData()
             self.points = vtk.vtkPoints()
             self.polys = vtk.vtkCellArray()
             self.setVert(data['vert'])
             self.setFaces(data['faces'])
+            self.setNorm()
             if CMap is not None:
                 self.setRect(data['values'])
-                self.setCMap(CMap)
+                self.setCMap(CMap, bands)
+            self.GetProperty().SetInterpolationToGouraud()
             self.Mapper = vtk.vtkPolyDataMapper()
             self.Mapper.SetInputData(self.mesh)
             if CMap is not None:
                 self.setScalarRange()
                 self.Mapper.SetLookupTable(self.lut)
             self.SetMapper(self.Mapper)
+            
 
         def setVert(self, vert):
             self.points.SetData(numpy_support.numpy_to_vtk(vert, deep=1))
@@ -280,6 +284,13 @@ class visMixin(object):
             self.polys.SetCells(len(faces), 
                                 numpy_support.numpy_to_vtkIdTypeArray(f, deep=1))
             self.mesh.SetPolys(self.polys)
+        
+        def setNorm(self, split=False):
+            self.norm = vtk.vtkPolyDataNormals()
+            self.norm.SetInputData(self.mesh)
+            self.norm.SetFeatureAngle(30.0)
+            self.norm.Update()
+            self.mesh.DeepCopy(self.norm.GetOutput())
 
         def setRect(self, rect):
             self.scalars = numpy_support.numpy_to_vtk(rect, deep=1)
