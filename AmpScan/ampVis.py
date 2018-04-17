@@ -267,6 +267,7 @@ class visMixin(object):
                 self.setRect(data['values'])
                 self.setCMap(CMap, bands)
             self.Mapper = vtk.vtkPolyDataMapper()
+            self.Mapper.InterpolateScalarsBeforeMappingOn()
             self.Mapper.SetInputData(self.mesh)
             if CMap is not None:
                 self.setScalarRange()
