@@ -5,13 +5,14 @@ Created on Thu Sep 28 13:19:18 2017
 @author: js22g12
 
 Functions that deal with the visualisation of the limb and data
+
+Includes interfaces to deal 
 """
 
 import numpy as np
 import vtk
 from vtk.util import numpy_support
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
-from PyQt5.QtWidgets import QWidget
 
 class vtkRender(vtk.vtkRenderer):
     """
@@ -69,18 +70,23 @@ class ampVTK(object):
         self.scalar_bar.SetPosition2(0.1, 0.3)
         self.rens[0].AddActor(self.scalar_bar)
 
-
-            
     def setView(self, view = [0, -1, 0], viewport=0):
         self.cams[viewport].SetPosition(view[0], view[1], view[2])
         self.cams[viewport].SetViewUp(-0.0, 0.0, 1.0)
     
     def setBackground(self, color=[0.1, 0.2, 0.4]):
+        """
+        Set the background colour of the renderer
+        """
         for ren in self.rens:
             ren.SetBackground(color)
     
     def setProjection(self, perspective=False, viewport=0):
-            self.cams[viewport].SetParallelProjection(perspective)
+        """
+        Set the projection of the camera to either parallel or perspective 
+        
+        """
+        self.cams[viewport].SetParallelProjection(perspective)
         
             
     def addAxes(self, actors, viewport=0, color = [1.0, 1.0, 1.0], font=None):
@@ -108,55 +114,6 @@ class ampVTK(object):
 #        self.axes[viewport].ZAxisMinorTickVisibilityOff()
 #        self.rens[viewport].AddActor(self.axes[viewport])
 
-
-class qtVtkWindow(QVTKRenderWindowInteractor, ampVTK):
-    
-    def __init__(self):
-        super(qtVtkWindow, self).__init__()
-        self.SetInteractorStyle(self.style)
-        self.GetRenderWindow().AddRenderer(self.rens[0])
-        self.iren = self.GetRenderWindow().GetInteractor()
-        self.iren.Initialize()
-        
-    def setnumViewports(self, n):
-        """
-        Function to set multiple viewports within the vtkWindow
-
-        Parameters
-        ------------
-        n: int
-            number of viewports required
-        """
-        dif = n - len(self.rens)
-        if dif == 0:
-            return
-        elif dif < 0:
-            for ren in self.rens[n:]:
-                self.GetRenderWindow().RemoveRenderer(ren)
-            self.rens = self.rens[:n]
-        elif dif > 0:
-            for i in range(dif):
-                self.rens.append(vtkRender())
-                self.axes.append(vtk.vtkCubeAxesActor())
-                self.GetRenderWindow().AddRenderer(self.rens[-1])
-                if len(self.cams) < len(self.rens):
-                    self.cams.append(vtk.vtkCamera())
-                self.rens[-1].SetActiveCamera(self.cams[len(self.rens)-1])
-        for i, ren in enumerate(self.rens):
-            ren.SetViewport(float(i)/n, 0, float(i+1)/n, 1)
-        self.setBackground()
-        
-        
-class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
-    
-    def __init__(self, winWidth=512, winHeight=512):
-        super(vtkRenWin, self).__init__()
-        self.winWidth = winWidth
-        self.winHeight = winHeight
-        self.SetSize(self.winWidth, self.winHeight)
-        self.OffScreenRenderingOn()
-        self.AddRenderer(self.rens[0])
-        self.Render()
 
     def setnumViewports(self, n):
         """
@@ -188,11 +145,11 @@ class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
         
     
     def getImage(self):
-        self.vtkRGB = vtk.vtkUnsignedCharArray()
+        vtkRGB = vtk.vtkUnsignedCharArray()
         self.GetPixelData(0, 0, self.winWidth-1, self.winHeight-1,
-                          1, self.vtkRGB)
-        self.vtkRGB.Squeeze()
-        self.im =  np.flipud(np.resize(np.array(self.vtkRGB),
+                          1, vtkRGB)
+        vtkRGB.Squeeze()
+        self.im =  np.flipud(np.resize(np.array(vtkRGB),
                                        [self.winWidth, self.winHeight, 3])) / 255.0
                                        
     def getScreenshot(self, fname, mag=10):
@@ -209,17 +166,54 @@ class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
         writer.Write()
 
 
+class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
+    
+    def __init__(self, qt = True, winWidth=512, winHeight=512):
+        super(vtkRenWin, self).__init__()
+        self.AddRenderer(self.rens[0])
+        if qt is False:
+            self.winWidth = winWidth
+            self.winHeight = winHeight
+            self.SetSize(self.winWidth, self.winHeight)
+            self.OffScreenRenderingOn()
+            self.Render()
+        
+
+class qtVtkWindow(QVTKRenderWindowInteractor):
+    """
+    Create a vtk window to be embeded within a qt GUI
+    Inherites the QVTKRenderWindowInteractor class and the 
+    
+    Fix issue with SetInteractorStyle 
+    """
+    
+    def __init__(self):
+        super(qtVtkWindow, self).__init__(rw=vtkRenWin())
+        #self.SetInteractorStyle(self.style)
+        self.iren = self._RenderWindow.GetInteractor()
+        self.iren.Initialize()        
+
 class visMixin(object):
+    """
+    Visualisation methods that act upon the AmpObj itself
+    Methods for generating the custom AmpObj actor to interface with vtk
+    """
 
     def genIm(self, actor=['limb'], winWidth=512, winHeight=512,
               views=[[0, -1, 0]], background=[1.0, 1.0, 1.0], projection=True,
               shading=True, mag=10, out='im', name='test.tiff'):
         """
+        Output an image of an actor either as an array or a saved png file
+        
         
         """
-        win = vtkRenWin(winWidth, winHeight)
+        # Generate a renderer window
+        win = vtkRenWin(False, winWidth, winHeight)
+        # Set the number of viewports
         win.setnumViewports(len(views))
+        # Set the background colour
         win.setBackground(background)
+        # Set camera projection 
         win.setProjection(projection)
         for i, view in enumerate(views):
             win.addAxes(self.actors, color=[0.0, 0.0, 0.0], viewport=i)
@@ -227,8 +221,8 @@ class visMixin(object):
             win.setProjection(projection, viewport=i)
             win.renderActors(self.actors, actor, viewport=i, shading=shading, zoom=1.3)
         win.Render()
-        win.getImage()
         if out == 'im':
+            win.getImage()
             return win.im
         elif out == 'fh':
             win.getScreenshot(name)
@@ -252,8 +246,6 @@ class visMixin(object):
         Class that inherits methods from vtk actor
         Contains functions to set vertices, faces, scalars and color map
         from numpy arrays 
-        
-        Add functions to add vert, add faces, cmap and make LUT
         """
 
         def __init__(self, data, CMap=None, bands=128):

@@ -18,6 +18,7 @@ class AmpScanGUI(QMainWindow):
     def __init__(self, parent = None):
         super(AmpScanGUI, self).__init__()
         self.vtkWidget = qtVtkWindow()
+        self.renWin = self.vtkWidget._RenderWindow
         self.mainWidget = QWidget()
         self.AmpObj = None
 #        self.CMap = np.array([[212.0, 221.0, 225.0],
@@ -36,13 +37,13 @@ class AmpScanGUI(QMainWindow):
         self.fname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
         if self.AmpObj is not None:
-            self.vtkWidget.renderActors(self.AmpObj.actors, [])
+            self.renWin.renderActors(self.AmpObj.actors, [])
         self.AmpObj = AmpObject(self.fname[0], 'limb')
         self.AmpObj.addActor(stype='limb')
         self.AmpObj.lp_smooth(stype='limb')
-        self.vtkWidget.setnumViewports(1)
-        self.vtkWidget.setProjection()
-        self.vtkWidget.renderActors(self.AmpObj.actors, ['limb',])
+        self.renWin.setnumViewports(1)
+        self.renWin.setProjection()
+        self.renWin.renderActors(self.AmpObj.actors, ['limb',])
         
     def chooseSocket(self):
         self.sockfname = QFileDialog.getOpenFileName(self, 'Open file',
@@ -52,17 +53,17 @@ class AmpScanGUI(QMainWindow):
         self.AmpObj.lp_smooth(stype='socket')
         
     def align(self):
-        self.vtkWidget.setnumViewports(2)
-        self.vtkWidget.setView(view=[-1, 0, 0], viewport=1)
-        self.vtkWidget.setProjection(True, 0)
-        self.vtkWidget.setProjection(True, 1)
-#        self.vtkWidget.render(self.AmpObj.actors, dispActors=['limb',])
-#        self.vtkWidget.render(self.AmpObj.actors, dispActors=['socket',],
+        self.renWin.setnumViewports(2)
+        self.renWin.setView(view=[-1, 0, 0], viewport=1)
+        self.renWin.setProjection(True, 0)
+        self.renWin.setProjection(True, 1)
+#        self.renWin.render(self.AmpObj.actors, dispActors=['limb',])
+#        self.renWin.render(self.AmpObj.actors, dispActors=['socket',],
 #                              viewport=1)
-        self.vtkWidget.renderActors(self.AmpObj.actors,
+        self.renWin.renderActors(self.AmpObj.actors,
                               dispActors=['limb', 'socket'],
                               viewport=0)
-        self.vtkWidget.renderActors(self.AmpObj.actors,
+        self.renWin.renderActors(self.AmpObj.actors,
                               dispActors=['limb', 'socket'],
                               viewport=1)
         self.AmpObj.actors['limb'].setColor([1.0, 0.0, 0.0])
@@ -71,14 +72,14 @@ class AmpScanGUI(QMainWindow):
         self.AmpObj.actors['socket'].setOpacity(0.5)
         
     def register(self):
-        self.vtkWidget.setnumViewports(1)
-        self.vtkWidget.setProjection()
+        self.renWin.setnumViewports(1)
+        self.renWin.setProjection()
         self.RegObj = regObject(self.AmpObj)
         self.RegObj.registration(steps=5, baseline='socket', target='limb', 
                                  reg = 'reglimb', direct=True)
         self.RegObj.addActor(stype='reglimb', CMap=self.AmpObj.CMapN2P)
-        self.vtkWidget.renderActors(self.AmpObj.actors, ['reglimb',], shading=False)
-        self.vtkWidget.setScalarBar(self.AmpObj.actors['reglimb'])
+        self.renWin.renderActors(self.AmpObj.actors, ['reglimb',], shading=False)
+        self.renWin.setScalarBar(self.AmpObj.actors['reglimb'])
     
     def analyse(self):
         self.RegObj.plot_slices()
@@ -86,20 +87,20 @@ class AmpScanGUI(QMainWindow):
     def chooseFE(self):
         FEname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="FE results (*.npy)")
-        self.vtkWidget.setnumViewports(1)
+        self.renWin.setnumViewports(1)
         self.AmpObj.addFE([FEname[0],])
         self.AmpObj.lp_smooth('FE', n=1)
         self.AmpObj.addActor(stype='FE', CMap=self.AmpObj.CMap02P, bands=5)
         self.AmpObj.actors['FE'].setScalarRange(smin=0.0, smax=50)
-        self.vtkWidget.renderActors(self.AmpObj.actors, ['FE',], shading=True)
-        self.vtkWidget.setScalarBar(self.AmpObj.actors['FE'])
+        self.renWin.renderActors(self.AmpObj.actors, ['FE',], shading=True)
+        self.renWin.setScalarBar(self.AmpObj.actors['FE'])
         
     def choosePress(self):
         vName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor vertices (*.csv)")
         pName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor pressures (*.csv)")
-        self.vtkWidget.setnumViewports(1)
+        self.renWin.setnumViewports(1)
         self.pSense = pressSense()
         self.pSense.calcFaces(d=5)
         self.pSense.importVert(vName[0])
@@ -108,8 +109,8 @@ class AmpScanGUI(QMainWindow):
         self.AmpObj.actors['antS'] = self.pSense.actors['antS']
         self.AmpObj.actors['socket'].setColor([1.0, 1.0, 1.0])
         self.AmpObj.actors['socket'].setOpacity(1.0)
-        self.vtkWidget.renderActors(self.AmpObj.actors, ['socket', 'antS'])
-        self.vtkWidget.setScalarBar(self.AmpObj.actors['antS'])
+        self.renWin.renderActors(self.AmpObj.actors, ['socket', 'antS'])
+        self.renWin.setScalarBar(self.AmpObj.actors['antS'])
         
     def createActions(self):
         self.openFile = QAction(QIcon('open.png'), 'Open', self,

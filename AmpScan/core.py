@@ -6,8 +6,6 @@ Created on Wed Sep 13 13:54:23 2017
 
 Core functions for the AmpObject
 
-Remove pd dependency and instead just use numpy arrays
-
 Requires numpy 1.13
 
 
@@ -69,6 +67,14 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         else:
             raise ValueError('dtype  not supported, please choose from ' + 
                              'limb, socket, reglimb, regsocket, MRI or AmpObj')
+    
+    def createCMap(self, cmap=None, n = 50):
+        """
+        Function to generate a colormap for the AmpObj
+        """
+        if cmap is None:
+            cmap = n
+            
 
     
     def addData(self, Data, stype):
@@ -177,6 +183,9 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         data['faceEdges'][eF[~logic], 1] = fInd[~logic]
         
     def vNorm(self, stype=0):
+        """
+        Function to compute the vertex normals
+        """
         if isinstance(stype, int):
             stype = self.stype[stype]
         data = getattr(self, stype)
