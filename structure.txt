@@ -57,7 +57,7 @@ Registration
 ampVis
 	vtkWin
 		data
-			AmpObjects #holds to ampObjects currently on display
+			actors
 			renders
 			cams
 			style
@@ -73,7 +73,14 @@ ampVis
 			setViewports()
 	qtvtkWin	
 Analysis #Routines for analysis 
-	compareScan
+	compareScans
+AmpScanGUI
+	data
+		vtkWidget
+		vtkRW
+		ampObjects
+	methods
+	
 
 		
 		
