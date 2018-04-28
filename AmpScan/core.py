@@ -65,7 +65,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         elif stype is 'FE':
             self.addFE([Data,])
         else:
-            raise ValueError('dtype  not supported, please choose from ' + 
+            raise ValueError('stype  not supported, please choose from ' + 
                              'limb, socket, reglimb, regsocket, MRI or AmpObj')
     
     def createCMap(self, cmap=None, n = 50):
@@ -86,7 +86,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
             self.stype.append(stype)
             setattr(self, stype, Data)
 
-    def read_stl(self, filename, stype=0, unify=True, edges=True, vNorm=True):
+    def read_stl(self, filename, unify=True, edges=True, vNorm=True):
         """
         Function to read .stl file from filename and import data into 
         the AmpObj 
@@ -100,8 +100,6 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         edges: boolean, default True
             calculate the edges array automatically
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
         fh = open(filename, 'rb')
         # Defined no of bytes for header and no of faces
         HEADER_SIZE = 80
@@ -121,31 +119,30 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
         norm = np.array(data['normals'])
         faces = np.reshape(range(NFaces*3), [-1,3])
-        setattr(self, stype, dict(zip(['vert', 'faces', 'norm'],
-                                      [vert, faces, norm])))
+        self.faces = faces
+        self.vert = vert
+        self.norm = norm
         # Call function to unify vertices of the array
         if unify is True:
-            self.unify_vertices(stype)
+            self.unify_vertices()
         # Call function to calculate the edges array
         if edges is True:
-            self.computeEdges(stype)
+            self.computeEdges()
         if vNorm is True:
-            self.vNorm(stype)
+            self.vNorm()
 
-    def unify_vertices(self, stype=0):
+    def unify_vertices(self):
         """
         Function to unify coincident vertices of the mesh to reduce
         size of the vertices array enabling speed increases
         """
         # Requires numpy 1.13
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        data['vert'], indC = np.unique(data['vert'], return_inverse=True, axis=0)
+        self.vert, indC = np.unique(self.vert, return_inverse=True, axis=0)
         # Maps the new vertices index to the face array
-        data['faces'] = np.resize(indC[data['faces']], (len(data['norm']), 3)).astype(np.int32)
+        self.faces = np.resize(indC[self.faces], 
+                               (len(self.norm), 3)).astype(np.int32)
 
-    def computeEdges(self, stype=0):
+    def computeEdges(self):
         """
         Function to compute the edges array, the edges on each face, 
         and the faces on each edge
@@ -157,49 +154,43 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
             edge, edges may have either 1 or 2 faces, if 1 then the second 
             index will be NaN
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
         # Get edges array
-        data['edges'] = np.reshape(data['faces'][:, [0, 1, 0, 2, 1, 2]], [-1, 2])
-        data['edges'] = np.sort(data['edges'], 1)
+        self.edges = np.reshape(self.faces[:, [0, 1, 0, 2, 1, 2]], [-1, 2])
+        self.edges = np.sort(self.edges, 1)
         # Get edges on each face 
-        data['edgesFace'] = np.reshape(range(len(data['faces'])*3), [-1,3])
+        self.edgeFaces = np.reshape(range(len(self.faces)*3), [-1,3])
         # Unify the edges
-        data['edges'], indC = np.unique(data['edges'], return_inverse=True, axis=0)
+        self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)
         #Remap the edgesFace array 
-        data['edgesFace']  = indC[data['edgesFace'] ].astype(np.int32)
+        self.edgesFace = indC[self.edgesFace].astype(np.int32)
         #Initiate the faceEdges array
-        data['faceEdges'] = np.empty([len(data['edges']), 2], dtype=np.int32)
-        data['faceEdges'].fill(-99999)
+        self.faceEdges = np.empty([len(self.edges), 2], dtype=np.int32)
+        self.faceEdges.fill(-99999)
         # Denote the face index for flattened edge array
-        fInd = np.repeat(np.array(range(len(data['faces']))), 3)
+        fInd = np.repeat(np.array(range(len(self.faces))), 3)
         # Flatten edge array
-        eF = np.reshape(data['edgesFace'], [-1])
+        eF = np.reshape(self.edgesFace, [-1])
         eFInd = np.unique(eF, return_index=True)[1]
         logic = np.zeros([len(eF)], dtype=bool)
         logic[eFInd] = True
-        data['faceEdges'][eF[logic], 0] = fInd[logic]
-        data['faceEdges'][eF[~logic], 1] = fInd[~logic]
+        self.faceEdges[eF[logic], 0] = fInd[logic]
+        self.faceEdges[eF[~logic], 1] = fInd[~logic]
         
-    def vNorm(self, stype=0):
+    def calcVNorm(self):
         """
         Function to compute the vertex normals
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        f = data['faces'].flatten()
+        f = self.faces.flatten()
         o_idx = f.argsort()
-        row, col = np.unravel_index(o_idx, data['faces'].shape)
-        ndx = np.searchsorted(f[o_idx], range(data['vert'].shape[0]), side='right')
+        row, col = np.unravel_index(o_idx, self.faces.shape)
+        ndx = np.searchsorted(f[o_idx], range(self.vert.shape[0]), side='right')
         ndx = np.r_[0, ndx]
-        norms = data['norm'][data['faces'], :][row, col, :]
-        data['vNorm'] = np.zeros(data['vert'].shape)
-        for i in range(data['vert'].shape[0]):
-            data['vNorm'][i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
+        norms = self.norm[self.faces, :][row, col, :]
+        self.vNorm = np.zeros(data['vert'].shape)
+        for i in range(self.vert.shape[0]):
+            self.vNorm[i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
 
-    def save(self, filename, stype=0):
+    def save(self, filename):
         """
         Function to save the AmpObj as a binary .stl file 
         
@@ -208,15 +199,9 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         filename: str
             file path of the .stl file to save to
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        self.calc_norm(stype)
-        data = getattr(self, stype)
-        fv = data['vert'][np.reshape(data['faces'], len(data['faces'])*3)]
+        self.calc_norm()
+        fv = self.vert[np.reshape(self.faces, len(self.faces)*3)]
         fh = open(filename, 'wb')
-        data_type = np.dtype([('normals', np.float32, (3, )),
-                              ('vertices', np.float32, (9, )),
-                              ('atttr', '<i2', (1, ))])
         header = '%s' % (filename)
         header = header[:80].ljust(80, ' ')
         packed = struct.pack('@i', len(data['faces']))
@@ -225,27 +210,24 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         data_type = np.dtype([('normals', np.float32, (3, )),
                               ('vertices', np.float32, (9, )),
                               ('atttr', '<i2', (1, ))])
-        data_write = np.zeros(len(data['faces']), dtype=data_type)
-        data_write['normals'] = data['norm']
-        data_write['vertices'] = np.reshape(fv, (len(data['faces']), 9))
+        data_write = np.zeros(len(self.faces), dtype=data_type)
+        data_write['normals'] = self.norm
+        data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
         data_write.tofile(fh)
         fh.close()
 
-    def calc_norm(self, stype=0):
+    def calc_norm(self):
         """
         Calculate the normal of each face of the AmpObj
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        norms = np.cross(data['vert'][data['faces'][:,1]] -
-                         data['vert'][data['faces'][:,0]],
-                         data['vert'][data['faces'][:,2]] -
-                         data['vert'][data['faces'][:,0]])
+        norms = np.cross(self.vert[self.faces[:,1]] -
+                         self.vert[self.faces[:,0]],
+                         self.vert[self.faces[:,2]] -
+                         self.vert[self.faces[:,0]])
         mag = np.linalg.norm(norms, axis=1)
-        data['norm'] = np.divide(norms, mag[:,None])
+        self.norm = np.divide(norms, mag[:,None])
 
-    def man_trans(self, trans, stype=0):
+    def translate(self, trans):
         """
         Translate the AmpObj in 3D space
 
@@ -254,21 +236,15 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         trans: array-like
             1x3 array of the tranlation in [x, y, z]
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        data['vert'] += trans
+        self.vert += trans
 
-    def centre(self, stype=0):
+    def centre(self):
         """
         Centre the AmpObj based upon the mean of all the vertices
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        self.man_trans(-data['vert'].mean(axis=0))
+        self.translate(-self.vert.mean(axis=0))
 
-    def man_rot(self, rot, stype=0):
+    def man_rot(self, rot):
         """
         Rotate the AmpObj in 3D space and re-calculate the normals 
         
@@ -276,19 +252,18 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         -----------
         rot: array-like
             1x3 array of the rotation around [x, y, z]
+            
+        Update this so calculated using matrices
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
         Id = np.identity(3)
         for i, r in enumerate(rot):
             if r != 0:
                 ax = Id[i, :]
                 ang = np.deg2rad(rot[i])
-                dot = np.reshape(data['vert'][:, 0] * ax[0] +
-                                 data['vert'][:, 1] * ax[1] +
-                                 data['vert'][:, 2] * ax[2], (-1, 1))
-                data['vert'] = (data['vert'] * np.cos(ang) +
-                                np.cross(ax, data['vert']) * np.sin(ang) +
-                                np.reshape(ax, (1, -1)) * dot * (1-np.cos(ang)))
+                dot = np.reshape(self.vert[:, 0] * ax[0] +
+                                 self.vert[:, 1] * ax[1] +
+                                 self.vert[:, 2] * ax[2], (-1, 1))
+                self.vert = (self.vert * np.cos(ang) +
+                             np.cross(ax, self.vert) * np.sin(ang) +
+                             np.reshape(ax, (1, -1)) * dot * (1-np.cos(ang)))
         self.calc_norm()
