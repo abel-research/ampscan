@@ -14,46 +14,35 @@ import vtk
 from vtk.util import numpy_support
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
-class vtkRender(vtk.vtkRenderer):
-    """
-    Minor modification to the vtkRenderer class to allow easy access to 
-    the currently displayed actors within each vtkRenderer object
-    """
 
-    def __init__(self):
-        super(vtkRender, self).__init__()
-        self.actors = []
-        
-class ampVTK(object):
-    """
-    Methods for display of the AmpObj within a vtk window
-    """
+class vtkRenWin(vtk.vtkRenderWindow):
     
     def __init__(self):
-        self.rens = []
-        self.cams = []
+        super(vtkRenWin, self).__init__()
+        self.rens = [vtk.vtkRenderer(),]
+        self.cams = [vtk.vtkCamera(),]
         self.axes = []
-        self.scalar_bar = None
-        self.style = vtk.vtkInteractorStyleTrackballCamera()
-        self.cams.append(vtk.vtkCamera())
+        self.AddRenderer(self.rens[0])
         self.setView()
-        self.rens.append(vtkRender())
-        #self.rens[0].SetBackground(0.1, 0.2, 0.4)
-        self.rens[0].SetBackground(1.0,1.0,1.0)
-        self.rens[0].SetActiveCamera(self.cams[0])
-        self.axes.append(vtk.vtkCubeAxesActor())
+        self.scalar_bar = None
+#        self.cams.append(vtk.vtkCamera())
+#        self.setView()
+#        self.rens.append(vtkRender())
+#        self.rens[0].SetBackground(0.1, 0.2, 0.4)
+#        self.rens[0].SetBackground(1.0,1.0,1.0)
+#        self.rens[0].SetActiveCamera(self.cams[0])
+#        self.axes.append(vtk.vtkCubeAxesActor())
         
-    def renderActors(self, actors, dispActors=['limb'], viewport=0, 
+    def renderActors(self, actors, viewport=0, 
                      shading=True, zoom=1):
         """
         Render the required AmpObj actor in the vtk viewport
         """
-        for actor in self.rens[viewport].actors:
-            self.rens[viewport].RemoveActor(actors[actor])
-        for actor in dispActors:
-            actors[actor].setShading(shading)
-            self.rens[viewport].AddActor(actors[actor])
-        self.rens[viewport].actors = dispActors
+        for actor in self.rens[viewport].GetActors():
+            self.rens[viewport].RemoveActor(actor)
+        for actor in actors:
+            actor.setShading(shading)
+            self.rens[viewport].AddActor(actor)
         self.rens[viewport].ResetCamera()
         self.cams[viewport].Zoom(zoom)
 
@@ -92,7 +81,7 @@ class ampVTK(object):
     def addAxes(self, actors, viewport=0, color = [1.0, 1.0, 1.0], font=None):
         lim = []
         for actor in actors:
-            lim.append(actors[actor].GetBounds())
+            lim.append(actor.GetBounds())
         lim = np.array(lim)
         self.axes[viewport].SetBounds(tuple(lim.max(axis=0)))
         self.axes[viewport].SetCamera(self.cams[viewport])
@@ -102,13 +91,10 @@ class ampVTK(object):
             self.axes[viewport].GetLabelTextProperty(axes).SetColor(color)
             self.axes[viewport].GetTitleTextProperty(axes).SetFontFamilyToCourier()
             self.axes[viewport].GetLabelTextProperty(axes).SetFontFamilyToCourier()
-             
 #        self.axes[viewport].GetXAxesLinesProperty().SetColor(color)
 #        self.axes[viewport].GetYAxesLinesProperty().SetColor(color)
 #        self.axes[viewport].GetZAxesLinesProperty().SetColor(color)
-#
 #        self.axes[viewport].SetGridLineLocation(self.axes[viewport].VTK_GRID_LINES_FURTHEST)
-#        
 #        self.axes[viewport].XAxisMinorTickVisibilityOff()
 #        self.axes[viewport].YAxisMinorTickVisibilityOff()
 #        self.axes[viewport].ZAxisMinorTickVisibilityOff()
@@ -166,19 +152,6 @@ class ampVTK(object):
         writer.Write()
 
 
-class vtkRenWin(vtk.vtkRenderWindow, ampVTK):
-    
-    def __init__(self, qt = True, winWidth=512, winHeight=512):
-        super(vtkRenWin, self).__init__()
-        self.AddRenderer(self.rens[0])
-        if qt is False:
-            self.winWidth = winWidth
-            self.winHeight = winHeight
-            self.SetSize(self.winWidth, self.winHeight)
-            self.OffScreenRenderingOn()
-            self.Render()
-        
-
 class qtVtkWindow(QVTKRenderWindowInteractor):
     """
     Create a vtk window to be embeded within a qt GUI
@@ -189,7 +162,8 @@ class qtVtkWindow(QVTKRenderWindowInteractor):
     
     def __init__(self):
         super(qtVtkWindow, self).__init__(rw=vtkRenWin())
-        #self.SetInteractorStyle(self.style)
+        self.style = vtk.vtkInteractorStyleTrackballCamera()
+        self.SetInteractorStyle(self.style)
         self.iren = self._RenderWindow.GetInteractor()
         self.iren.Initialize()        
 
@@ -215,11 +189,13 @@ class visMixin(object):
         win.setBackground(background)
         # Set camera projection 
         win.setProjection(projection)
+        win.SetSize(winWidth, winHeight)
+        win.OffScreenRenderingOn()
         for i, view in enumerate(views):
             win.addAxes(self.actors, color=[0.0, 0.0, 0.0], viewport=i)
             win.setView(view, i)
             win.setProjection(projection, viewport=i)
-            win.renderActors(self.actors, actor, viewport=i, shading=shading, zoom=1.3)
+            win.renderActors(self.actor, viewport=i, shading=shading, zoom=1.3)
         win.Render()
         if out == 'im':
             win.getImage()
@@ -227,19 +203,36 @@ class visMixin(object):
         elif out == 'fh':
             win.getScreenshot(name)
             return
-#        win.getScreenshot('test.tiff')
-#        return win.im
+        
+    def display(self):
+        """
+        Function to display the mesh in a vtk window
+        """
+        # Generate a renderer window
+        win = vtkRenWin(False, winWidth, winHeight)
+        # Set the number of viewports
+        win.setnumViewports(len(views))
+        # Set the background colour
+        win.setBackground(background)
+        # Set camera projection 
+        win.setProjection(projection)
+        win.SetSize(winWidth, winHeight)
+        win.OffScreenRenderingOn()
+        for i, view in enumerate(views):
+            win.addAxes(self.actors, color=[0.0, 0.0, 0.0], viewport=i)
+            win.setView(view, i)
+            win.setProjection(projection, viewport=i)
+            win.renderActors(self.actor, viewport=i, shading=shading, zoom=1.3)
+        win.Render()
 
-    def addActor(self, stype=0, CMap=None, bands=128):
+
+    def addActor(self, CMap=None, bands=128):
         """
         Function to insert a vtk actor into the actors dictionary within 
         the AmpObject 
         
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        self.actors[stype] = self.ampActor(data, CMap=CMap, bands=bands)
+        self.actor = self.ampActor(data, CMap=CMap, bands=bands)
 
     class ampActor(vtk.vtkActor):
         """
@@ -272,7 +265,8 @@ class visMixin(object):
             self.mesh.SetPoints(self.points)
             
         def setFaces(self, faces):
-            f = np.c_[np.tile(faces.shape[1], faces.shape[0]), faces].flatten().astype(np.int64)
+            f = np.c_[np.tile(faces.shape[1], faces.shape[0]),
+                      faces].flatten().astype(np.int64)
             self.polys.SetCells(len(faces), 
                                 numpy_support.numpy_to_vtkIdTypeArray(f, deep=1))
             self.mesh.SetPolys(self.polys)

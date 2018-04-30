@@ -10,7 +10,7 @@ import pandas as pd
 
 class smoothMixin(object):
     
-    def lp_smooth(self, stype=0, n=1):
+    def lp_smooth(self, n=1):
 
         """
         Function to apply a simple laplacian smooth to the mesh
@@ -20,27 +20,24 @@ class smoothMixin(object):
         n: int, default 1
             number of iterations of smoothing
         """
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
         # Flatten the edges array to 1D
-        e = data['edges'].flatten()
+        e = self.edges.flatten()
         # Get the indicies to sort edges 
         o_idx = e.argsort()
         # Get indicies of sorted array where last of each vertex index 
         # occurs 
-        ndx = np.searchsorted(e[o_idx], np.arange(len(data['vert'])), 
+        ndx = np.searchsorted(e[o_idx], np.arange(len(self.vert)), 
                               side='right')
         # Map indicies between flatted edges array and standard
-        row, col = np.unravel_index(o_idx, data['edges'].shape)
+        row, col = np.unravel_index(o_idx, self.edges.shape)
         for i in np.arange(n):
             # List all vertices 
-            neighVerts = data['vert'][data['edges'][row, 1-col], :]
+            neighVerts = self.vert[self.edges[row, 1-col], :]
             # Split into list with each array contating vertices
             spl = np.split(neighVerts, ndx[0:-1])
             # Get average of each array 
             vert = [vert.mean(axis=0) for vert in spl]
             # Write to the AmpObj
-            data['vert'] = np.array(vert)
+            self.vert = np.array(vert)
             
             

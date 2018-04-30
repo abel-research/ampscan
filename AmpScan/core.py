@@ -53,7 +53,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         CMap = np.c_[CMap1[:, :-1], CMap2]
         self.CMapN2P = np.transpose(CMap)/255.0
         self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
-        self.stype = []
+        self.stype = stype
         self.actors = {}
         if stype in ['limb', 'socket', 'reglimb', 'regsocket', 'MRI']:
             self.addData(Data, stype)
@@ -74,7 +74,6 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         """
         if cmap is None:
             cmap = n
-            
 
     
     def addData(self, Data, stype):
