@@ -33,18 +33,18 @@ Finite Element Analysis
 
 import numpy as np
 import struct
-from autoAlign import alignMixin
-from trim import trimMixin
-from smooth import smoothMixin
-from analyse import analyseMixin
-from ampVis import visMixin
-from fe import feMixin
-from tsbSocketDesign import socketDesignMixin
+from .align import rotMatrix
+from .trim import trimMixin
+from .smooth import smoothMixin
+from .analyse import analyseMixin
+from .ampVis import visMixin
+from .fe import feMixin
+from .tsbSocketDesign import socketDesignMixin
 
-class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin, 
+class AmpObject(trimMixin, smoothMixin, analyseMixin, 
                 visMixin, feMixin, socketDesignMixin):
 
-    def __init__(self, Data, stype):
+    def __init__(self, data, stype='limb'):
         c1 = [31.0, 73.0, 125.0]
         c3 = [170.0, 75.0, 65.0]
         c2 = [212.0, 221.0, 225.0]
@@ -54,19 +54,10 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         self.CMapN2P = np.transpose(CMap)/255.0
         self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
         self.stype = stype
-        self.actors = {}
-        if stype in ['limb', 'socket', 'reglimb', 'regsocket', 'MRI']:
-            self.addData(Data, stype)
-        elif stype is 'AmpObj':
-            for d in Data.stype:
-                setattr(self, d, getattr(Data, d))
-                self.stype.append(d)
-            self.actors = Data.actors
-        elif stype is 'FE':
+        if stype is 'FE':
             self.addFE([Data,])
         else:
-            raise ValueError('stype  not supported, please choose from ' + 
-                             'limb, socket, reglimb, regsocket, MRI or AmpObj')
+            self.read_stl(data)
     
     def createCMap(self, cmap=None, n = 50):
         """
@@ -75,15 +66,6 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         if cmap is None:
             cmap = n
 
-    
-    def addData(self, Data, stype):
-        if isinstance(Data, str):
-            self.stype.append(stype)
-            self.read_stl(Data, stype)
-            # Import stl as filename
-        elif isinstance(Data, dict):
-            self.stype.append(stype)
-            setattr(self, stype, Data)
 
     def read_stl(self, filename, unify=True, edges=True, vNorm=True):
         """
@@ -128,7 +110,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         if edges is True:
             self.computeEdges()
         if vNorm is True:
-            self.vNorm()
+            self.calcVNorm()
 
     def unify_vertices(self):
         """
@@ -157,7 +139,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         self.edges = np.reshape(self.faces[:, [0, 1, 0, 2, 1, 2]], [-1, 2])
         self.edges = np.sort(self.edges, 1)
         # Get edges on each face 
-        self.edgeFaces = np.reshape(range(len(self.faces)*3), [-1,3])
+        self.edgesFace = np.reshape(range(len(self.faces)*3), [-1,3])
         # Unify the edges
         self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)
         #Remap the edgesFace array 
@@ -185,7 +167,7 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         ndx = np.searchsorted(f[o_idx], range(self.vert.shape[0]), side='right')
         ndx = np.r_[0, ndx]
         norms = self.norm[self.faces, :][row, col, :]
-        self.vNorm = np.zeros(data['vert'].shape)
+        self.vNorm = np.zeros(self.vert.shape)
         for i in range(self.vert.shape[0]):
             self.vNorm[i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
 
@@ -242,6 +224,10 @@ class AmpObject(alignMixin, trimMixin, smoothMixin, analyseMixin,
         Centre the AmpObj based upon the mean of all the vertices
         """
         self.translate(-self.vert.mean(axis=0))
+    
+    def rotate(self, rot):
+        R = rotMatrix(rot)
+        self.vert = np.dot(self.vert, np.transpose(R))
 
     def man_rot(self, rot):
         """

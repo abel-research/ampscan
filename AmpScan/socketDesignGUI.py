@@ -7,9 +7,9 @@ Created on Tue Oct 10 16:21:12 2017
 
 import sys
 import numpy as np
-from core import AmpObject
-from ampVis import qtVtkWindow
-from tsbSocketDesign import dragSpline
+from .core import AmpObject
+from .ampVis import qtVtkWindow
+from .tsbSocketDesign import dragSpline
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
                              QMainWindow, QFileDialog, QWidget)
 from PyQt5.QtGui import QIcon

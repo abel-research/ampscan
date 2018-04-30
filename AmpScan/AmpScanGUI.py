@@ -1,9 +1,9 @@
 import sys
 import numpy as np
-from core import AmpObject
-from registration import regObject
-from ampVis import qtVtkWindow
-from pressSens import pressSense
+from .core import AmpObject
+from .registration import regObject
+from .ampVis import qtVtkWindow
+from .pressSens import pressSense
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)

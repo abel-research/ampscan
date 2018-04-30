@@ -7,7 +7,7 @@ Created on Wed Sep 13 16:07:10 2017
 import numpy as np
 import pandas as pd 
 from scipy import spatial
-from core import AmpObject
+from .core import AmpObject
 """
 import os
 path = ('J:\\Shared Resources\\AmpScan IfLS Team\\'

@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
-import AmpScan.cython_ext as cyext
+#import cython_ext as cyext
 
 
 
