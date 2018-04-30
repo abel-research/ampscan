@@ -16,22 +16,19 @@ import AmpScan.cython_ext as cyext
 class analyseMixin(object):
 
     def plot_slices(self, axis='Z', slWidth=10, stype=0):
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
         # Find the brim edges 
-        ind = np.where(data['faceEdges'][:,1] == -99999)
+        ind = np.where(self.faceEdges[:,1] == -99999)
         # Define max Z from lowest point on brim
-        maxZ = data['vert'][data['edges'][ind, :], 2].min()
+        maxZ = self.vert[self.edges[ind, :], 2].min()
         fig = plt.figure()
         fig.set_size_inches(6, 4.5)
 
         ax1 = fig.add_subplot(221, projection='3d')
         ax2 = fig.add_subplot(222)
         #Z position of slices 
-        slices = np.arange(data['vert'][:,2].min() + slWidth,
+        slices = np.arange(self.vert[:,2].min() + slWidth,
                            maxZ, slWidth)
-        polys = analyseMixin.create_slices_cy(data, slices, axis)
+        polys = self.create_slices_cy(slices, axis)
         PolyArea = np.zeros([len(polys)])
         for i, poly in enumerate(polys):
             ax1.plot(poly[:,0],
@@ -54,29 +51,28 @@ class analyseMixin(object):
         ax2.plot(slices-slices[0], PolyArea)
         # Rendering of the limb scan
         ax3 = fig.add_subplot(2,2,3)
-        self.addActor(stype='limb')
-        Im = self.genIm(actor=['limb'])
+        Im = self.genIm()
         ax3.imshow(Im, None)
         ax3.set_axis_off()
         # Rendering of the rectification map 
         ax4 = fig.add_subplot(2,2,4)
-        self.addActor(stype='reglimb', CMap = self.CMapN2P)
-        Im = self.genIm(actor=['reglimb'])
+        self.addActor(CMap = self.CMapN2P)
+        Im = self.genIm()
         ax4.imshow(Im, None)
         ax4.set_axis_off()
         plt.tight_layout()
         plt.show()
         
     @staticmethod
-    def create_slices(data, slices, axis='Z'):
-        vE = data['vert'][:,2][data['edges']]
+    def create_slices(self, slices, axis='Z'):
+        vE = self.vert[:,2][self.edges]
         # Find all vertices below plane 
         polys = []
         for i, plane in enumerate(slices):
             ind = vE < plane
             # Select edges with one vertex above and one below the slice plane 
             validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
-            validfE = data['faceEdges'][validEdgeInd, :].astype(int)
+            validfE = self.faceEdges[validEdgeInd, :].astype(int)
             g = defaultdict(set)
             faceOrder = np.zeros(len(validEdgeInd), dtype=int)
             # Run eularian path algorithm to order faces
@@ -95,7 +91,7 @@ class analyseMixin(object):
                 j+=1
                 v = w
             # Get array of three edges attached to each face
-            validEdges = data['edgesFace'][faceOrder, :]
+            validEdges = self.edgesFace[faceOrder, :]
             # Remove the edge that is not intersected by the plane
             edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
             # Remove the duplicate edge from order 
@@ -108,25 +104,25 @@ class analyseMixin(object):
             sortE = e[mask]
             # Add first edge to end of array
             sortE = np.append(sortE, sortE[0])
-            polyEdge = data['edges'][sortE]
-            EdgePoints = np.c_[data['vert'][polyEdge[:,0], :], 
-                               data['vert'][polyEdge[:,1], :]]
+            polyEdge = self.edges[sortE]
+            EdgePoints = np.c_[self.vert[polyEdge[:,0], :], 
+                               self.vert[polyEdge[:,1], :]]
             #Create poly from 
             polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
         return polys
     
-    def create_slices_cy(data, slices, axis='Z'):
-        vE = data['vert'][:,2][data['edges']]
+    def create_slices_cy(self, slices, axis='Z'):
+        vE = self.vert[:,2][self.edges]
         # Find all vertices below plane 
         polys = []
         for i, plane in enumerate(slices):
             ind = vE < plane
             # Select edges with one vertex above and one below the slice plane 
             validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
-            validfE = data['faceEdges'][validEdgeInd, :].astype(int)
+            validfE = self.faceEdges[validEdgeInd, :].astype(int)
             faceOrder = cyext.logEuPath(validfE)
             #Get array of three edges attached to each face
-            validEdges = data['edgesFace'][faceOrder, :]
+            validEdges = self.edgesFace[faceOrder, :]
             # Remove the edge that is not intersected by the plane
             edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
             # Remove the duplicate edge from order 
@@ -139,9 +135,9 @@ class analyseMixin(object):
             sortE = e[mask]
             # Add first edge to end of array
             sortE = np.append(sortE, sortE[0])
-            polyEdge = data['edges'][sortE]
-            EdgePoints = np.c_[data['vert'][polyEdge[:,0], :], 
-                               data['vert'][polyEdge[:,1], :]]
+            polyEdge = self.edges[sortE]
+            EdgePoints = np.c_[self.vert[polyEdge[:,0], :], 
+                               self.vert[polyEdge[:,1], :]]
             # Create poly from
 #            polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
             polys.append(cyext.planeEdgeIntersect(EdgePoints, plane, 2))
