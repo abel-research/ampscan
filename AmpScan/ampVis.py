@@ -226,13 +226,21 @@ class visMixin(object):
         win.Render()
 
 
-    def addActor(self, CMap=None, bands=128):
+    def addActor(self, CMap=None, bands=128, sRange=[0,8]):
         """
         Function to insert a vtk actor into the actors dictionary within 
         the AmpObject 
         
         """
-        self.actor = self.ampActor(data, CMap=CMap, bands=bands)
+        self.actor = self.ampActor()
+        self.actor.setVert(self.vert)
+        self.actor.setFaces(self.faces)
+        if self.values is not None:
+            self.actor.setValues(self.values)
+            self.actor.setCMap(CMap, bands)
+            self.actor.setScalarRange(sRange)
+            self.actor.Mapper.SetLookupTable(self.lut)
+        self.actor.setNorm()
 
     class ampActor(vtk.vtkActor):
         """
@@ -241,47 +249,51 @@ class visMixin(object):
         from numpy arrays 
         """
 
-        def __init__(self, data, CMap=None, bands=128):
+        def __init__(self, CMap=None, bands=128):
             self.mesh = vtk.vtkPolyData()
             self.points = vtk.vtkPoints()
             self.polys = vtk.vtkCellArray()
-            self.setVert(data['vert'])
-            self.setFaces(data['faces'])
-            self.setNorm()
-            if CMap is not None:
-                self.setRect(data['values'])
-                self.setCMap(CMap, bands)
+            self.norm = vtk.vtkPolyDataNormals()
             self.Mapper = vtk.vtkPolyDataMapper()
+            #self.setVert(data['vert'])
+            #self.setFaces(data['faces'])
+            #self.setNorm()
+            #if CMap is not None:
+            #    self.setRect(data['values'])
+            #    self.setCMap(CMap, bands)
             self.Mapper.InterpolateScalarsBeforeMappingOn()
             self.Mapper.SetInputData(self.mesh)
-            if CMap is not None:
-                self.setScalarRange()
-                self.Mapper.SetLookupTable(self.lut)
+            #if CMap is not None:
+            #    self.setScalarRange()
+            #    self.Mapper.SetLookupTable(self.lut)
             self.SetMapper(self.Mapper)
             
 
-        def setVert(self, vert):
-            self.points.SetData(numpy_support.numpy_to_vtk(vert, deep=1))
+        def setVert(self, vert, deep=0):
+            self._v = numpy_support.numpy_to_vtk(vert, deep=deep)
+            self.points.SetData(self._v)
             self.mesh.SetPoints(self.points)
             
-        def setFaces(self, faces):
-            f = np.c_[np.tile(faces.shape[1], faces.shape[0]),
-                      faces].flatten().astype(np.int64)
-            self.polys.SetCells(len(faces), 
-                                numpy_support.numpy_to_vtkIdTypeArray(f, deep=1))
+        def setFaces(self, faces, deep=0):
+            self._faces = np.c_[np.tile(faces.shape[1], faces.shape[0]),
+                                faces].flatten().astype(np.int64)
+            self._f = numpy_support.numpy_to_vtkIdTypeArray(self._faces, deep=deep)
+            self.polys.SetCells(len(faces), self._f)
             self.mesh.SetPolys(self.polys)
         
         def setNorm(self, split=False):
-            self.norm = vtk.vtkPolyDataNormals()
+            """
+            Check if deepcopy is neededin this function
+            """
             self.norm.SetInputData(self.mesh)
             self.norm.SetFeatureAngle(30.0)
             self.norm.Update()
             self.mesh.DeepCopy(self.norm.GetOutput())
             self.GetProperty().SetInterpolationToGouraud()
 
-        def setRect(self, rect):
-            self.scalars = numpy_support.numpy_to_vtk(rect, deep=1)
-            self.mesh.GetPointData().SetScalars(self.scalars)
+        def setValues(self, values, deep=0):
+            self._values = numpy_support.numpy_to_vtk(values, deep=0)
+            self.mesh.GetPointData().SetScalars(self._values)
             
         def setOpacity(self, opacity=1.0):
             self.GetProperty().SetOpacity(opacity)
@@ -289,8 +301,8 @@ class visMixin(object):
         def setColor(self, color=[1.0, 1.0, 1.0]):
             self.GetProperty().SetColor(color)
             
-        def setScalarRange(self, smin=-8.0, smax=8.0):
-            self.Mapper.SetScalarRange(smin, smax)
+        def setScalarRange(self, sRange):
+            self.Mapper.SetScalarRange(sRange[0], sRange[1])
             
 
         def setCMap(self, CMap, bands=128):

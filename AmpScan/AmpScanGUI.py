@@ -37,13 +37,13 @@ class AmpScanGUI(QMainWindow):
         self.fname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
         if self.AmpObj is not None:
-            self.renWin.renderActors(self.AmpObj.actors, [])
+            self.renWin.renderActors([self.AmpObj.actor,])
         self.AmpObj = AmpObject(self.fname[0], 'limb')
-        self.AmpObj.addActor(stype='limb')
-        self.AmpObj.lp_smooth(stype='limb')
+        self.AmpObj.addActor()
+        self.AmpObj.lp_smooth()
         self.renWin.setnumViewports(1)
         self.renWin.setProjection()
-        self.renWin.renderActors(self.AmpObj.actors, ['limb',])
+        self.renWin.renderActors([self.AmpObj.actor,])
         
     def chooseSocket(self):
         self.sockfname = QFileDialog.getOpenFileName(self, 'Open file',
@@ -148,8 +148,8 @@ class AmpScanGUI(QMainWindow):
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
            
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    mainWin = AmpScanGUI()
-    mainWin.show()
-    sys.exit(app.exec_())
+#if __name__ == "__main__":
+#    app = QApplication(sys.argv)
+#    mainWin = AmpScanGUI()
+#    mainWin.show()
+#    sys.exit(app.exec_())

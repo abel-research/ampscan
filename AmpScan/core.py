@@ -54,6 +54,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.CMapN2P = np.transpose(CMap)/255.0
         self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
         self.stype = stype
+        self.values = None
         if stype is 'FE':
             self.addFE([Data,])
         else:
