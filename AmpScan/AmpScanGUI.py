@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 from .core import AmpObject
-from .registration import regObject
+from .registration import registration
 from .ampVis import qtVtkWindow
 from .pressSens import pressSense
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
@@ -19,6 +19,7 @@ class AmpScanGUI(QMainWindow):
         super(AmpScanGUI, self).__init__()
         self.vtkWidget = qtVtkWindow()
         self.renWin = self.vtkWidget._RenderWindow
+        self.renWin.setBackground()
         self.mainWidget = QWidget()
         self.AmpObj = None
 #        self.CMap = np.array([[212.0, 221.0, 225.0],
@@ -48,9 +49,9 @@ class AmpScanGUI(QMainWindow):
     def chooseSocket(self):
         self.sockfname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
-        self.AmpObj.addData(self.sockfname[0], stype='socket')
-        self.AmpObj.addActor(stype='socket')
-        self.AmpObj.lp_smooth(stype='socket')
+        self.socket = AmpObject(self.sockfname[0], stype='socket')
+        self.socket.addActor()
+        self.socket.lp_smooth()
         
     def align(self):
         self.renWin.setnumViewports(2)
@@ -60,26 +61,22 @@ class AmpScanGUI(QMainWindow):
 #        self.renWin.render(self.AmpObj.actors, dispActors=['limb',])
 #        self.renWin.render(self.AmpObj.actors, dispActors=['socket',],
 #                              viewport=1)
-        self.renWin.renderActors(self.AmpObj.actors,
-                              dispActors=['limb', 'socket'],
-                              viewport=0)
-        self.renWin.renderActors(self.AmpObj.actors,
-                              dispActors=['limb', 'socket'],
-                              viewport=1)
-        self.AmpObj.actors['limb'].setColor([1.0, 0.0, 0.0])
-        self.AmpObj.actors['limb'].setOpacity(0.5)
-        self.AmpObj.actors['socket'].setColor([0.0, 0.0, 1.0])
-        self.AmpObj.actors['socket'].setOpacity(0.5)
+        self.renWin.renderActors([self.AmpObj.actor, self.socket.actor],
+                                 viewport=0)
+        self.renWin.renderActors([self.AmpObj.actor, self.socket.actor],
+                                 viewport=1)
+        self.AmpObj.actor.setColor([1.0, 0.0, 0.0])
+        self.AmpObj.actor.setOpacity(0.5)
+        self.socket.actor.setColor([0.0, 0.0, 1.0])
+        self.socket.actor.setOpacity(0.5)
         
     def register(self):
         self.renWin.setnumViewports(1)
         self.renWin.setProjection()
-        self.RegObj = regObject(self.AmpObj)
-        self.RegObj.registration(steps=5, baseline='socket', target='limb', 
-                                 reg = 'reglimb', direct=True)
-        self.RegObj.addActor(stype='reglimb', CMap=self.AmpObj.CMapN2P)
-        self.renWin.renderActors(self.AmpObj.actors, ['reglimb',], shading=False)
-        self.renWin.setScalarBar(self.AmpObj.actors['reglimb'])
+        self.RegObj = registration(self.socket, self.AmpObj)
+        self.RegObj.addActor(CMap=self.AmpObj.CMapN2P)
+        self.renWin.renderActors([self.RegObj.actor,])
+        self.renWin.setScalarBar(self.RegObj.actor)
     
     def analyse(self):
         self.RegObj.plot_slices()

@@ -6,6 +6,6 @@ Created on Thu Dec 15 13:50:41 2016
 """
 
 from .core import AmpObject
-from .registration import regObject
+from .registration import registration
 from .AmpScanGUI import AmpScanGUI
 from .socketDesignGUI import socketDesignGUI

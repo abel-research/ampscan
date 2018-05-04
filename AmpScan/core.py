@@ -44,31 +44,36 @@ from .tsbSocketDesign import socketDesignMixin
 class AmpObject(trimMixin, smoothMixin, analyseMixin, 
                 visMixin, feMixin, socketDesignMixin):
 
-    def __init__(self, data, stype='limb'):
-        c1 = [31.0, 73.0, 125.0]
-        c3 = [170.0, 75.0, 65.0]
-        c2 = [212.0, 221.0, 225.0]
-        CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
-        CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
-        CMap = np.c_[CMap1[:, :-1], CMap2]
-        self.CMapN2P = np.transpose(CMap)/255.0
-        self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
+    def __init__(self, data=None, stype='limb'):
         self.stype = stype
         self.values = None
-        if stype is 'FE':
-            self.addFE([Data,])
-        else:
-            self.read_stl(data)
+        self.createCMap()
+        if isinstance(data, str):    
+            if stype is 'FE':
+                self.addFE([Data,])
+            else:
+                self.read_stl(data)
+        elif isinstance(data, dict):
+            for k, v in data.items():
+                setattr(self, k, v)
+            self.calcStruct()
     
     def createCMap(self, cmap=None, n = 50):
         """
         Function to generate a colormap for the AmpObj
         """
         if cmap is None:
-            cmap = n
+            c1 = [31.0, 73.0, 125.0]
+            c3 = [170.0, 75.0, 65.0]
+            c2 = [212.0, 221.0, 225.0]
+            CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+            CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
+            CMap = np.c_[CMap1[:, :-1], CMap2]
+            self.CMapN2P = np.transpose(CMap)/255.0
+            self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
 
 
-    def read_stl(self, filename, unify=True, edges=True, vNorm=True):
+    def read_stl(self, filename, unify=True):
         """
         Function to read .stl file from filename and import data into 
         the AmpObj 
@@ -106,14 +111,24 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.norm = norm
         # Call function to unify vertices of the array
         if unify is True:
-            self.unify_vertices()
+            self.unifyVert()
         # Call function to calculate the edges array
+        self.calcStruct()
+        
+    def calcStruct(self, norm=True, edges=True, 
+                   edgeFaces=True, faceEdges=True, vNorm=True):
+        if norm is True:
+            self.calcNorm()
         if edges is True:
-            self.computeEdges()
+            self.calcEdges()
+        if edgeFaces is True:
+            self.calcEdgeFaces()
+        if faceEdges is True:
+            self.calcFaceEdges()
         if vNorm is True:
             self.calcVNorm()
 
-    def unify_vertices(self):
+    def unifyVert(self):
         """
         Function to unify coincident vertices of the mesh to reduce
         size of the vertices array enabling speed increases
@@ -124,7 +139,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.faces = np.resize(indC[self.faces], 
                                (len(self.norm), 3)).astype(np.int32)
 
-    def computeEdges(self):
+    def calcEdges(self):
         """
         Function to compute the edges array, the edges on each face, 
         and the faces on each edge
@@ -139,12 +154,20 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         # Get edges array
         self.edges = np.reshape(self.faces[:, [0, 1, 0, 2, 1, 2]], [-1, 2])
         self.edges = np.sort(self.edges, 1)
-        # Get edges on each face 
-        self.edgesFace = np.reshape(range(len(self.faces)*3), [-1,3])
         # Unify the edges
         self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)
+
+    def calcEdgeFaces(self):
+        edges = np.reshape(self.faces[:, [0, 1, 0, 2, 1, 2]], [-1, 2])
+        edges = np.sort(edges, 1)
+        # Unify the edges
+        edges, indC = np.unique(edges, return_inverse=True, axis=0)
+        # Get edges on each face 
+        self.edgesFace = np.reshape(range(len(self.faces)*3), [-1,3])
         #Remap the edgesFace array 
         self.edgesFace = indC[self.edgesFace].astype(np.int32)
+
+    def calcFaceEdges(self):
         #Initiate the faceEdges array
         self.faceEdges = np.empty([len(self.edges), 2], dtype=np.int32)
         self.faceEdges.fill(-99999)
@@ -156,7 +179,19 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         logic = np.zeros([len(eF)], dtype=bool)
         logic[eFInd] = True
         self.faceEdges[eF[logic], 0] = fInd[logic]
-        self.faceEdges[eF[~logic], 1] = fInd[~logic]
+        self.faceEdges[eF[~logic], 1] = fInd[~logic]        
+        
+
+    def calcNorm(self):
+        """
+        Calculate the normal of each face of the AmpObj
+        """
+        norms = np.cross(self.vert[self.faces[:,1]] -
+                         self.vert[self.faces[:,0]],
+                         self.vert[self.faces[:,2]] -
+                         self.vert[self.faces[:,0]])
+        mag = np.linalg.norm(norms, axis=1)
+        self.norm = np.divide(norms, mag[:,None])
         
     def calcVNorm(self):
         """
@@ -197,17 +232,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
         data_write.tofile(fh)
         fh.close()
-
-    def calc_norm(self):
-        """
-        Calculate the normal of each face of the AmpObj
-        """
-        norms = np.cross(self.vert[self.faces[:,1]] -
-                         self.vert[self.faces[:,0]],
-                         self.vert[self.faces[:,2]] -
-                         self.vert[self.faces[:,0]])
-        mag = np.linalg.norm(norms, axis=1)
-        self.norm = np.divide(norms, mag[:,None])
 
     def translate(self, trans):
         """

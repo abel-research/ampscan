@@ -119,7 +119,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
             self.rens = self.rens[:n]
         elif dif > 0:
             for i in range(dif):
-                self.rens.append(vtkRender())
+                self.rens.append(vtk.vtkRenderer())
                 self.axes.append(vtk.vtkCubeAxesActor())
                 self.AddRenderer(self.rens[-1])
                 if len(self.cams) < len(self.rens):
@@ -239,7 +239,7 @@ class visMixin(object):
             self.actor.setValues(self.values)
             self.actor.setCMap(CMap, bands)
             self.actor.setScalarRange(sRange)
-            self.actor.Mapper.SetLookupTable(self.lut)
+            self.actor.Mapper.SetLookupTable(self.actor.lut)
         self.actor.setNorm()
 
     class ampActor(vtk.vtkActor):
