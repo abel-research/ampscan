@@ -237,7 +237,8 @@ class visMixin(object):
         self.actor.setVert(self.vert)
         self.actor.setFaces(self.faces)
         #self.actor.setNorm()
-        if self.values is not None:
+        # Test if values array is non-zero
+        if self.values.any():
             self.actor.setValues(self.values)
             self.actor.setCMap(CMap, bands)
             self.actor.setScalarRange(sRange)

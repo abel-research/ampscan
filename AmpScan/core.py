@@ -46,7 +46,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
 
     def __init__(self, data=None, stype='limb'):
         self.stype = stype
-        self.values = None
         self.createCMap()
         if isinstance(data, str):    
             if stype is 'FE':
@@ -109,6 +108,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.faces = faces
         self.vert = vert
         self.norm = norm
+        self.values = np.zeros([len(self.vert)])
         # Call function to unify vertices of the array
         if unify is True:
             self.unifyVert()

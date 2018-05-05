@@ -81,8 +81,9 @@ class AmpScanGUI(QMainWindow):
     
     def analyse(self):
         #self.RegObj.plot_slices()
-        self.AmpObj.rotate([50, 50, 10], ang='deg')
-        self.vtkWidget.render()
+        self.AmpObj.vert[:, 0] *= 2
+        self.AmpObj.actor.points.Modified()
+        #self.renWin.renderActors([self.AmpObj.actor,])
         #self.AmpObj.vert[0,0] = 1
         #self.AmpObj._v = numpy_support.numpy_to_vtk(self.AmpObj.vert)
 

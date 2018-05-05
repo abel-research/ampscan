@@ -106,7 +106,7 @@ def registration(baseline, target, method='default', steps=5, direct=True):
             values = np.linalg.norm(regObj.vert - baseline.vert, axis=1)
             return values
 
-    regObj.values = calcError(baseline, regObj, False)
+    regObj.values[:] = calcError(baseline, regObj, False)
     return regObj
 
         
