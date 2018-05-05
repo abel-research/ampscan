@@ -233,14 +233,16 @@ class visMixin(object):
         
         """
         self.actor = self.ampActor()
+        #self._v = numpy_support.numpy_to_vtk(self.vert, deep=0)
         self.actor.setVert(self.vert)
         self.actor.setFaces(self.faces)
+        #self.actor.setNorm()
         if self.values is not None:
             self.actor.setValues(self.values)
             self.actor.setCMap(CMap, bands)
             self.actor.setScalarRange(sRange)
             self.actor.Mapper.SetLookupTable(self.actor.lut)
-        self.actor.setNorm()
+        
 
     class ampActor(vtk.vtkActor):
         """
@@ -253,7 +255,6 @@ class visMixin(object):
             self.mesh = vtk.vtkPolyData()
             self.points = vtk.vtkPoints()
             self.polys = vtk.vtkCellArray()
-            self.norm = vtk.vtkPolyDataNormals()
             self.Mapper = vtk.vtkPolyDataMapper()
             #self.setVert(data['vert'])
             #self.setFaces(data['faces'])
@@ -272,6 +273,7 @@ class visMixin(object):
         def setVert(self, vert, deep=0):
             self._v = numpy_support.numpy_to_vtk(vert, deep=deep)
             self.points.SetData(self._v)
+#            self.points.SetData(vert)
             self.mesh.SetPoints(self.points)
             
         def setFaces(self, faces, deep=0):
@@ -281,14 +283,21 @@ class visMixin(object):
             self.polys.SetCells(len(faces), self._f)
             self.mesh.SetPolys(self.polys)
         
-        def setNorm(self, split=False):
+        def setNorm(self, split=False, norm=None, deep=0):
             """
             Check if deepcopy is neededin this function
             """
-            self.norm.SetInputData(self.mesh)
-            self.norm.SetFeatureAngle(30.0)
-            self.norm.Update()
-            self.mesh.DeepCopy(self.norm.GetOutput())
+            if norm is not None:
+                self._n = numpy_support.numpy_to_vtk(norm, deep=deep)
+                self.mesh.GetPointData().SetNormals(self._n)
+            else:
+                self.norm = vtk.vtkPolyDataNormals()
+                self.norm.ComputePointNormalsOn()
+                self.norm.ComputeCellNormalsOff()
+                self.norm.SetFeatureAngle(30.0)
+                self.norm.SetInputData(self.mesh)
+                self.norm.Update()
+                self.mesh.DeepCopy(self.norm.GetOutput())
             self.GetProperty().SetInterpolationToGouraud()
 
         def setValues(self, values, deep=0):

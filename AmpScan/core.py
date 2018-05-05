@@ -116,7 +116,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.calcStruct()
         
     def calcStruct(self, norm=True, edges=True, 
-                   edgeFaces=True, faceEdges=True, vNorm=True):
+                   edgeFaces=True, faceEdges=True, vNorm=False):
         if norm is True:
             self.calcNorm()
         if edges is True:
@@ -196,6 +196,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
     def calcVNorm(self):
         """
         Function to compute the vertex normals
+        Not required for the AmpActor but may be needed for ICP
         """
         f = self.faces.flatten()
         o_idx = f.argsort()
@@ -242,7 +243,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         trans: array-like
             1x3 array of the tranlation in [x, y, z]
         """
-        self.vert += trans
+        self.vert[:] += trans
 
     def centre(self):
         """
@@ -250,9 +251,9 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         self.translate(-self.vert.mean(axis=0))
     
-    def rotate(self, rot):
-        R = rotMatrix(rot)
-        self.vert = np.dot(self.vert, np.transpose(R))
+    def rotate(self, rot, ang='rad'):
+        R = rotMatrix(rot, ang)
+        self.vert[:, :] = np.dot(self.vert, np.transpose(R))
 
     def man_rot(self, rot):
         """

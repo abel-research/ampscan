@@ -38,6 +38,6 @@ class smoothMixin(object):
             # Get average of each array 
             vert = [vert.mean(axis=0) for vert in spl]
             # Write to the AmpObj
-            self.vert = np.array(vert)
+            self.vert[:, :] = np.array(vert)
             
             

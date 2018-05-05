@@ -1,5 +1,6 @@
 import sys
 import numpy as np
+from vtk.util import numpy_support
 from .core import AmpObject
 from .registration import registration
 from .ampVis import qtVtkWindow
@@ -79,18 +80,22 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.RegObj.actor)
     
     def analyse(self):
-        self.RegObj.plot_slices()
+        #self.RegObj.plot_slices()
+        self.AmpObj.rotate([50, 50, 10], ang='deg')
+        self.vtkWidget.render()
+        #self.AmpObj.vert[0,0] = 1
+        #self.AmpObj._v = numpy_support.numpy_to_vtk(self.AmpObj.vert)
 
     def chooseFE(self):
         FEname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="FE results (*.npy)")
         self.renWin.setnumViewports(1)
-        self.AmpObj.addFE([FEname[0],])
-        self.AmpObj.lp_smooth('FE', n=1)
-        self.AmpObj.addActor(stype='FE', CMap=self.AmpObj.CMap02P, bands=5)
-        self.AmpObj.actors['FE'].setScalarRange(smin=0.0, smax=50)
-        self.renWin.renderActors(self.AmpObj.actors, ['FE',], shading=True)
-        self.renWin.setScalarBar(self.AmpObj.actors['FE'])
+        self.FE = AmpObject([FEname[0],], stype='FE')
+        self.AmpObj.lp_smooth()
+        self.AmpObj.addActor(CMap=self.AmpObj.CMap02P, bands=5)
+        self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
+        self.renWin.renderActors(self.FE.actor, shading=True)
+        self.renWin.setScalarBar(self.FE.actor)
         
     def choosePress(self):
         vName = QFileDialog.getOpenFileName(self, 'Open file',
