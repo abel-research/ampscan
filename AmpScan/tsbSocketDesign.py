@@ -33,8 +33,8 @@ class mplCanvas(FigureCanvas):
     def __init__(self, parent=None, width=4, height=5, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
-#        fig.patch.set_facecolor((0.1, 0.2, 0.4))
-#        self.axes.set_facecolor((0.1, 0.2, 0.4))
+        fig.patch.set_facecolor((0.9, 0.9, 0.9))
+        self.axes.set_facecolor((0.9, 0.9, 0.9))
 
         self.compute_initial_figure()
         super(mplCanvas, self).__init__(fig)
@@ -61,8 +61,8 @@ class dragSpline(mplCanvas):
                                 [0.5, 4.0],
                                 [1.0, 0.0]])
         self.weights = np.array([1.0, 5.0, 1.0])
-        self.axes.set_ylim([0, 1])
-        self.axes.set_xlim([0, 8])
+#        self.axes.set_ylim([0, 1])
+#        self.axes.set_xlim([0, 8])
         self.axes.set_ylabel('Normalised distance along socket')
         self.axes.set_xlabel('Percentage reduction in volume')
         self.point = self.axes.plot(self.points[:, 1],
@@ -115,7 +115,7 @@ class dragSpline(mplCanvas):
         
         self.points[:, 1] = self.point.get_xdata() 
         self.points[self.press[1], 1] += event.xdata - xpress
-        
+        self.points[:, 1] = np.clip(self.points[:, 1], 0, 8)
 #        if self.press[1] == 1:
 #            self.points[:, 1] = self.point.get_xdata() 
 #            self.points[self.press[1], 1] += event.xdata - xpress

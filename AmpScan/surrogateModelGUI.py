@@ -21,13 +21,11 @@ class GUI(QMainWindow):
     def __init__(self, parent=None):
         super(GUI, self).__init__()
         self.AmpObj = None
-        self.CMap = np.array([[212.0, 221.0, 225.0],
-                              [31.0, 73.0, 125.0]])/255.0
         self.splineWidget = QWidget()
         self.mainWidget = QWidget()
         self.vtkWidget = qtVtkWindow()
         self.renWin = self.vtkWidget._RenderWindow
-        self.renWin.setBackground()
+        self.renWin.setBackground([0.9,0.9,0.9])
         self.setCentralWidget(self.mainWidget)
         self.createActions()
         self.createMenus()
@@ -61,11 +59,28 @@ class GUI(QMainWindow):
         self.AmpObj.addSurrogate(self.sname[0])
         points = self.splineWin.points[:, 1]/8.0
         self.AmpObj.surrPred(points)
-        self.AmpObj.addActor(CMap=self.CMap)
+        c1 = [212.0, 221.0, 225.0]
+        c2 = [31.0, 73.0, 125.0]
+        CMap = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+        CMap = np.transpose(CMap)/255.0
+        abaqus = np.array([[0,0,255],
+                           [0,92,255],
+                           [0,185,255],
+                           [0,255,231],
+                           [0,255,139],
+                           [0,255,46],
+                           [46,255,0],
+                           [139,255,0],
+                           [231,255,0],
+                           [255,185,0],
+                           [255,92,0],
+                           [255,0,0]])/255.0
+        self.AmpObj.addActor(CMap=abaqus, bands = 12)
         self.AmpObj.actor.setNorm()
         self.AmpObj.actor.setScalarRange([0, 60])
         self.renWin.renderActors([self.AmpObj.actor,])
         self.renWin.setScalarBar(self.AmpObj.actor)
+        self.renWin.setView()
     
 
     def createActions(self):
