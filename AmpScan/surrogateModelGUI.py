@@ -75,7 +75,7 @@ class GUI(QMainWindow):
                            [255,185,0],
                            [255,92,0],
                            [255,0,0]])/255.0
-        self.AmpObj.addActor(CMap=abaqus, bands = 12)
+        self.AmpObj.addActor(CMap=CMap, bands = 10)
         self.AmpObj.actor.setNorm()
         self.AmpObj.actor.setScalarRange([0, 60])
         self.renWin.renderActors([self.AmpObj.actor,])

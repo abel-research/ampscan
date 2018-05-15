@@ -9,10 +9,15 @@ Backend for matplotlib to create a moveable spline figure
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import matplotlib as mpl
 from PyQt5.QtWidgets import QSizePolicy
 import numpy as np
 from scipy.special import binom
 
+mpl.rcParams['axes.labelsize'] = 20
+mpl.rcParams['lines.linewidth'] = 3
+mpl.rcParams['xtick.labelsize'] = 15
+mpl.rcParams['ytick.labelsize'] = 15
 
 class socketDesignMixin(object):
 
@@ -30,7 +35,7 @@ class socketDesignMixin(object):
 class mplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
 
-    def __init__(self, parent=None, width=4, height=5, dpi=100):
+    def __init__(self, parent=None, width=8, height=5, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         fig.patch.set_facecolor((0.9, 0.9, 0.9))
@@ -67,7 +72,7 @@ class dragSpline(mplCanvas):
         self.axes.set_xlabel('Percentage reduction in volume')
         self.point = self.axes.plot(self.points[:, 1],
                                     self.points[:, 0],
-                                    'ob', markersize=10)[0]
+                                    'ob', markersize=15)[0]
         self.spline = self.axes.plot(0, 0)[0]
         self.bezierCurve()
         self.press = None
