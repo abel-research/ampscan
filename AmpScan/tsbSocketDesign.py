@@ -113,12 +113,12 @@ class dragSpline(mplCanvas):
         xpress = self.press[2]
         ypress = self.press[3]
         
-        self.points[:, 0] = self.point.get_ydata() 
-        self.points[self.press[1], 0] += event.ydata - ypress
+        self.points[:, 1] = self.point.get_xdata() 
+        self.points[self.press[1], 1] += event.xdata - xpress
         
-        if self.press[1] == 1:
-            self.points[:, 1] = self.point.get_xdata() 
-            self.points[self.press[1], 1] += event.xdata - xpress
+#        if self.press[1] == 1:
+#            self.points[:, 1] = self.point.get_xdata() 
+#            self.points[self.press[1], 1] += event.xdata - xpress
         
 
         self.point.set_xdata(self.points[:, 1])

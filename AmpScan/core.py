@@ -48,8 +48,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.stype = stype
         self.createCMap()
         if isinstance(data, str):    
-            if stype is 'FE':
-                self.addFE([Data,])
+            if stype == 'FE':
+                self.addFE([data,])
             else:
                 self.read_stl(data)
         elif isinstance(data, dict):

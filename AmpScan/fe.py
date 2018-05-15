@@ -6,6 +6,7 @@ Created on Wed Nov 01 14:13:50 2017
 """
 
 import numpy as np
+from numpy.linalg import solve
 
 class feMixin(object):
     
@@ -23,6 +24,7 @@ class feMixin(object):
                 data[n] = np.loadtxt(f)
         self.getSurf()
         
+        
     def getSurf(self):
         valInd = self.values[:, 0].astype(int)
         log = np.isin(self.faces, valInd)
@@ -37,3 +39,26 @@ class feMixin(object):
         self.edges = np.sort(self.edges, 1)
         # Unify the edges
         self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)
+    
+    def addSurrogate(self, fname):
+        self.surrogate = np.load(fname).item()
+        surr = self.surrogate
+        surr['sm_theta'] = 10 ** surr['sm_theta']
+
+    def surrPred(self, x):
+        surr = self.surrogate
+        one = np.ones([125])
+        eigs = np.zeros([20])
+        for i in range(20):
+            u = surr['sm_U'][:, : ,i]
+            mu = surr['sm_mu'][i]
+            y = surr['y'][:, i]
+            theta = surr['sm_theta'][:,i]
+            psi = np.exp(-np.sum(theta*np.abs(surr['x']-x)**2, axis=1))
+            eigs[i] = mu + np.dot(psi.T, feMixin.comp(u, feMixin.comp(u.T,y-one*mu)))
+        sf = (surr['pc_U'] * eigs).sum(axis=1)
+        self.values[:] = surr['pc_mean'] + sf
+    
+    @staticmethod
+    def comp(a, b):
+        return solve(np.dot(a.T, a), np.dot(a.T, b))

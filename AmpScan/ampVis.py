@@ -302,7 +302,7 @@ class visMixin(object):
             self.GetProperty().SetInterpolationToGouraud()
 
         def setValues(self, values, deep=0):
-            self._values = numpy_support.numpy_to_vtk(values, deep=0)
+            self._values = numpy_support.numpy_to_vtk(values, deep=deep)
             self.mesh.GetPointData().SetScalars(self._values)
             
         def setOpacity(self, opacity=1.0):
