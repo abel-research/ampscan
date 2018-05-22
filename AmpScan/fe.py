@@ -40,6 +40,18 @@ class feMixin(object):
         # Unify the edges
         self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)
     
+    def calcPPI(self):
+        """
+        Function to calculate the peak pressure indicies
+        """
+        self.values
+    
+    def calcGradients(self):
+        """
+        Function to calculate the gradients in values along z and theta
+        """
+        np.gradient(self.values)
+    
     def addSurrogate(self, fname):
         self.surrogate = np.load(fname).item()
         surr = self.surrogate
