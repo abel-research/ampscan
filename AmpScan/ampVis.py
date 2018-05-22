@@ -55,8 +55,9 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.scalar_bar = vtk.vtkScalarBarActor()
         self.scalar_bar.SetLookupTable(actor.lut)
         self.scalar_bar.SetOrientationToVertical()
-        self.scalar_bar.SetPosition(0.85, 0.7)
-        self.scalar_bar.SetPosition2(0.1, 0.3)
+        self.scalar_bar.SetPosition(0.85, 0.15)
+        self.scalar_bar.SetPosition2(0.1, 0.7)
+        #self.scalar_bar.SetTitle('Interfacial Pressure, kPa')
         self.rens[0].AddActor(self.scalar_bar)
 
     def setView(self, view = [0, -1, 0], viewport=0):

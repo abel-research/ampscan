@@ -78,7 +78,7 @@ class GUI(QMainWindow):
         self.AmpObj.addActor(CMap=CMap, bands = 10)
         self.AmpObj.actor.setNorm()
         self.AmpObj.actor.setScalarRange([0, 60])
-        self.renWin.renderActors([self.AmpObj.actor,])
+        self.renWin.renderActors([self.AmpObj.actor,], shading=False)
         self.renWin.setScalarBar(self.AmpObj.actor)
         self.renWin.setView()
     

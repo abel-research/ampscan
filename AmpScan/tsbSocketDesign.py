@@ -72,7 +72,8 @@ class dragSpline(mplCanvas):
         self.axes.set_xlabel('Percentage reduction in volume')
         self.point = self.axes.plot(self.points[:, 1],
                                     self.points[:, 0],
-                                    'ob', markersize=15)[0]
+                                    'ob', markersize=15,
+                                    picker=50)[0]
         self.spline = self.axes.plot(0, 0)[0]
         self.bezierCurve()
         self.press = None
