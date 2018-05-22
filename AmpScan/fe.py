@@ -26,7 +26,9 @@ class feMixin(object):
         
         
     def getSurf(self):
+        # Find verts with a pressure value for external surface
         valInd = self.values[:, 0].astype(int)
+        # Find faces in array 
         log = np.isin(self.faces, valInd)
         f = self.faces[log].reshape([-1, 4])
         log = np.zeros(len(self.vert), dtype=bool)
@@ -35,7 +37,8 @@ class feMixin(object):
         self.vert = self.vert[log, :]
         self.faces = fInd[f].astype(np.int64)
         self.values = np.array(self.values[:, 1])
-        self.edges = np.reshape(self.faces[:, [0, 1, 0, 2, 0, 3, 1, 2, 1, 3, 2, 3]], [-1, 2])
+        # order for ABAQUS hex element 
+        self.edges = np.reshape(self.faces[:, [0, 1, 1, 2, 2, 3, 3, 0]], [-1, 2])
         self.edges = np.sort(self.edges, 1)
         # Unify the edges
         self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)

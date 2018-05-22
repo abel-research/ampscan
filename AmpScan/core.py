@@ -55,7 +55,10 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         elif isinstance(data, dict):
             for k, v in data.items():
                 setattr(self, k, v)
-            self.calcStruct()
+            if stype == 'FE':
+                self.getSurf()
+            else:
+                self.calcStruct()
     
     def createCMap(self, cmap=None, n = 50):
         """

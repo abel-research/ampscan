@@ -44,7 +44,7 @@ class smoothMixin(object):
         """
         Function to apply a simple laplacian smooth to the values array
         """
-                # Flatten the edges array to 1D
+        # Flatten the edges array to 1D
         e = self.edges.flatten()
         # Get the indicies to sort edges 
         o_idx = e.argsort()
@@ -56,11 +56,11 @@ class smoothMixin(object):
         row, col = np.unravel_index(o_idx, self.edges.shape)
         for i in np.arange(n):
             # List all vertices 
-            neighValues = self.values[self.edges[row, 1-col], :]
+            neighValues = self.values[self.edges[row, 1-col]]
             # Split into list with each array contating vertices
             spl = np.split(neighValues, ndx[0:-1])
             # Get average of each array 
             values = [val.mean() for val in spl]
             # Write to the AmpObj
-            self.values[:, :] = np.array(values)
+            self.values[:] = np.array(values)
             
