@@ -28,17 +28,15 @@ class smoothMixin(object):
         # occurs 
         ndx = np.searchsorted(e[o_idx], np.arange(len(self.vert)), 
                               side='right')
+        ndx = np.r_[0, ndx]
         # Map indicies between flatted edges array and standard
         row, col = np.unravel_index(o_idx, self.edges.shape)
         for i in np.arange(n):
             # List all vertices 
             neighVerts = self.vert[self.edges[row, 1-col], :]
-            # Split into list with each array contating vertices
-            spl = np.split(neighVerts, ndx[0:-1])
-            # Get average of each array 
-            vert = [vert.mean(axis=0) for vert in spl]
-            # Write to the AmpObj
-            self.vert[:, :] = np.array(vert)
+            for j in np.arange(self.vert.shape[0]):
+                # Calculate the mean of the vertex set
+                self.vert[j, :] = neighVerts[ndx[i]:ndx[i+1]].mean(axis=0)
     
     def smoothValues(self, n=1):
         """
@@ -52,15 +50,12 @@ class smoothMixin(object):
         # occurs 
         ndx = np.searchsorted(e[o_idx], np.arange(len(self.values)), 
                               side='right')
+        ndx = np.r_[0, ndx]
         # Map indicies between flatted edges array and standard
         row, col = np.unravel_index(o_idx, self.edges.shape)
         for i in np.arange(n):
-            # List all vertices 
             neighValues = self.values[self.edges[row, 1-col]]
-            # Split into list with each array contating vertices
-            spl = np.split(neighValues, ndx[0:-1])
-            # Get average of each array 
-            values = [val.mean() for val in spl]
-            # Write to the AmpObj
-            self.values[:] = np.array(values)
+            for j in np.arange(self.values.shape[0]):
+                # Calculate mean of values set 
+                self.values[j] = neighValues[ndx[i]:ndx[i+1]].mean()
             
