@@ -22,14 +22,13 @@ mpl.rcParams['ytick.labelsize'] = 15
 class socketDesignMixin(object):
 
     def TSBSocket(self, B, stype=0):
-        if isinstance(stype, int):
-            stype = self.stype[stype]
-        data = getattr(self, stype)
-        rho = np.sqrt(data['vert'][:, 0]**2 + data['vert'][:,1]**2)
-        zRange = data['vert'][:, 2].max() - data['vert'][:, 2].min()
+        rho = np.sqrt(self.vert[:, 0]**2 + self.vert[:,1]**2)
+        zRange = self.vert[:, 2].max() - self.vert[:, 2].min()
         zB = (B[:, 0] * zRange) + data['vert'][:, 2].min()
         perRed = np.interp(data['vert'][:, 2], zB, B[:, 1])
         data['values'] = rho * (perRed * 0.01)
+    
+#    def calcSpline(self, points):
 
 
 class mplCanvas(FigureCanvas):
