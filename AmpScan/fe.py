@@ -55,15 +55,16 @@ class feMixin(object):
         """
         np.gradient(self.values)
     
-    def addSurrogate(self, dat):
+    def addSurrogate(self, dat, theta=True):
         if isinstance(dat, str):
             self.surrogate = np.load(dat).item()
         else:
             self.surrogate = dat
         #surr = self.surrogate
-        #surr['sm_theta'] = 10 ** surr['sm_theta']
+        if theta is True:
+            self.surrogate['sm_theta'] = 10 ** self.surrogate['sm_theta']
 
-    def surrPred(self, x):
+    def surrPred(self, x, norm = True):
         surr = self.surrogate
         sh = surr['sm_U'].shape
         one = np.ones(sh[0])
@@ -76,6 +77,9 @@ class feMixin(object):
             theta = surr['sm_theta'][:,i]
             psi = np.exp(-np.sum(theta*np.power(np.abs(surr['X']-x), pl), axis=1))
             eigs[i] = mu + np.dot(psi.T, feMixin.comp(u, feMixin.comp(u.T,y-one*mu)))
+            if norm is True:
+                yNorm = surr['sm_yRange'][:, i]
+                eigs[i] = (eigs[i] * (yNorm[1] - yNorm[0])) + yNorm[0]
         sf = (surr['pc_U'] * eigs).sum(axis=1)
         self.values[:] = surr['pc_mean'] + sf
     

@@ -42,7 +42,7 @@ class AmpScanGUI(QMainWindow):
             self.renWin.renderActors([self.AmpObj.actor,])
         self.AmpObj = AmpObject(self.fname[0], 'limb')
         self.AmpObj.addActor()
-        self.AmpObj.lp_smooth()
+#        self.AmpObj.lp_smooth()
         self.renWin.setnumViewports(1)
         self.renWin.setProjection()
         self.renWin.renderActors([self.AmpObj.actor,])

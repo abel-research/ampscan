@@ -6,9 +6,12 @@ Created on Tue Oct 10 16:21:12 2017
 """
 
 import sys
+import copy
 import os
 os.chdir('C:\\Local\\Documents (Local)\\Code\\AmpScan\\')
 import numpy as np
+from scipy.special import binom
+from scipy.interpolate import interp1d
 from AmpScan.core import AmpObject
 from AmpScan.ampVis import qtVtkWindow
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
@@ -21,8 +24,10 @@ from PyQt5.QtCore import pyqtSignal, Qt
 class GUI(QMainWindow):
     def __init__(self, parent=None):
         super(GUI, self).__init__()
-        self.points = np.zeros([5])
+        self.points = np.zeros([3])
         self.AmpObj = None
+        self.redFunc = None
+        self.scaleIdx = 0
         self.mainWidget = QWidget()
         self.limbWidget = qtVtkWindow()
         self.limbRen = self.limbWidget._RenderWindow
@@ -48,14 +53,47 @@ class GUI(QMainWindow):
             self.points[i] = s.value()/100
         if self.AmpObj is None:
             return
-        self.AmpObj.surrPred(self.points[2:])
-        self.AmpObj.actor.setValues(self.AmpObj.values)
+#        self.scale(self.points[:2])
+        bezier = self.bSpline(self.points, self.socket.vert[:, 2])
+        self.socket.values[:] = bezier[:, 1] * 6
+        self.socket.actor.setValues(self.socket.values)
+        self.AmpObj.surrPred(self.points, norm=False)
+        self.AmpObj.actor.setValues(self.AmpObj.values)  
         self.limbRen.Render()
+        self.socketRen.Render()
+    
+    def scale(self, var):
+        var = (var * 0.3) - 0.15
+        cent = [85.93, 75.53, 0.0]
+        height = 150.0
+        for p in [self.AmpObj, self.socket]:
+            if self.scaleIdx == 0:
+                p.nodes = copy.deepcopy(p.vert)
+                p.idx = p.nodes[:, 2] < height
+            nodes = p.nodes - cent
+            rad = np.sqrt(nodes[:,0]**2 + nodes[:,1]**2)
+            the = np.arctan2(nodes[:,1], nodes[:,0])
+            bezier = self.bSpline([1, 1+var[1], 1+var[1]], nodes[p.idx, 2])
+            rad[p.idx] = rad[p.idx] * bezier[:, 1]
+            x = rad * np.cos(the)
+            y = rad * np.sin(the)
+            nodes[:, 0] = x + cent[0]
+            nodes[:, 1] = y + cent[1]
+            # Length of the limb 
+            nodes[p.idx, 2] += (nodes[p.idx, 2]-height) * var[0]
+            p.vert[:, :] = p.nodes
+            p.actor.points.Modified()
+            p.actor.setVert(p.vert)
+        self.scaleIdx = 1
+                
+        
         
     def sliders(self):
-        variables = ['Residuum Length', 'Residuum Bulk', 'Proximal Reduction', 
-                     'Mid Reduction', 'Distal Reduction']
-        values = [50, 50, 0, 0, 0]
+#        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
+#                     'Residuum Length', 'Residuum Bulk']
+#        values = [0, 0, 0, 50, 50]
+        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction']
+        values = [0, 0, 0]
         groupBox = QGroupBox('Model Variables')
         box = QGridLayout()
         self.sliders = []
@@ -75,18 +113,33 @@ class GUI(QMainWindow):
             box.addWidget(self.sliders[-1], i, 1)        
         groupBox.setLayout(box)
         return groupBox
+    
+    def bSpline(self, var, t):
+        weights = np.array([1.0, 5.0, 1.0])
+        points = np.array([[0.0, var[2]],
+                           [0.5, var[1]],
+                           [1.0, var[0]]])
+        zMin = t.min()
+        zRange = t.max() - zMin
+        t = (t - zMin)/zRange
+        num = np.zeros([t.shape[0], 2])
+        dem = np.zeros([t.shape[0], 2])
+        n = points.shape[0] - 1
+        for (i, point), weight in zip(enumerate(points), weights):
+            biCoeff = binom(n, i)
+            num = num + ((biCoeff*t**i) * ((1-t)**(n-i)))[:, None] * point * weight
+            dem = dem + ((biCoeff*t**i) * ((1-t)**(n-i)))[:, None] * weight
+        return num/dem
+
 
     def chooseOpenFile(self):
         self.fname = QFileDialog.getOpenFileName(self, 'Open file',
                                                  filter="Surrogate Model (*.npy)")
         data = np.load(self.fname[0]).item()
         self.AmpObj = AmpObject(data['limb'], stype='FE')
-        self.AmpObj.centre()
+        #self.AmpObj.centre()
         self.AmpObj.addSurrogate(data['surr'])
         self.socket = AmpObject(data['socket'])
-        for i, s in enumerate(self.sliders):
-            self.points[i] = s.value()/100
-        self.AmpObj.surrPred(self.points[2:])
         c1 = [212.0, 221.0, 225.0]
         c2 = [31.0, 73.0, 125.0]
         CMap = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
@@ -94,13 +147,14 @@ class GUI(QMainWindow):
         self.AmpObj.addActor(CMap=CMap, bands = 10)
         self.AmpObj.actor.setNorm()
         self.AmpObj.actor.setScalarRange([0, 60])
-        self.socket.addActor(CMap=CMap, bands = 10)
+        self.socket.addActor(CMap=CMap, bands = 128)
         self.socket.actor.setNorm()
         self.socket.actor.setScalarRange([0, 6])
-        self.limbRen.renderActors([self.AmpObj.actor,], shading=False)
+        self.plotPress()
+        self.limbRen.renderActors([self.AmpObj.actor], shading=False)
         self.limbRen.setScalarBar(self.AmpObj.actor)
         self.limbRen.setView()
-        self.socketRen.renderActors([self.socket.actor,], shading=True)
+        self.socketRen.renderActors([self.socket.actor,], shading=False)
         self.socketRen.setScalarBar(self.socket.actor)
         self.socketRen.setView()
 

@@ -30,7 +30,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
 #        self.rens.append(vtkRender())
 #        self.rens[0].SetBackground(0.1, 0.2, 0.4)
 #        self.rens[0].SetBackground(1.0,1.0,1.0)
-#        self.rens[0].SetActiveCamera(self.cams[0])
+        self.rens[0].SetActiveCamera(self.cams[0])
 #        self.axes.append(vtk.vtkCubeAxesActor())
         
     def renderActors(self, actors, viewport=0, 

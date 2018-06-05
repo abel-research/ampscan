@@ -24,9 +24,9 @@ class socketDesignMixin(object):
     def TSBSocket(self, B, stype=0):
         rho = np.sqrt(self.vert[:, 0]**2 + self.vert[:,1]**2)
         zRange = self.vert[:, 2].max() - self.vert[:, 2].min()
-        zB = (B[:, 0] * zRange) + data['vert'][:, 2].min()
-        perRed = np.interp(data['vert'][:, 2], zB, B[:, 1])
-        data['values'] = rho * (perRed * 0.01)
+        zB = (B[:, 0] * zRange) + self.vert[:, 2].min()
+        perRed = np.interp(self.vert[:, 2], zB, B[:, 1])
+        self.values[:] = rho * (perRed * 0.01)
     
 #    def calcSpline(self, points):
 
