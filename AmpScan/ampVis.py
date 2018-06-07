@@ -23,7 +23,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.cams = [vtk.vtkCamera(),]
         self.axes = []
         self.AddRenderer(self.rens[0])
-        self.setView()
+#        self.setView()
         self.scalar_bar = None
 #        self.cams.append(vtk.vtkCamera())
 #        self.setView()
@@ -53,11 +53,18 @@ class vtkRenWin(vtk.vtkRenderWindow):
         if self.scalar_bar is not None:
             self.rens[0].RemoveActor(self.scalar_bar)
         self.scalar_bar = vtk.vtkScalarBarActor()
+#        self.scalar_bar.AnnotationTextScalingOff()
+#        self.scalar_bar.SetTitle('Interfacial Pressure, kPa')
         self.scalar_bar.SetLookupTable(actor.lut)
         self.scalar_bar.SetOrientationToVertical()
         self.scalar_bar.SetPosition(0.85, 0.15)
         self.scalar_bar.SetPosition2(0.1, 0.7)
-        #self.scalar_bar.SetTitle('Interfacial Pressure, kPa')
+        self.scalar_bar.GetLabelTextProperty().SetFontFamilyToArial()
+        self.scalar_bar.GetLabelTextProperty().BoldOff()
+        self.scalar_bar.GetLabelTextProperty().ShadowOff()
+        self.scalar_bar.GetLabelTextProperty().SetColor(0, 0, 0)
+        self.scalar_bar.GetLabelTextProperty().SetFontSize(24)
+#        self.scalar_bar.SetTitle('Interfacial Pressure, kPa')
         self.rens[0].AddActor(self.scalar_bar)
 
     def setView(self, view = [0, -1, 0], viewport=0):

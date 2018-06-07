@@ -8,7 +8,8 @@ Created on Tue Oct 10 16:21:12 2017
 import sys
 import copy
 import os
-os.chdir('C:\\Local\\Documents (Local)\\Code\\AmpScan\\')
+#os.chdir('C:\\Local\\Documents (Local)\\Code\\AmpScan\\')
+os.chdir('C:\\Users\\Josh\\Documents\\Python\\AmpScan')
 import numpy as np
 from scipy.special import binom
 from scipy.interpolate import interp1d
@@ -55,7 +56,7 @@ class GUI(QMainWindow):
             return
 #        self.scale(self.points[:2])
         bezier = self.bSpline(self.points, self.socket.vert[:, 2])
-        self.socket.values[:] = bezier[:, 1] * 6
+        self.socket.values[:] = bezier[:, 1] * 8
         self.socket.actor.setValues(self.socket.values)
         self.AmpObj.surrPred(self.points, norm=False)
         self.AmpObj.actor.setValues(self.AmpObj.values)  
@@ -97,20 +98,28 @@ class GUI(QMainWindow):
         groupBox = QGroupBox('Model Variables')
         box = QGridLayout()
         self.sliders = []
+
         for v, (i, t) in zip(values, enumerate(variables)):
+            tx = QLabel(t)
+            tx.setAlignment(Qt.AlignVCenter)
+            box.addWidget(tx, i*3, 0, 3, 1)   
             self.sliders.append(QSlider(Qt.Horizontal))
             self.sliders[-1] = QSlider(Qt.Horizontal)
             self.sliders[-1].setFocusPolicy(Qt.StrongFocus)
             self.sliders[-1].setTickPosition(QSlider.TicksBothSides)
-            self.sliders[-1].setTickInterval(10)
+            self.sliders[-1].setTickInterval(25)
             self.sliders[-1].setSingleStep(1)
             self.sliders[-1].setMinimum(0)
             self.sliders[-1].setMaximum(100)
             self.sliders[-1].setValue(v)
             self.sliders[-1].valueChanged.connect(self.plotPress)
-            tx = QLabel(t)
-            box.addWidget(tx, i, 0)
-            box.addWidget(self.sliders[-1], i, 1)        
+            box.addWidget(self.sliders[-1], i*3, 1, 2, 3)
+            labels = [' 0', '4', '8 ']
+            align = [Qt.AlignLeft, Qt.AlignHCenter, Qt.AlignRight]
+            for (j, n), a in zip(enumerate(labels), align):
+                lab = QLabel(n)
+                lab.setAlignment(a)
+                box.addWidget(lab, (i*3) + 2, j + 1, 1, 1)
         groupBox.setLayout(box)
         return groupBox
     
@@ -149,7 +158,7 @@ class GUI(QMainWindow):
         self.AmpObj.actor.setScalarRange([0, 60])
         self.socket.addActor(CMap=CMap, bands = 128)
         self.socket.actor.setNorm()
-        self.socket.actor.setScalarRange([0, 6])
+        self.socket.actor.setScalarRange([0, 8])
         self.plotPress()
         self.limbRen.renderActors([self.AmpObj.actor], shading=False)
         self.limbRen.setScalarBar(self.AmpObj.actor)
