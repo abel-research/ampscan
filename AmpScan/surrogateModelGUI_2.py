@@ -8,8 +8,8 @@ Created on Tue Oct 10 16:21:12 2017
 import sys
 import copy
 import os
-#os.chdir('C:\\Local\\Documents (Local)\\Code\\AmpScan\\')
-os.chdir('C:\\Users\\Josh\\Documents\\Python\\AmpScan')
+os.chdir('C:\\Local\\Documents (Local)\\Code\\AmpScan\\')
+#os.chdir('C:\\Users\\Josh\\Documents\\Python\\AmpScan')
 import numpy as np
 from scipy.special import binom
 from scipy.interpolate import interp1d
@@ -25,7 +25,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 class GUI(QMainWindow):
     def __init__(self, parent=None):
         super(GUI, self).__init__()
-        self.points = np.zeros([3])
+        self.points = np.zeros([5])
         self.AmpObj = None
         self.redFunc = None
         self.scaleIdx = 0
@@ -54,8 +54,8 @@ class GUI(QMainWindow):
             self.points[i] = s.value()/100
         if self.AmpObj is None:
             return
-#        self.scale(self.points[:2])
-        bezier = self.bSpline(self.points, self.socket.vert[:, 2])
+        self.scale(self.points[3:])
+        bezier = self.bSpline(self.points[:3], self.socket.vert[:, 2])
         self.socket.values[:] = bezier[:, 1] * 8
         self.socket.actor.setValues(self.socket.values)
         self.AmpObj.surrPred(self.points, norm=False)
@@ -67,9 +67,10 @@ class GUI(QMainWindow):
         var = (var * 0.3) - 0.15
         cent = [85.93, 75.53, 0.0]
         height = 150.0
-        for p in [self.AmpObj, self.socket]:
+#        for p in [self.AmpObj, self.socket]:
+        for p in [self.AmpObj,]:
             if self.scaleIdx == 0:
-                p.nodes = copy.deepcopy(p.vert)
+                p.nodes = p.vert.copy()
                 p.idx = p.nodes[:, 2] < height
             nodes = p.nodes - cent
             rad = np.sqrt(nodes[:,0]**2 + nodes[:,1]**2)
@@ -82,19 +83,19 @@ class GUI(QMainWindow):
             nodes[:, 1] = y + cent[1]
             # Length of the limb 
             nodes[p.idx, 2] += (nodes[p.idx, 2]-height) * var[0]
-            p.vert[:, :] = p.nodes
-            p.actor.points.Modified()
+            p.vert[:, :] = nodes
             p.actor.setVert(p.vert)
+            p.actor.points.Modified()
         self.scaleIdx = 1
                 
         
         
     def sliders(self):
-#        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
-#                     'Residuum Length', 'Residuum Bulk']
-#        values = [0, 0, 0, 50, 50]
-        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction']
-        values = [0, 0, 0]
+        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
+                     'Residuum Length', 'Residuum Bulk']
+        values = [0, 0, 0, 50, 50]
+#        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction']
+#        values = [0, 0, 0]
         groupBox = QGroupBox('Model Variables')
         box = QGridLayout()
         self.sliders = []
