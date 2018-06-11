@@ -55,7 +55,11 @@ class GUI(QMainWindow):
         if self.AmpObj is None:
             return
         self.scale(self.points[3:])
-        bezier = self.bSpline(self.points[:3], self.socket.vert[:, 2])
+        weights = np.array([1.0, 5.0, 1.0])
+        bPoints = np.array([[0.0, self.points[2]],
+                            [0.5, self.points[1]],
+                            [1.0, self.points[0]]])
+        bezier = self.bSpline(bPoints, weights, self.socket.vert[:, 2])
         self.socket.values[:] = bezier[:, 1] * 8
         self.socket.actor.setValues(self.socket.values)
         self.AmpObj.surrPred(self.points, norm=False)
@@ -75,8 +79,15 @@ class GUI(QMainWindow):
             nodes = p.nodes - cent
             rad = np.sqrt(nodes[:,0]**2 + nodes[:,1]**2)
             the = np.arctan2(nodes[:,1], nodes[:,0])
-            bezier = self.bSpline([1, 1+var[1], 1+var[1]], nodes[p.idx, 2])
-            rad[p.idx] = rad[p.idx] * bezier[:, 1]
+            weights = np.array([1.0, 5.0, 5.0, 1.0])
+            bPoints = np.array([[0.0, 1 + var[1]],
+                                [0.3, 1 + 0.9*var[1]],
+                                [0.6, 1 + 0.2*var[1]],
+                                [1.0, 1 + 0.1*var[1]]])
+            #bezier = self.bSpline(bPoints, weights, nodes[p.idx, 2])
+            bezier = self.bSpline(bPoints, weights, nodes[:, 2])
+            #rad[p.idx] = rad[p.idx] * bezier[:, 1]
+            rad[:] *= bezier[:, 1]
             x = rad * np.cos(the)
             y = rad * np.sin(the)
             nodes[:, 0] = x + cent[0]
@@ -93,6 +104,8 @@ class GUI(QMainWindow):
     def sliders(self):
         variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
                      'Residuum Length', 'Residuum Bulk']
+        labels = [[' 0', '4', '8 '], [' 0', '4', '8 '], [' 0', '4', '8 '],
+                  ['-15', '0', '+15'], ['-15', '0', '+15']]
         values = [0, 0, 0, 50, 50]
 #        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction']
 #        values = [0, 0, 0]
@@ -100,7 +113,7 @@ class GUI(QMainWindow):
         box = QGridLayout()
         self.sliders = []
 
-        for v, (i, t) in zip(values, enumerate(variables)):
+        for lab, v, (i, t) in zip(labels, values, enumerate(variables)):
             tx = QLabel(t)
             tx.setAlignment(Qt.AlignVCenter)
             box.addWidget(tx, i*3, 0, 3, 1)   
@@ -115,20 +128,15 @@ class GUI(QMainWindow):
             self.sliders[-1].setValue(v)
             self.sliders[-1].valueChanged.connect(self.plotPress)
             box.addWidget(self.sliders[-1], i*3, 1, 2, 3)
-            labels = [' 0', '4', '8 ']
             align = [Qt.AlignLeft, Qt.AlignHCenter, Qt.AlignRight]
-            for (j, n), a in zip(enumerate(labels), align):
-                lab = QLabel(n)
+            for (j, l), a in zip(enumerate(lab), align):
+                lab = QLabel(l)
                 lab.setAlignment(a)
                 box.addWidget(lab, (i*3) + 2, j + 1, 1, 1)
         groupBox.setLayout(box)
         return groupBox
     
-    def bSpline(self, var, t):
-        weights = np.array([1.0, 5.0, 1.0])
-        points = np.array([[0.0, var[2]],
-                           [0.5, var[1]],
-                           [1.0, var[0]]])
+    def bSpline(self, points, weights, t):
         zMin = t.min()
         zRange = t.max() - zMin
         t = (t - zMin)/zRange
