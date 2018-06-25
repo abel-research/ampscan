@@ -25,7 +25,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 class GUI(QMainWindow):
     def __init__(self, parent=None):
         super(GUI, self).__init__()
-        self.points = np.zeros([5])
+        self.points = np.zeros([6])
         self.AmpObj = None
         self.redFunc = None
         self.scaleIdx = 0
@@ -54,13 +54,13 @@ class GUI(QMainWindow):
             self.points[i] = s.value()/100
         if self.AmpObj is None:
             return
-        self.scale(self.points[3:])
+        self.scale(self.points[3:5])
         weights = np.array([1.0, 5.0, 1.0])
         bPoints = np.array([[0.0, self.points[2]],
                             [0.5, self.points[1]],
                             [1.0, self.points[0]]])
         bezier = self.bSpline(bPoints, weights, self.socket.vert[:, 2])
-        self.socket.values[:] = bezier[:, 1] * 8
+        self.socket.values[:] = bezier[:, 1] * 6
         self.socket.actor.setValues(self.socket.values)
         self.AmpObj.surrPred(self.points, norm=False)
         self.AmpObj.actor.setValues(self.AmpObj.values)  
@@ -103,10 +103,13 @@ class GUI(QMainWindow):
         
     def sliders(self):
         variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
-                     'Residuum Length', 'Residuum Bulk']
-        labels = [[' 0', '4', '8 '], [' 0', '4', '8 '], [' 0', '4', '8 '],
-                  ['-15', '0', '+15'], ['-15', '0', '+15']]
-        values = [0, 0, 0, 50, 50]
+                     'Residuum Length', 'Residuum Bulk', 'Tissue Stiffness']
+        labels = [[' 0', '3', '6 '], [' 0', '3', '6 '], [' 0', '3', '6 '],
+                  ['-15', '0', '+15'], ['-15', '0', '+15'], ['-10', '0', '+10']]
+        values = [0, 0, 0, 50, 50, 50]
+#        values = values[:5]
+#        labels = labels[:5]
+#        variables = variables[:5]
 #        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction']
 #        values = [0, 0, 0]
         groupBox = QGroupBox('Model Variables')
@@ -167,7 +170,7 @@ class GUI(QMainWindow):
         self.AmpObj.actor.setScalarRange([0, 60])
         self.socket.addActor(CMap=CMap, bands = 128)
         self.socket.actor.setNorm()
-        self.socket.actor.setScalarRange([0, 8])
+        self.socket.actor.setScalarRange([0, 6])
         self.plotPress()
         self.limbRen.renderActors([self.AmpObj.actor], shading=False)
         self.limbRen.setScalarBar(self.AmpObj.actor)
