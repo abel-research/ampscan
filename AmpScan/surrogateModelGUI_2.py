@@ -173,10 +173,10 @@ class GUI(QMainWindow):
         self.socket.actor.setScalarRange([0, 6])
         self.plotPress()
         self.limbRen.renderActors([self.AmpObj.actor], shading=False)
-        self.limbRen.setScalarBar(self.AmpObj.actor)
+        self.limbRen.setScalarBar(self.AmpObj.actor, title='Interfacial\nPressure, kPa')
         self.limbRen.setView()
         self.socketRen.renderActors([self.socket.actor,], shading=False)
-        self.socketRen.setScalarBar(self.socket.actor)
+        self.socketRen.setScalarBar(self.socket.actor, title = 'Socket\nRectification, %')
         self.socketRen.setView()
 
 

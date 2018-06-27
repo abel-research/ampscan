@@ -46,7 +46,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.rens[viewport].ResetCamera()
         self.cams[viewport].Zoom(zoom)
 
-    def setScalarBar(self, actor):
+    def setScalarBar(self, actor, title=''):
         """
         Set scalar bar based upon lookup table
         """
@@ -56,15 +56,24 @@ class vtkRenWin(vtk.vtkRenderWindow):
 #        self.scalar_bar.AnnotationTextScalingOff()
 #        self.scalar_bar.SetTitle('Interfacial Pressure, kPa')
         self.scalar_bar.SetLookupTable(actor.lut)
+        self.scalar_bar.UnconstrainedFontSizeOn()
         self.scalar_bar.SetOrientationToVertical()
-        self.scalar_bar.SetPosition(0.85, 0.15)
+        self.scalar_bar.SetPosition(0.8, 0.15)
         self.scalar_bar.SetPosition2(0.1, 0.7)
+        self.scalar_bar.SetLabelFormat('%-#3.1f')
         self.scalar_bar.GetLabelTextProperty().SetFontFamilyToArial()
         self.scalar_bar.GetLabelTextProperty().BoldOff()
         self.scalar_bar.GetLabelTextProperty().ShadowOff()
         self.scalar_bar.GetLabelTextProperty().SetColor(0, 0, 0)
-        self.scalar_bar.GetLabelTextProperty().SetFontSize(24)
-#        self.scalar_bar.SetTitle('Interfacial Pressure, kPa')
+        self.scalar_bar.GetLabelTextProperty().SetFontSize(18)
+        self.scalar_bar.GetLabelTextProperty().ItalicOff()
+        self.scalar_bar.SetTitle(title)
+        self.scalar_bar.GetTitleTextProperty().SetFontFamilyToArial()
+        self.scalar_bar.GetTitleTextProperty().BoldOff()
+        self.scalar_bar.GetTitleTextProperty().ShadowOff()
+        self.scalar_bar.GetTitleTextProperty().SetColor(0, 0, 0)
+        self.scalar_bar.GetTitleTextProperty().SetFontSize(20)
+        self.scalar_bar.GetTitleTextProperty().ItalicOff()
         self.rens[0].AddActor(self.scalar_bar)
 
     def setView(self, view = [0, -1, 0], viewport=0):
