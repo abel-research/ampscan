@@ -13,3 +13,5 @@ AmpScan/Build
 .ipynb_checkpoints
 ipynb tests/.ipynb_checkpoints
 AmpScan/.ipynb_checkpoints
+
+_build
