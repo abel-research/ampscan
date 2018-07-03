@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{AmpScan Internship Diary}
+\author{Oliver Stocks}
+\date{July 2018}
+
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{dirtree}
+\usepackage{hyperref}
+
+\definecolor{backcolour}{rgb}{0.95, 0.95, 0.95}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\begin{document}
+
+\maketitle
+
+\section{Background}
+\subsection{Development Stack}
+\begin{itemize}
+    \item
+    OS - Windows 10
+    \item
+    Version Control - GIT
+    \item
+    Python Version - 3.6.5 (Anaconda)
+    \item
+    Sphinx Version - 1.7.4
+\end{itemize}
+
+\subsection{Conda Environment}
+A conda environment was used for development as opposed to pip and virtualenv. This was a conscious decision as it fit in with the anaconda workflow far more conveniently - for example, instead of adding Python to path or making a specific version available to the virtual environment I could simply run anacondas built-in prompt and call \lstinline{conda create --name [env name]}. Conda's installation tools and the jupyter development suite are also extremely convenient.
+
+ \subsection{GIT}
+The AmpScan module is hosted on the University of Southamptons GitLab account. As such a University account is required for access to developers. An introduction to Git is not provided here as many such resources exist online (I found \url{http://dont-be-afraid-to-commit.readthedocs.io/en/latest/git/index.html} to be particularly useful).
+
+\section{Documentation: 2/07 - }
+
+\subsection{Setting Up Sphinx}
+Documentation for the project was generated using Python's Sphinx library. Install from the command line using;
+
+\begin{lstlisting}
+conda install -c anaconda sphinx.
+\end{lstlisting}
+
+or if you are not using anaconda;
+
+\begin{lstlisting}[language=Python]
+pip install -U Sphinx
+\end{lstlisting}
+
+The documentation files were created using the built-in command;
+\begin{lstlisting}[language=Python]
+sphinx-quickstart
+\end{lstlisting}
+from inside a new "docs" folder - the choice of name here is not arbitrary as it will later be used by the hosting service. Quickstart asks numerous setup questions. Most of the defaults can be accepted except for \lstinline{autodocs} which defaults to no - we will use this tool later to automatically generate documentation from docstrings - and \lstinline{create .nojekyll} which also defaults to no - only necessary to change because we will have files beginning with an underscore published on github. Note that quickstart was called from within the docs folder. This is worthy of note as it alters the autodocs configuration. The docs directory took on the following structure:
+
+\dirtree{%
+.1 docs. 
+.2 conf.py. 
+.2 index.rst. 
+.2 make.bat. 
+.2 Makefile. 
+.2 \_build. 
+.2 \_static. 
+.2 \_templates. 
+}
+
+The initial documentation files (e.g. Introduction.rst) were created within the docs folder. This can be done quickly from the command line by using \lstinline{echo [some text] > [file name]}. Before generating html files, \lstinline{index.rst} was edited to add the new files to the contents. Here the additional lines "Intro" and "Fordevs" haves been added according to the names of my new files (\lstinline{Intro.rst} and \lstinline{Fordevs.rst}). Note that a blank line must be included \textbf{before} the list of contents:
+
+\begin{verbatim}
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+   Intro
+   Fordevs
+\end{verbatim}
+
+Now using the built-in command;
+
+\begin{lstlisting}[language=Python]
+make html
+\end{lstlisting}
+
+a set of html files are generated within the \lstinline{docs\_build} folder. These can be viewed within a browser session.
+
+\subsection{Autodocs}
+Sphinx provides a built-in tool called autodocs that reads through all the code in a given module and generates documentation from the docstrings. We enabled this during setup although it can be reconfigured by altering \lstinline{conf.py}. Note that in order to create readable documentation, the docstrings must be written in a standard format (discussed in the next section).
+
+First autodocs needs to be configured using the built-in \lstinline{apidocs} tool. The output path should be left within the docs directory (where we call this command) and must be given the name \lstinline{source} (again this is necessary for hosting). The last option attached to apidocs is the directory where the python functions are stored - after cloning this can be found at \lstinline{AmpScan\AmpScan}:
+
+\begin{lstlisting}[language=Python]
+sphinx-apidoc -o source ..\AmpScan
+\end{lstlisting}
+
+ The docs directory now contains a folder called source that contains the .rst files needed to generate autodocs. Calling \lstinline{make html} at this point results in a series of failed import errors. The \lstinline{conf.py} file must be altered to add the directory the python package (Ampscan) to Path. The relevant code can be uncommented from the file and the absolute path specified using double dot notation:
+
+\begin{lstlisting}[language=Python]
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
+\end{lstlisting}
+
+Calling make html at this stage resulted in numerous errors. Inspection of the traceback however indicates that the majority of these errors are a result of incorrectly formatted docstrings - this is to be expected at this stage. A couple of modules (e.g. surrogateModelGui2) were not found, however. It is not entirely clear why this is the case. The remaining modules (including those with incorrect formatting) were rendered successfully as html files in \lstinline{docs\\_build\\html}.
+
+I am continueing under the assumption that correcting the format of the module docstrings will either remove these errors or at least make the issue clearer.
+
+\subsection{Docs Template}
+
+
+\end{document}
