@@ -124,9 +124,16 @@ sys.path.insert(0, os.path.abspath('..'))
 
 Calling make html at this stage resulted in numerous errors. Inspection of the traceback however indicates that the majority of these errors are a result of incorrectly formatted docstrings - this is to be expected at this stage. A couple of modules (e.g. surrogateModelGui2) were not found, however. It is not entirely clear why this is the case. The remaining modules (including those with incorrect formatting) were rendered successfully as html files in \lstinline{docs\\_build\\html}.
 
-I am continueing under the assumption that correcting the format of the module docstrings will either remove these errors or at least make the issue clearer.
+I am continuing under the assumption that correcting the format of the module docstrings will either remove these errors or at least make the issue clearer.
 
 \subsection{Docs Template}
+Numpy provides a sphinx extension called numpydocs that enables formatting of docstrings to the same style as the numpy library. Numpydocs comes presinstalled with anaconda but can be downloaded from PyPi using:
+
+\begin{lstlisting}[language=Python]
+pip install numpydoc
+\end{lstlisting}
+
+An example docstring is provided in the inline documentation - I added this to the \_doctemplates folder in the top level directory with some tweaks to make it more relevant to the project. Copyright infringement may be worth considering before future deployment.
 
 
 \end{document}
