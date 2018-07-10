@@ -124,6 +124,14 @@ AmpScan.surrogateModelGUI\_2 module
     :undoc-members:
     :show-inheritance:
 
+AmpScan.test\_file module
+-------------------------
+
+.. automodule:: AmpScan.test_file
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 AmpScan.trim module
 -------------------
 
