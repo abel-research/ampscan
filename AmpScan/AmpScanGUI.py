@@ -1,10 +1,12 @@
+import os
+os.chdir('..')
 import sys
 import numpy as np
 from vtk.util import numpy_support
-from .core import AmpObject
-from .registration import registration
-from .ampVis import qtVtkWindow
-from .pressSens import pressSense
+from AmpScan.core import AmpObject
+from AmpScan.registration import registration
+from AmpScan.ampVis import qtVtkWindow
+from AmpScan.pressSens import pressSense
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
@@ -151,8 +153,8 @@ class AmpScanGUI(QMainWindow):
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
            
-#if __name__ == "__main__":
-#    app = QApplication(sys.argv)
-#    mainWin = AmpScanGUI()
-#    mainWin.show()
-#    sys.exit(app.exec_())
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    mainWin = AmpScanGUI()
+    mainWin.show()
+    sys.exit(app.exec_())

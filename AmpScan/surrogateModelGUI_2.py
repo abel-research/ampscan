@@ -5,11 +5,10 @@ Created on Tue Oct 10 16:21:12 2017
 @author: js22g12
 """
 
+import os
+os.chdir('..')
 import sys
 import copy
-import os
-os.chdir('C:\\Local\\Documents (Local)\\Code\\AmpScan\\')
-#os.chdir('C:\\Users\\Josh\\Documents\\Python\\AmpScan')
 import numpy as np
 from scipy.special import binom
 from scipy.interpolate import interp1d
