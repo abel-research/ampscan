@@ -143,7 +143,14 @@ I spent some time finding that I could not add changes made to my branch. Change
     }%
 }
 
-...
+\subsection{Autodocs 2}
+The documentation consistently rendered submodules called from within AmpScan modules (those relating to vtk and qt). This is a persistent issue with many modules but for the sake of simplification all those relating to the GUI were chosen to be excluded from apidocs. Sphinx provides an exclude pattern which I implemented as follows:
+
+\begin{lstlisting}[language=Python]
+sphinx-apidoc -f -o source ..\AmpScan C:\... ...\Ampscan\AmpScanGUI.py
+\end{lstlisting}
+
+Note that the exclusion pattern requires an absolute path. The -f option ensures that existing files are replaced.
 
 \subsection{Gitlab Wiki}
 Gitlab provides in built documentation associated with the project...

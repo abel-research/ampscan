@@ -4,14 +4,6 @@ AmpScan package
 Submodules
 ----------
 
-AmpScan.AmpScanGUI module
--------------------------
-
-.. automodule:: AmpScan.AmpScanGUI
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 AmpScan.align module
 --------------------
 
@@ -96,30 +88,6 @@ AmpScan.smooth module
 ---------------------
 
 .. automodule:: AmpScan.smooth
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.socketDesignGUI module
-------------------------------
-
-.. automodule:: AmpScan.socketDesignGUI
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.surrogateModelGUI module
---------------------------------
-
-.. automodule:: AmpScan.surrogateModelGUI
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.surrogateModelGUI\_2 module
------------------------------------
-
-.. automodule:: AmpScan.surrogateModelGUI_2
     :members:
     :undoc-members:
     :show-inheritance:
