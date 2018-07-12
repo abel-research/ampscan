@@ -56,8 +56,8 @@ on the first line, separated by a colon.
 def function_with_types_in_docstring(param1, param2):
     """Example function with types documented in the docstring.
 
-    `PEP 484`_ type annotations are supported. If attribute, parameter, and
-    return types are annotated according to `PEP 484`_, they do not need to be
+    PEP 484 type annotations are supported. If attribute, parameter, and
+    return types are annotated according to PEP 484, they do not need to be
     included in the docstring:
 
     Parameters
@@ -275,11 +275,15 @@ class ExampleClass(object):
         self.attr4 = ["attr4"]
 
         self.attr5 = None
-        """str: Docstring *after* attribute, with type specified."""
+        """str: Docstring *after* attribute, with type specified.
+
+        """
 
     @property
     def readonly_property(self):
-        """str: Properties should be documented in their getter method."""
+        """str: Properties should be documented in their getter method.
+
+        """
         return "readonly_property"
 
     @property
@@ -289,6 +293,7 @@ class ExampleClass(object):
 
         If the setter method contains notable behavior, it should be
         mentioned here.
+
         """
         return ["readwrite_property"]
 

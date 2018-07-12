@@ -16,7 +16,9 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
 class vtkRenWin(vtk.vtkRenderWindow):
-    
+    """
+    Sample docstring to see what's what...
+    """
     def __init__(self):
         super(vtkRenWin, self).__init__()
         self.rens = [vtk.vtkRenderer(),]

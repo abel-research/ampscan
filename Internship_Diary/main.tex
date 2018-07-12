@@ -152,7 +152,57 @@ sphinx-apidoc -f -o source ..\AmpScan C:\... ...\Ampscan\AmpScanGUI.py
 
 Note that the exclusion pattern requires an absolute path. The -f option ensures that existing files are replaced.
 
+Align.py has a sample docstring to observe whether or not it is all correctly rendering. Maths was not rendering in html so I added ingmath to the conf.py extensions. The package was not recognised so I used mathjax instead - this worked fine. Error count has dropped to 4836.
+
 \subsection{Gitlab Wiki}
 Gitlab provides in built documentation associated with the project...
+
+\subsection{Autodocs 3}
+To resolve the autodocumentation, a debugging workflow was conceived:
+
+\begin{itemize}
+	\item
+	Run autodocs with all modules excluded except for the one of interest.
+	\item
+	Solve errors associated with that module.
+	\item
+	Repeat the first step but with the inclusion of a new module of interest.
+	\item
+	Continue incrementally until all modules are correctly documented or ignored.
+
+\end{itemize}
+
+\subsubsection{align.py}
+
+Traceback 1:
+
+\begin{lstlisting}[language=Python]
+docstring of AmpScan.align.align:11: WARNING: Block quote ends without a blank line; unexpected unindent.
+\end{lstlisting}
+
+Solution:
+
+	Prepending \lstinline{r} to the the block quotes in question to give \lstinline{r"""}. This converts the docstring into a raw string.
+
+
+Traceback 2:
+
+\begin{lstlisting}[language=Python]
+WARNING: toctree references unknown document 'source/AmpScan.test_file_2.ExampleClass.example_method
+\end{lstlisting}
+
+Solution:
+
+Despite returning 4 warnings associated with example\_method, the submodule renders fully in the documentation. As such these warnings are ignored as debugging proceeds.
+
+Traceback 3:
+
+\begin{lstlisting} [language=Python]
+WARNING: html_static_path entry 'C:\\Users\\Oliver\\Documents\\Internship-1718\\AMPSCAN\\docs\\_static' does not exist
+\end{lstlisting}
+
+Solution:
+
+A \_static file containing css templates does exist in docs\\\_build\\html but sphinx looks for it in docs. I copied the file to this location and the error went away.
 
 \end{document}
