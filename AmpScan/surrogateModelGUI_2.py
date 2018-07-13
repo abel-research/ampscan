@@ -22,6 +22,10 @@ from PyQt5.QtCore import pyqtSignal, Qt
 
 
 class GUI(QMainWindow):
+    """
+    Numpy style docstring
+
+    """
     def __init__(self, parent=None):
         super(GUI, self).__init__()
         self.points = np.zeros([6])
@@ -49,6 +53,10 @@ class GUI(QMainWindow):
         self.show()
 
     def plotPress(self):
+        """
+        Numpy style docstring
+
+        """
         for i, s in enumerate(self.sliders):
             self.points[i] = s.value()/100
         if self.AmpObj is None:
@@ -67,6 +75,10 @@ class GUI(QMainWindow):
         self.socketRen.Render()
     
     def scale(self, var):
+        """
+        Numpy style docstring
+
+        """
         var = (var * 0.3) - 0.15
         cent = [85.93, 75.53, 0.0]
         height = 150.0
@@ -101,6 +113,10 @@ class GUI(QMainWindow):
         
         
     def sliders(self):
+        """
+        Numpy style docstring
+
+        """
         variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
                      'Residuum Length', 'Residuum Bulk', 'Tissue Stiffness']
         labels = [[' 0', '3', '6 '], [' 0', '3', '6 '], [' 0', '3', '6 '],
@@ -180,6 +196,10 @@ class GUI(QMainWindow):
 
 
     def createActions(self):
+        """
+        Numpy style docstring
+
+        """
         self.openFile = QAction(QIcon('open.png'), 'Open', self,
                                 shortcut='Ctrl+O',
                                 triggered=self.chooseOpenFile)

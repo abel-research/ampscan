@@ -20,6 +20,10 @@ mpl.rcParams['xtick.labelsize'] = 15
 mpl.rcParams['ytick.labelsize'] = 15
 
 class socketDesignMixin(object):
+    """
+    Numpy style docstring
+
+    """
 
     def TSBSocket(self, B, stype=0):
         rho = np.sqrt(self.vert[:, 0]**2 + self.vert[:,1]**2)
@@ -32,7 +36,10 @@ class socketDesignMixin(object):
 
 
 class mplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+    """
+    Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.).
+
+    """
 
     def __init__(self, parent=None, width=8, height=5, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
@@ -55,6 +62,10 @@ class mplCanvas(FigureCanvas):
 
 
 class dragSpline(mplCanvas):
+    """
+    Numpy style docstring
+
+    """
 
     lock = None  #only one can be animated at a time
 
