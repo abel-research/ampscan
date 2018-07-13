@@ -4,6 +4,14 @@ AmpScan package
 Submodules
 ----------
 
+AmpScan.AmpScanGUI module
+-------------------------
+
+.. automodule:: AmpScan.AmpScanGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 AmpScan.align module
 --------------------
 
