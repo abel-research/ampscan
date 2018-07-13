@@ -20,10 +20,26 @@ AmpScan.align module
     :undoc-members:
     :show-inheritance:
 
+AmpScan.ampVis module
+---------------------
+
+.. automodule:: AmpScan.ampVis
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 AmpScan.analyse module
 ----------------------
 
 .. automodule:: AmpScan.analyse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.core module
+-------------------
+
+.. automodule:: AmpScan.core
     :members:
     :undoc-members:
     :show-inheritance:
