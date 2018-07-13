@@ -12,18 +12,10 @@ AmpScan.align module
     :undoc-members:
     :show-inheritance:
 
-AmpScan.test\_file module
--------------------------
+AmpScan.analyse module
+----------------------
 
-.. automodule:: AmpScan.test_file
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.test\_file\_2 module
-----------------------------
-
-.. automodule:: AmpScan.test_file_2
+.. automodule:: AmpScan.analyse
     :members:
     :undoc-members:
     :show-inheritance:
