@@ -76,6 +76,14 @@ AmpScan.smooth module
     :undoc-members:
     :show-inheritance:
 
+AmpScan.socketDesignGUI module
+------------------------------
+
+.. automodule:: AmpScan.socketDesignGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

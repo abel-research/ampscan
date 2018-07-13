@@ -17,6 +17,10 @@ from PyQt5.QtCore import pyqtSignal
 
 
 class GUI(QMainWindow):
+    """
+    Generates and handles a GUI for socket design.
+
+    """
     mplChange = pyqtSignal()
     def __init__(self, parent=None):
         super(GUI, self).__init__()
@@ -41,6 +45,10 @@ class GUI(QMainWindow):
         self.show()
 
     def plotRect(self):
+        """
+        A method within...
+
+        """
         if self.AmpObj is None:
             return
         self.AmpObj.TSBSocket(self.splineWin.B, stype='reglimb')
@@ -69,8 +77,16 @@ class GUI(QMainWindow):
 
 
 def socketDesignGUI():
+    """
+    Random empty method... ?
+
+    """
+    pass
+#
+#section below commented out by Oliver Stocks 13/7/18 (first line alreaedy commented)
+#
 #    if __name__ == "__main__":
-        app = QApplication(sys.argv)
-        mainWin = GUI()
-        mainWin.show()
-        sys.exit(app.exec_())
+#        app = QApplication(sys.argv)
+#        mainWin = GUI()
+#        mainWin.show()
+#        sys.exit(app.exec_())
