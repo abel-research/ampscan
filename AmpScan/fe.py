@@ -9,8 +9,16 @@ import numpy as np
 from numpy.linalg import solve
 
 class feMixin(object):
+    """
+    Finite element docstring.
+
+    """
     
     def addFE(self, files):
+        """
+        Numpy style docstring
+
+        """
         if len(files) == 1:
             data = np.load(files[0], encoding='bytes').item()
             for k in list(data.keys()):
@@ -26,6 +34,10 @@ class feMixin(object):
         
         
     def getSurf(self):
+        """
+        Numpy style docstring
+
+        """
         # Find verts with a pressure value for external surface
         valInd = self.values[:, 0].astype(int)
         # Find faces in array 
@@ -46,16 +58,22 @@ class feMixin(object):
     def calcPPI(self):
         """
         Function to calculate the peak pressure indicies
+
         """
         self.values
     
     def calcGradients(self):
         """
         Function to calculate the gradients in values along z and theta
+
         """
         np.gradient(self.values)
     
     def addSurrogate(self, dat, theta=True):
+        """
+        Numpy style docstring
+
+        """
         if isinstance(dat, str):
             self.surrogate = np.load(dat).item()
         else:
@@ -65,6 +83,10 @@ class feMixin(object):
             self.surrogate['sm_theta'] = 10 ** self.surrogate['sm_theta']
 
     def surrPred(self, x, norm = True):
+        """
+        Numpy style docstring
+
+        """
         surr = self.surrogate
         sh = surr['sm_U'].shape
         one = np.ones(sh[0])
@@ -85,4 +107,8 @@ class feMixin(object):
     
     @staticmethod
     def comp(a, b):
+        """
+        Numpy style docstring
+
+        """
         return solve(np.dot(a.T, a), np.dot(a.T, b))

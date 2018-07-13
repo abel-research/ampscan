@@ -230,4 +230,16 @@ Solution:
 
 Napoleon (sphinx support for numpy or google docstrings) only recognises a specific subset of headings of which "Bug" is not one. Allowed headings are outlined here; \url{http://www.sphinx-doc.org/en/stable/ext/napoleon.html}. I changed the offending section to "Note" which rendered fine.
 
+Traceback 6:
+
+\begin{lstlisting}[language=Python]
+WARNING: autodoc: failed to import module 'AmpScan.cython_ext'; the following exception was raised:
+No module named 'AmpScan.cython_ext'
+\end{lstlisting}
+
+Solution:
+
+This warning occured despite cython\_ext not being included. This occurred due to human error - I removed the 'x' from the '.pyx' when calling the exclude path in apidocs. Adding this solved the issue.
+
 \end{document}
+
