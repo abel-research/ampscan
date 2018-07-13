@@ -19,6 +19,3 @@ _build
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
 *.ipynb_checkpoints
-
-AmpScan/AmpScanGUI.py
-AmpScan/runAmpScanGUI.py

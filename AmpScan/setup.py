@@ -3,6 +3,7 @@
 Created on Tue Mar 27 15:54:27 2018
 
 @author: js22g12
+Note that this file does not need to be documented.
 """
 
 from distutils.core import setup
