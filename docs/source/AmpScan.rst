@@ -44,6 +44,30 @@ AmpScan.core module
     :undoc-members:
     :show-inheritance:
 
+AmpScan.fe module
+-----------------
+
+.. automodule:: AmpScan.fe
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.pressSens module
+------------------------
+
+.. automodule:: AmpScan.pressSens
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.registration module
+---------------------------
+
+.. automodule:: AmpScan.registration
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
