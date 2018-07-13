@@ -84,6 +84,10 @@ class AmpScanGUI(QMainWindow):
         self.socket.lp_smooth()
         
     def align(self):
+        """
+        Numpy style docstring.
+
+        """
         self.renWin.setnumViewports(2)
         self.renWin.setView(view=[-1, 0, 0], viewport=1)
         self.renWin.setProjection(True, 0)
@@ -101,6 +105,11 @@ class AmpScanGUI(QMainWindow):
         self.socket.actor.setOpacity(0.5)
         
     def register(self):
+        """
+        Numpy style docstring.
+
+        """
+        
         self.renWin.setnumViewports(1)
         self.renWin.setProjection()
         self.RegObj = registration(self.socket, self.AmpObj)
@@ -109,6 +118,11 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.RegObj.actor)
     
     def analyse(self):
+        """
+        Numpy style docstring.
+
+        """
+
         #self.RegObj.plot_slices()
         self.AmpObj.vert[:, 0] *= 2
         self.AmpObj.actor.points.Modified()
@@ -117,6 +131,10 @@ class AmpScanGUI(QMainWindow):
         #self.AmpObj._v = numpy_support.numpy_to_vtk(self.AmpObj.vert)
 
     def chooseFE(self):
+        """
+        Numpy style docstring.
+
+        """
         FEname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="FE results (*.npy)")
         self.renWin.setnumViewports(1)
@@ -128,6 +146,10 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.FE.actor)
         
     def choosePress(self):
+        """
+        Numpy style docstring.
+
+        """
         vName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor vertices (*.csv)")
         pName = QFileDialog.getOpenFileName(self, 'Open file',
@@ -145,6 +167,10 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.AmpObj.actors['antS'])
         
     def createActions(self):
+        """
+        Numpy style docstring.
+
+        """
         self.openFile = QAction(QIcon('open.png'), 'Open', self,
                                 shortcut='Ctrl+O',
                                 triggered=self.chooseOpenFile)
@@ -164,6 +190,10 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.analyse)
 
     def createMenus(self):
+        """
+        Numpy style docstring.
+
+        """
         self.fileMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openFile)
         self.fileMenu.addAction(self.openSocket)
