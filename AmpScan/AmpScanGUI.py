@@ -17,6 +17,18 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
 
         
 class AmpScanGUI(QMainWindow):
+    """
+    Generates an GUI for handling stl data. Window is derived from QT.
+    
+    More detailed description...
+    
+    Example
+    -------
+    Perhaps an example implementation:
+
+    >>> from AmpScan.AmpScanGUI import AmpScanGUI
+
+    """
 
     def __init__(self, parent = None):
         super(AmpScanGUI, self).__init__()
@@ -38,6 +50,17 @@ class AmpScanGUI(QMainWindow):
         self.show()
         
     def chooseOpenFile(self):
+        """
+        Handles importing of stls into the GUI.
+        
+        More writing...
+
+        Note
+        ----
+
+        @Josh_Steer if no stl is selected then the window crashes!
+
+        """
         self.fname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
         if self.AmpObj is not None:
@@ -50,6 +73,10 @@ class AmpScanGUI(QMainWindow):
         self.renWin.renderActors([self.AmpObj.actor,])
         
     def chooseSocket(self):
+        """
+        Button in GUI.
+
+        """
         self.sockfname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
         self.socket = AmpObject(self.sockfname[0], stype='socket')

@@ -205,7 +205,7 @@ Solution:
 
 A \_static file containing css templates does exist in docs\_build\\html but sphinx looks for it in docs. I copied the file to this location and the error went away.
 
-Tracback 4:
+Traceback 4:
 
 \begin{lstlisting}[language=Python]
 WARNING: toctree references unknown document 'source/AmpScan.analyse.analyseMixin.create_slices
@@ -217,5 +217,17 @@ Solution:
 
 'numpydoc' was removed from the extension list and replaced with 'sphinx.ext.napoleon'.
 
+Traceback 5:
+
+\begin{lstlisting}[language=Python]
+WARNING: Unexpected section title.
+
+Bug
+---
+\end{lstlisting}
+
+Solution:
+
+Napoleon (sphinx support for numpy or google docstrings) only recognises a specific subset of headings of which "Bug" is not one. Allowed headings are outlined here; \url{http://www.sphinx-doc.org/en/stable/ext/napoleon.html}. I changed the offending section to "Note" which rendered fine.
 
 \end{document}
