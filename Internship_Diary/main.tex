@@ -203,6 +203,19 @@ WARNING: html_static_path entry 'C:\\Users\\Oliver\\Documents\\Internship-1718\\
 
 Solution:
 
-A \_static file containing css templates does exist in docs\\\_build\\html but sphinx looks for it in docs. I copied the file to this location and the error went away.
+A \_static file containing css templates does exist in docs\_build\\html but sphinx looks for it in docs. I copied the file to this location and the error went away.
+
+Tracback 4:
+
+\begin{lstlisting}[language=Python]
+WARNING: toctree references unknown document 'source/AmpScan.analyse.analyseMixin.create_slices
+\end{lstlisting}
+
+9 warnings of this type were generated.
+
+Solution:
+
+'numpydoc' was removed from the extension list and replaced with 'sphinx.ext.napoleon'.
+
 
 \end{document}
