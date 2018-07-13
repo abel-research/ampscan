@@ -84,6 +84,38 @@ AmpScan.socketDesignGUI module
     :undoc-members:
     :show-inheritance:
 
+AmpScan.surrogateModelGUI module
+--------------------------------
+
+.. automodule:: AmpScan.surrogateModelGUI
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.surrogateModelGUI\_2 module
+-----------------------------------
+
+.. automodule:: AmpScan.surrogateModelGUI_2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.trim module
+-------------------
+
+.. automodule:: AmpScan.trim
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.tsbSocketDesign module
+------------------------------
+
+.. automodule:: AmpScan.tsbSocketDesign
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------
