@@ -1,4 +1,4 @@
-"""This is the docstring for the example.py module.  Modules names should
+"""This is the docstring for the numpyDocsTemp.py module.  Modules names should
 have short, all-lowercase names.  The module name may have underscores if
 this improves readability.
 
