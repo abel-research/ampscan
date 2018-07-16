@@ -12,6 +12,7 @@ Welcome to AmpScan's documentation!
 
    Intro
    Fordevs
+   Examples
 
 
 Indices and tables
