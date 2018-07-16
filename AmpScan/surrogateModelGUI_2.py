@@ -113,21 +113,15 @@ class GUI(QMainWindow):
         
         
     def sliders(self):
-<<<<<<< Updated upstream
         """
         Numpy style docstring
 
         """
-        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
-                     'Residuum Length', 'Residuum Bulk', 'Tissue Stiffness']
-        labels = [[' 0', '3', '6 '], [' 0', '3', '6 '], [' 0', '3', '6 '],
-                  ['-15', '0', '+15'], ['-15', '0', '+15'], ['-10', '0', '+10']]
-=======
         variables = ['Proximal Reduction, %', 'Mid Reduction, %', 'Distal Reduction, %',
                      'Residuum Length, %', 'Residuum Bulk, %', 'Tissue Stiffness, kPa']
         labels = [['0', '3', '6'], ['0', '3', '6'], ['0', '3', '6'],
                   ['-15', '0', '+15'], ['-15', '0', '+15'], ['30', '55', '80']]
->>>>>>> Stashed changes
+
         values = [0, 0, 0, 50, 50, 50]
 #        values = values[:5]
 #        labels = labels[:5]
