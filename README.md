@@ -19,7 +19,7 @@ the make process - this is expected and can be ignored.
 
 ## How to acknowledge
 
-Alex Dickinson, Alex Steer: Find license [here](../LICENSE)
+Alex Dickinson, Joshua Steer: Find license [here](../LICENSE)
 
 ## Structure
 
