@@ -7,7 +7,8 @@ Would be nice to have a "Hello AmpScan" type function described here.
 ## Building Docs Locally
 
 The documentation was generated using [Sphinx](http://www.sphinx-doc.org/en/master/index.html) which provides 
-a [makefile](../docs/Makefile). This enables documentation to be generated with a single command.
+a [makefile](../docs/Makefile). This enables documentation to be generated with a single command (`make html`). Makefile should not 
+be altered.
 
 1. Clone the repository onto your local machine.
 2. Open a command prompt (anaconda) in the docs directory.
@@ -15,3 +16,7 @@ a [makefile](../docs/Makefile). This enables documentation to be generated with 
 
 The documentation files will be generated in docs/_build/html. Note that one error should be produced during 
 the make process - this is expected and can be ignored.
+
+## How to acknowledge
+
+Alex Dickinson, Alex Steer: Find license [here](../LICENSE)
