@@ -16,6 +16,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+
 # -- Project information -----------------------------------------------------
 
 project = 'AmpScan'
@@ -160,6 +161,18 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
+
+#MOCK_MODULES = ["AmpScan.cython_ext"]
+#
+#class Mock(object):
+#    def __init__(self, *args):
+#        pass
+#
+#    def __getattr__(self, name):
+#        return Mock
+#
+#for mod_name in MOCK_MODULES:
+#    sys.modules[mod_name] = Mock()
 
 # -- Options for todo extension ----------------------------------------------
 
