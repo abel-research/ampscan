@@ -103,3 +103,17 @@ Alex Dickinson, Alex Steer: Find license [here](../LICENSE)
     		vtkRW
     		ampObjects
     	methods
+    	
+## Example
+
+```Python
+import AmpScan as amps
+import AmpScan.align as aa
+import AmpScan.registration as ar
+
+baseline = amps.AmpObj(fname1, stype='limb')
+target = amps.AmpObj(fname2, stype='socket')
+aligned = amps.align(baseline, target, method='ICP')
+register = amps.register(baseline, aligned, method='')
+feResult = amps.AmpObj(fname3, stype='FE')
+```
