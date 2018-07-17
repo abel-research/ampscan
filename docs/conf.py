@@ -18,8 +18,8 @@ sys.path.insert(0, os.path.abspath('..'))
 
 import mock
  
-MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk.util', 'PyQt5.QtCore', PyQt5.QtGui',
-		'PyQt5.QtGui', 'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt']
+MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk.util', 'PyQt5.QtCore', 'PyQt5.QtGui',
+		        'PyQt5.QtGui', 'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt']
 
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
