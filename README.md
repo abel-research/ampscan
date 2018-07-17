@@ -16,3 +16,7 @@ be altered.
 
 The documentation files will be generated in docs/_build/html. Note that one error should be produced during 
 the make process - this is expected and can be ignored.
+
+## How to acknowledge
+
+Alex Dickinson, Alex Steer
