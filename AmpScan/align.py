@@ -129,7 +129,7 @@ def align(moving, static, method = 'P2P'):
 
 def rotMatrix(R, ang='rad'):
     r"""
-    Needs desc @josh_steer
+    Calculate the rotation matrix around 
 
     """
     if ang == 'deg':
