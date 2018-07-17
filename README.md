@@ -106,7 +106,7 @@ Alex Dickinson, Alex Steer: Find license [here](../LICENSE)
     	
 ## Example
 
-```Python
+```python
 import AmpScan as amps
 import AmpScan.align as aa
 import AmpScan.registration as ar
