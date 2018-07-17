@@ -16,8 +16,13 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-import mock
- 
+from unittest.mock import MagicMock
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
 MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
 		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
 		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
@@ -26,6 +31,8 @@ MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util',
 		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
 		'matplotlib.figure', 
 		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
