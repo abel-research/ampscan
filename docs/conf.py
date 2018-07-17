@@ -16,6 +16,12 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+import unittest.mock
+ 
+MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'matplotlib.pyplot', 'scipy.interpolate']
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = unittest.mock.Mock()
+
 
 # -- Project information -----------------------------------------------------
 
