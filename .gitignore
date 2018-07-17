@@ -19,3 +19,6 @@ _build
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
 *.ipynb_checkpoints
+
+local example files
+local ipynb tests
