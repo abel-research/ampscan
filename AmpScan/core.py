@@ -22,8 +22,21 @@ from .tsbSocketDesign import socketDesignMixin
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, 
                 visMixin, feMixin, socketDesignMixin):
-    """
-    Numpy style docstring.
+    r"""
+    Base class for the AmpScan project.
+    Stores mesh data and extra information 
+    Inherits methods via mixins
+    Flexible class able to deal with surface data using 3 or 4 node faces and 
+    visualise nodal data such as FEA outputs or shape deviations
+    
+    Parameters
+    ----------
+    data : str or dict
+        Data input as either a string to import from an external file or a 
+        dictionary to pull values directly
+    stype : str, optional
+        descriptor of the type of data the AmpObject is representing, e.g 'FE',
+        'limb' or 'socket'. Default is 'limb'
 
     """
 
