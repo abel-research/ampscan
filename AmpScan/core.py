@@ -22,9 +22,26 @@ from .tsbSocketDesign import socketDesignMixin
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, 
                 visMixin, feMixin, socketDesignMixin):
-    """
-    Numpy style docstring.
-
+    r"""
+    Base class for the AmpScan project.
+    Stores mesh data and extra information 
+    Inherits methods via mixins
+    Flexible class able to deal with surface data using 3 or 4 node faces and 
+    visualise nodal data such as FEA outputs or shape deviations
+    
+    Parameters
+    ----------
+    data : str or dict
+        Data input as either a string to import from an external file or a 
+        dictionary to pull values directly
+    stype : str, optional
+        descriptor of the type of data the AmpObject is representing, e.g 'FE',
+        'limb' or 'socket'. Default is 'limb'
+    
+    Returns
+    -------
+    AmpObject
+        Initiation of the object
     """
 
     def __init__(self, data=None, stype='limb'):
@@ -70,8 +87,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             file path of the .stl file to read 
         unify: boolean, default True
             unify the coincident vertices of each face
-        edges: boolean, default True
-            calculate the edges array automatically
 
         """
         fh = open(filename, 'rb')
@@ -130,16 +145,13 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
 
     def calcEdges(self):
         """
-        Function to compute the edges array, the edges on each face, 
-        and the faces on each edge
-
-        edges: numpy array N x 2 denotes the indicies of two vertices 
-            on each edge
-        edgesFace: numpy array N x 3 denotes the indicies of the three edges 
-            on each face
-        faceEdges: numpy array N x 2 denotes the indicies of the faces in each 
-            edge, edges may have either 1 or 2 faces, if 1 then the second 
-            index will be NaN
+        Function to compute the edges array ie the index of the two vertices
+        that make up each edge
+        
+        Returns
+        -------
+        edges: ndarray
+            Denoting the indicies of two vertices on each edge
 
         """
         # Get edges array
@@ -149,6 +161,16 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.edges, indC = np.unique(self.edges, return_inverse=True, axis=0)
 
     def calcEdgeFaces(self):
+        r"""
+        Function that calculates the indicies of the three edges that make up
+        each face 
+        
+        Returns
+        -------
+        edgesFace: ndarray
+            Denoting the indicies of the three edges on each face
+        
+        """
         edges = np.reshape(self.faces[:, [0, 1, 0, 2, 1, 2]], [-1, 2])
         edges = np.sort(edges, 1)
         # Unify the edges
@@ -159,6 +181,16 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.edgesFace = indC[self.edgesFace].astype(np.int32)
 
     def calcFaceEdges(self):
+        r"""
+        Function that calculates the indicies of the faces on each edge
+        
+        Returns
+        -------
+        faceEdges: ndarray
+            The indicies of the faces in each edge, edges may have either 
+            1 or 2 faces, if 1 then the second index will be NaN
+
+        """
         #Initiate the faceEdges array
         self.faceEdges = np.empty([len(self.edges), 2], dtype=np.int32)
         self.faceEdges.fill(-99999)
@@ -174,8 +206,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         
 
     def calcNorm(self):
-        """
+        r"""
         Calculate the normal of each face of the AmpObj
+        
+        Returns
+        -------
+        
+        norm: ndarray
+            normal of each face
 
         """
         norms = np.cross(self.vert[self.faces[:,1]] -
@@ -229,30 +267,43 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         fh.close()
 
     def translate(self, trans):
-        """
+        r"""
         Translate the AmpObj in 3D space
 
         Parameters
         -----------
-        trans: array-like
-            1x3 array of the tranlation in [x, y, z]
+        trans: array_like
+            Translation in [x, y, z]
 
         """
         self.vert[:] += trans
 
     def centre(self):
-        """
+        r"""
         Centre the AmpObj based upon the mean of all the vertices
 
         """
         self.translate(-self.vert.mean(axis=0))
     
     def rotate(self, rot, ang='rad'):
+        r"""
+        Rotate the AmpObj in 3D space
+
+        Parameters
+        -----------
+        rot: array_like
+            Rotation around [x, y, z]
+        ang: str, optional
+            Specify if the euler angles are in degrees or radians. 
+            Default is radians
+
+        """
         R = rotMatrix(rot, ang)
         self.vert[:, :] = np.dot(self.vert, np.transpose(R))
 
     def man_rot(self, rot):
         """
+        DEPRECIATED
         Rotate the AmpObj in 3D space and re-calculate the normals 
         
         Parameters
