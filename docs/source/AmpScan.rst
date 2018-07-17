@@ -44,14 +44,6 @@ AmpScan.core module
     :undoc-members:
     :show-inheritance:
 
-AmpScan.cython\_ext module
---------------------------
-
-.. automodule:: AmpScan.cython_ext
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 AmpScan.fe module
 -----------------
 
@@ -72,22 +64,6 @@ AmpScan.registration module
 ---------------------------
 
 .. automodule:: AmpScan.registration
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.runAmpScanGUI module
-----------------------------
-
-.. automodule:: AmpScan.runAmpScanGUI
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.setup module
---------------------
-
-.. automodule:: AmpScan.setup
     :members:
     :undoc-members:
     :show-inheritance:
@@ -120,22 +96,6 @@ AmpScan.surrogateModelGUI\_2 module
 -----------------------------------
 
 .. automodule:: AmpScan.surrogateModelGUI_2
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.test\_file module
--------------------------
-
-.. automodule:: AmpScan.test_file
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.test\_file\_2 module
-----------------------------
-
-.. automodule:: AmpScan.test_file_2
     :members:
     :undoc-members:
     :show-inheritance:

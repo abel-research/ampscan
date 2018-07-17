@@ -17,6 +17,10 @@ from PyQt5.QtCore import pyqtSignal
 
 
 class GUI(QMainWindow):
+    """
+    Numpy style docstring
+
+    """
     mplChange = pyqtSignal()
     def __init__(self, parent=None):
         super(GUI, self).__init__()
@@ -40,6 +44,10 @@ class GUI(QMainWindow):
         self.show()
 
     def plotPress(self):
+        """
+        Numpy style docstring
+
+        """
         if self.AmpObj is None:
             return
         points = self.splineWin.points[:, 1]/8.0

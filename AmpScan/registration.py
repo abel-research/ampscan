@@ -9,51 +9,51 @@ import pandas as pd
 import copy
 from scipy import spatial
 from .core import AmpObject
-"""
-import os
-path = ('J:\\Shared Resources\\AmpScan IfLS Team\\'
-        '100 PYTHON\\STLReader')
-filename = '01_PhantomShell_ICEM_3mm.stl'
-filename2 = '01_PhantomShell_ICEM_3mm_write.stl'
-baseline = 'B_PTB.stl'
-target = 'B_NormalLiner.stl'
-os.chdir(path)
-ampObj = AmpObject(filename)
-regObj = regObject(ampObj)
-ampObj.vert.loc[0,:]
-regObj.vert.loc[0,:]
-ampObj.icp()
-regObj.icp()
-regObj.registration()
-ampObj.registration()
 
-Data = AmpObject(target)
-Data.getBaseline(baseline)
-Reg = regObject(Data)
-Reg.reg_fast()
+#"""
+#import os
+#path = ('J:\\Shared Resources\\AmpScan IfLS Team\\'
+#        '100 PYTHON\\STLReader')
+#filename = '01_PhantomShell_ICEM_3mm.stl'
+#filename2 = '01_PhantomShell_ICEM_3mm_write.stl'
+#baseline = 'B_PTB.stl'
+#target = 'B_NormalLiner.stl'
+#os.chdir(path)
+#ampObj = AmpObject(filename)
+#regObj = regObject(ampObj)
+#ampObj.vert.loc[0,:]
+#regObj.vert.loc[0,:]
+#ampObj.icp()
+#regObj.icp()
+#regObj.registration()
+#ampObj.registration()
 
-
-Use mesh object as parent class with standard function
-and then inherit for all other classes ie socket, residuum, registered
-Either create from filename, object or fv
-
-Standard functions:
-    Rotation 
-    Translation 
-    Read 
-    Write 
-    Normals
-    Slice analyse
-Child classes:
-    Residuum
-    Socket
-    Registration (Target)
-    Soft tissue mesh (Bones, Liner)
-    FE mesh 
-"""
+#Data = AmpObject(target)
+#Data.getBaseline(baseline)
+#Reg = regObject(Data)
+#Reg.reg_fast()
+#
+#
+#Use mesh object as parent class with standard function
+#and then inherit for all other classes ie socket, residuum, registered
+#Either create from filename, object or fv
+#
+#Standard functions:
+#    Rotation 
+#    Translation 
+#    Read 
+#    Write 
+#    Normals
+#    Slice analyse
+#Child classes:
+#    Residuum
+#    Socket
+#    Registration (Target)
+#    Soft tissue mesh (Bones, Liner)
+#    FE mesh 
+#"""
 
 def registration(baseline, target, method='default', steps=5, direct=True):
-    
     """
     Function to register the regObject to the baseline mesh
     
@@ -88,6 +88,10 @@ def registration(baseline, target, method='default', steps=5, direct=True):
     regObj = AmpObject(bData, stype='reg')
     
     def calcError(baseline, regObj, direct=True):
+        """
+        A function within a function will not be documented
+
+        """
         if direct is True:
             values = np.linalg.norm(regObj.vert - baseline.vert, axis=1)
             # Calculate the unit vector normal between corresponding vertices

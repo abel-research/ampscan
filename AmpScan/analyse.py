@@ -14,8 +14,16 @@ from collections import defaultdict
 
 
 class analyseMixin(object):
+    """
+    Desc needed.
+
+    """
 
     def plot_slices(self, axis='Z', slWidth=10, stype=0):
+        """
+        method desc needed
+
+        """
         # Find the brim edges 
         ind = np.where(self.faceEdges[:,1] == -99999)
         # Define max Z from lowest point on brim
@@ -65,6 +73,10 @@ class analyseMixin(object):
         
     @staticmethod
     def create_slices(self, slices, axis='Z'):
+        """
+        static method desc needed.
+
+        """
         vE = self.vert[:,2][self.edges]
         # Find all vertices below plane 
         polys = []
@@ -112,6 +124,18 @@ class analyseMixin(object):
         return polys
     
     def create_slices_cy(self, slices, axis='Z'):
+        """
+        Another method desc.
+        
+        Attributes
+        ----------
+        
+        slices : array
+            Probably not array
+        axis : arg
+            defaults to Z
+
+        """
         vE = self.vert[:,2][self.edges]
         # Find all vertices below plane 
         polys = []

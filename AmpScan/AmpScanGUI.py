@@ -17,6 +17,18 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
 
         
 class AmpScanGUI(QMainWindow):
+    """
+    Generates an GUI for handling stl data. Window is derived from QT.
+    
+    More detailed description...
+    
+    Example
+    -------
+    Perhaps an example implementation:
+
+    >>> from AmpScan.AmpScanGUI import AmpScanGUI
+
+    """
 
     def __init__(self, parent = None):
         super(AmpScanGUI, self).__init__()
@@ -38,6 +50,17 @@ class AmpScanGUI(QMainWindow):
         self.show()
         
     def chooseOpenFile(self):
+        """
+        Handles importing of stls into the GUI.
+        
+        More writing...
+
+        Note
+        ----
+
+        @Josh_Steer if no stl is selected then the window crashes!
+
+        """
         self.fname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
         if self.AmpObj is not None:
@@ -50,6 +73,10 @@ class AmpScanGUI(QMainWindow):
         self.renWin.renderActors([self.AmpObj.actor,])
         
     def chooseSocket(self):
+        """
+        Button in GUI.
+
+        """
         self.sockfname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
         self.socket = AmpObject(self.sockfname[0], stype='socket')
@@ -57,6 +84,10 @@ class AmpScanGUI(QMainWindow):
         self.socket.lp_smooth()
         
     def align(self):
+        """
+        Numpy style docstring.
+
+        """
         self.renWin.setnumViewports(2)
         self.renWin.setView(view=[-1, 0, 0], viewport=1)
         self.renWin.setProjection(True, 0)
@@ -74,6 +105,11 @@ class AmpScanGUI(QMainWindow):
         self.socket.actor.setOpacity(0.5)
         
     def register(self):
+        """
+        Numpy style docstring.
+
+        """
+        
         self.renWin.setnumViewports(1)
         self.renWin.setProjection()
         self.RegObj = registration(self.socket, self.AmpObj)
@@ -82,6 +118,11 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.RegObj.actor)
     
     def analyse(self):
+        """
+        Numpy style docstring.
+
+        """
+
         #self.RegObj.plot_slices()
         self.AmpObj.vert[:, 0] *= 2
         self.AmpObj.actor.points.Modified()
@@ -90,6 +131,10 @@ class AmpScanGUI(QMainWindow):
         #self.AmpObj._v = numpy_support.numpy_to_vtk(self.AmpObj.vert)
 
     def chooseFE(self):
+        """
+        Numpy style docstring.
+
+        """
         FEname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="FE results (*.npy)")
         self.renWin.setnumViewports(1)
@@ -101,6 +146,10 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.FE.actor)
         
     def choosePress(self):
+        """
+        Numpy style docstring.
+
+        """
         vName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor vertices (*.csv)")
         pName = QFileDialog.getOpenFileName(self, 'Open file',
@@ -118,6 +167,10 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.AmpObj.actors['antS'])
         
     def createActions(self):
+        """
+        Numpy style docstring.
+
+        """
         self.openFile = QAction(QIcon('open.png'), 'Open', self,
                                 shortcut='Ctrl+O',
                                 triggered=self.chooseOpenFile)
@@ -137,6 +190,10 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.analyse)
 
     def createMenus(self):
+        """
+        Numpy style docstring.
+
+        """
         self.fileMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openFile)
         self.fileMenu.addAction(self.openSocket)

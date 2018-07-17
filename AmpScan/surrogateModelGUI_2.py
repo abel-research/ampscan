@@ -17,11 +17,15 @@ from AmpScan.ampVis import qtVtkWindow
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
                              QMainWindow, QFileDialog, QWidget, QSlider,
                              QGroupBox, QVBoxLayout, QHBoxLayout, QLabel)
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import pyqtSignal, Qt
 
 
 class GUI(QMainWindow):
+    """
+    Numpy style docstring
+
+    """
     def __init__(self, parent=None):
         super(GUI, self).__init__()
         self.points = np.zeros([6])
@@ -49,6 +53,10 @@ class GUI(QMainWindow):
         self.show()
 
     def plotPress(self):
+        """
+        Numpy style docstring
+
+        """
         for i, s in enumerate(self.sliders):
             self.points[i] = s.value()/100
         if self.AmpObj is None:
@@ -67,6 +75,10 @@ class GUI(QMainWindow):
         self.socketRen.Render()
     
     def scale(self, var):
+        """
+        Numpy style docstring
+
+        """
         var = (var * 0.3) - 0.15
         cent = [85.93, 75.53, 0.0]
         height = 150.0
@@ -101,10 +113,15 @@ class GUI(QMainWindow):
         
         
     def sliders(self):
-        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction',
-                     'Residuum Length', 'Residuum Bulk', 'Tissue Stiffness']
-        labels = [[' 0', '3', '6 '], [' 0', '3', '6 '], [' 0', '3', '6 '],
-                  ['-15', '0', '+15'], ['-15', '0', '+15'], ['-10', '0', '+10']]
+        """
+        Numpy style docstring
+
+        """
+        variables = ['Proximal Reduction, %', 'Mid Reduction, %', 'Distal Reduction, %',
+                     'Residuum Length, %', 'Residuum Bulk, %', 'Tissue Stiffness, kPa']
+        labels = [['0', '3', '6'], ['0', '3', '6'], ['0', '3', '6'],
+                  ['-15', '0', '+15'], ['-15', '0', '+15'], ['30', '55', '80']]
+
         values = [0, 0, 0, 50, 50, 50]
 #        values = values[:5]
 #        labels = labels[:5]
@@ -112,11 +129,15 @@ class GUI(QMainWindow):
 #        variables = ['Proximal Reduction', 'Mid Reduction', 'Distal Reduction']
 #        values = [0, 0, 0]
         groupBox = QGroupBox('Model Variables')
+        f = QFont("Arial", 12)
+        groupBox.setFont(f)
         box = QGridLayout()
         self.sliders = []
 
         for lab, v, (i, t) in zip(labels, values, enumerate(variables)):
             tx = QLabel(t)
+            f = QFont("Arial", 12)
+            tx.setFont(f)
             tx.setAlignment(Qt.AlignVCenter)
             box.addWidget(tx, i*3, 0, 3, 1)   
             self.sliders.append(QSlider(Qt.Horizontal))
@@ -134,6 +155,8 @@ class GUI(QMainWindow):
             for (j, l), a in zip(enumerate(lab), align):
                 lab = QLabel(l)
                 lab.setAlignment(a)
+                f = QFont("Arial", 10)
+                lab.setFont(f)
                 box.addWidget(lab, (i*3) + 2, j + 1, 1, 1)
         groupBox.setLayout(box)
         return groupBox
@@ -180,6 +203,10 @@ class GUI(QMainWindow):
 
 
     def createActions(self):
+        """
+        Numpy style docstring
+
+        """
         self.openFile = QAction(QIcon('open.png'), 'Open', self,
                                 shortcut='Ctrl+O',
                                 triggered=self.chooseOpenFile)
@@ -187,6 +214,8 @@ class GUI(QMainWindow):
     def createMenus(self):
         self.fileMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openFile)
+        
+
 
 
 

@@ -9,6 +9,10 @@ import numpy as np
 import pandas as pd
 
 class trimMixin(object):
+    """
+    docstring
+
+    """
     
     def planarTrim(self):
         print('This is where the planar trim function will go')

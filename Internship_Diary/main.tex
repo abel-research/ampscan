@@ -143,9 +143,103 @@ I spent some time finding that I could not add changes made to my branch. Change
     }%
 }
 
-...
+\subsection{Autodocs 2}
+The documentation consistently rendered submodules called from within AmpScan modules (those relating to vtk and qt). This is a persistent issue with many modules but for the sake of simplification all those relating to the GUI were chosen to be excluded from apidocs. Sphinx provides an exclude pattern which I implemented as follows:
+
+\begin{lstlisting}[language=Python]
+sphinx-apidoc -f -o source ..\AmpScan C:\... ...\Ampscan\AmpScanGUI.py
+\end{lstlisting}
+
+Note that the exclusion pattern requires an absolute path. The -f option ensures that existing files are replaced.
+
+Align.py has a sample docstring to observe whether or not it is all correctly rendering. Maths was not rendering in html so I added ingmath to the conf.py extensions. The package was not recognised so I used mathjax instead - this worked fine. Error count has dropped to 4836.
 
 \subsection{Gitlab Wiki}
 Gitlab provides in built documentation associated with the project...
 
+\subsection{Autodocs 3}
+To resolve the autodocumentation, a debugging workflow was conceived:
+
+\begin{itemize}
+	\item
+	Run autodocs with all modules excluded except for the one of interest.
+	\item
+	Solve errors associated with that module.
+	\item
+	Repeat the first step but with the inclusion of a new module of interest.
+	\item
+	Continue incrementally until all modules are correctly documented or ignored.
+
+\end{itemize}
+
+\subsubsection{align.py}
+
+Traceback 1:
+
+\begin{lstlisting}[language=Python]
+docstring of AmpScan.align.align:11: WARNING: Block quote ends without a blank line; unexpected unindent.
+\end{lstlisting}
+
+Solution:
+
+	Prepending \lstinline{r} to the the block quotes in question to give \lstinline{r"""}. This converts the docstring into a raw string.
+
+
+Traceback 2:
+
+\begin{lstlisting}[language=Python]
+WARNING: toctree references unknown document 'source/AmpScan.test_file_2.ExampleClass.example_method
+\end{lstlisting}
+
+Solution:
+
+Despite returning 4 warnings associated with example\_method, the submodule renders fully in the documentation. As such these warnings are ignored as debugging proceeds.
+
+Traceback 3:
+
+\begin{lstlisting} [language=Python]
+WARNING: html_static_path entry 'C:\\Users\\Oliver\\Documents\\Internship-1718\\AMPSCAN\\docs\\_static' does not exist
+\end{lstlisting}
+
+Solution:
+
+A \_static file containing css templates does exist in docs\_build\\html but sphinx looks for it in docs. I copied the file to this location and the error went away.
+
+Traceback 4:
+
+\begin{lstlisting}[language=Python]
+WARNING: toctree references unknown document 'source/AmpScan.analyse.analyseMixin.create_slices
+\end{lstlisting}
+
+9 warnings of this type were generated.
+
+Solution:
+
+'numpydoc' was removed from the extension list and replaced with 'sphinx.ext.napoleon'.
+
+Traceback 5:
+
+\begin{lstlisting}[language=Python]
+WARNING: Unexpected section title.
+
+Bug
+---
+\end{lstlisting}
+
+Solution:
+
+Napoleon (sphinx support for numpy or google docstrings) only recognises a specific subset of headings of which "Bug" is not one. Allowed headings are outlined here; \url{http://www.sphinx-doc.org/en/stable/ext/napoleon.html}. I changed the offending section to "Note" which rendered fine.
+
+Traceback 6:
+
+\begin{lstlisting}[language=Python]
+WARNING: autodoc: failed to import module 'AmpScan.cython_ext'; the following exception was raised:
+No module named 'AmpScan.cython_ext'
+\end{lstlisting}
+
+Solution:
+
+This warning occured despite cython\_ext not being included. This occurred due to human error - I removed the 'x' from the '.pyx' when calling the exclude path in apidocs. Adding this solved the issue.
+
 \end{document}
+

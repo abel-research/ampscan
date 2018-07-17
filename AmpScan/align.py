@@ -11,7 +11,7 @@ from scipy.optimize import minimize
 
 
 def align(moving, static, method = 'P2P'):
-    """
+    r"""
     Using this function for sample docstring (one line desc).
 
     A more extended description that provides details of how the function works.
@@ -95,7 +95,9 @@ def align(moving, static, method = 'P2P'):
     def icp():
         """
         Automated alignment function between two meshes
+        
         """
+
         tTree = spatial.cKDTree(self.baseline.vert)
         rot = np.array([0,0,0], dtype=float)
         res = minimize(self.calcDistError, rot, method='BFGS',
@@ -103,6 +105,11 @@ def align(moving, static, method = 'P2P'):
         
         
     def calcDistError(rot, tTree):
+        """
+        Needs description. Note the blank line at the end of each 
+        docstring - this is necessary.
+
+        """
         Id = np.identity(3)
         for i in range(3):
             if rot[i] != 0:
@@ -121,6 +128,10 @@ def align(moving, static, method = 'P2P'):
     return moving
 
 def rotMatrix(R, ang='rad'):
+    r"""
+    Needs desc @josh_steer
+
+    """
     if ang == 'deg':
         R = np.deg2rad(R)
     angx = R[0]

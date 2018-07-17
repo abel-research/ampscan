@@ -8,27 +8,6 @@ Core functions for the AmpObject
 
 Requires numpy 1.13
 
-
-AmpObject
-    Read
-    Write
-    Centre
-    Translate
-    Rotate
-    lp_smooth
-    trimming
-    alignment
-Residuum
-Socket
-    SocketICP (overwrite)
-    SocketBrimLine
-Registration
-SoftTissueDepth
-    Bones
-    Liner
-Finite Element Analysis 
-    FE Mesh
-    FE Data
 """
 
 import numpy as np
@@ -43,6 +22,10 @@ from .tsbSocketDesign import socketDesignMixin
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, 
                 visMixin, feMixin, socketDesignMixin):
+    """
+    Numpy style docstring.
+
+    """
 
     def __init__(self, data=None, stype='limb'):
         self.stype = stype
@@ -63,6 +46,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
     def createCMap(self, cmap=None, n = 50):
         """
         Function to generate a colormap for the AmpObj
+
         """
         if cmap is None:
             c1 = [31.0, 73.0, 125.0]
@@ -88,6 +72,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             unify the coincident vertices of each face
         edges: boolean, default True
             calculate the edges array automatically
+
         """
         fh = open(filename, 'rb')
         # Defined no of bytes for header and no of faces
@@ -135,6 +120,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         Function to unify coincident vertices of the mesh to reduce
         size of the vertices array enabling speed increases
+
         """
         # Requires numpy 1.13
         self.vert, indC = np.unique(self.vert, return_inverse=True, axis=0)
@@ -146,6 +132,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         Function to compute the edges array, the edges on each face, 
         and the faces on each edge
+
         edges: numpy array N x 2 denotes the indicies of two vertices 
             on each edge
         edgesFace: numpy array N x 3 denotes the indicies of the three edges 
@@ -153,6 +140,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         faceEdges: numpy array N x 2 denotes the indicies of the faces in each 
             edge, edges may have either 1 or 2 faces, if 1 then the second 
             index will be NaN
+
         """
         # Get edges array
         self.edges = np.reshape(self.faces[:, [0, 1, 0, 2, 1, 2]], [-1, 2])
@@ -188,6 +176,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
     def calcNorm(self):
         """
         Calculate the normal of each face of the AmpObj
+
         """
         norms = np.cross(self.vert[self.faces[:,1]] -
                          self.vert[self.faces[:,0]],
@@ -200,6 +189,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         Function to compute the vertex normals
         Not required for the AmpActor but may be needed for ICP
+
         """
         f = self.faces.flatten()
         o_idx = f.argsort()
@@ -219,6 +209,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         -----------
         filename: str
             file path of the .stl file to save to
+
         """
         self.calc_norm()
         fv = self.vert[np.reshape(self.faces, len(self.faces)*3)]
@@ -245,12 +236,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         -----------
         trans: array-like
             1x3 array of the tranlation in [x, y, z]
+
         """
         self.vert[:] += trans
 
     def centre(self):
         """
         Centre the AmpObj based upon the mean of all the vertices
+
         """
         self.translate(-self.vert.mean(axis=0))
     
@@ -268,6 +261,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             1x3 array of the rotation around [x, y, z]
             
         Update this so calculated using matrices
+
         """
         Id = np.identity(3)
         for i, r in enumerate(rot):

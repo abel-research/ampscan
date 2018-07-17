@@ -12,16 +12,33 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
 class pressSense(object):
+    """
+    Numpy style docstring
+
+    """
 
     def __init__(self):
         self.actors = {}
         self.antS = {}
         
     def importVert(self, fname, pos='ant'):
+        """
+        Numpy style docstring
+        
+        Parameters
+        ----------
+        fname : file
+            self-explanatory
+
+        """
         self.antS['vert'] = np.loadtxt(fname, delimiter=',')
         self.antS['vert'][:, 1] += -1.0
     
     def importPress(self, fname):
+        """
+        Numpy style docstring
+
+        """
         sF = self.antS['sF']
         val = np.loadtxt(fname, delimiter=',').flatten()
         self.antS['values']  = np.zeros(len(self.antS['faces']))
@@ -40,7 +57,8 @@ class pressSense(object):
             socket 
         sensePos: str
             Aspect of socket the sensor was positioned
-        limbSide: 
+        limbSide: str
+            Either L or R
         """
         vert = mesh['vert']
         faces = mesh['faces']
@@ -81,6 +99,7 @@ class pressSense(object):
         Function to compute face array for pressure sensor 
         
         FIX SO USE QUAD FACES
+
         """
         # define no of rows and columns in sensors
         rows, cols = [15*d, 3*d]
@@ -111,6 +130,7 @@ class pressSense(object):
         Function to compute face array for pressure sensor 
         
         FIX SO USE QUAD FACES
+
         """
         # define no of rows and columns in sensors
         rows, cols = [15*d, 3*d]
@@ -137,14 +157,15 @@ class pressSense(object):
     
     def intersectLineMesh(line, v, f):
         """
-        Function to calculate intersection between line and mesh 
+        Function to calculate intersection between line and mesh
+
         """
         
     def addActor(self, pos ='antS', CMap=None, connect=3):
         """
         Function to insert a vtk actor into the actors dictionary within 
-        the AmpObject 
-        
+        the AmpObject
+
         """
         self.actors[pos] = self.pressActor(self.antS, CMap=CMap, connect=connect)
 
@@ -155,6 +176,7 @@ class pressSense(object):
         from numpy arrays 
         
         Add functions to add vert, add faces, cmap and make LUT
+
         """
 
         def __init__(self, data, CMap=None, bands=None, connect=3):
@@ -206,6 +228,10 @@ class pressSense(object):
 
 
 def func1():
+    """
+    Docstring for method outside of Classes
+
+    """
     path = r'J:\Shared Resources\AmpScan IfLS Team\101 ImpAmp\Upgrade'
     sockets = ['B_PTB.stl', 'B_TSB.stl', 'B_KBM.stl']
     pressure = ['161108_Sub02_T001', '161108_Sub02_T002', '161108_Sub02_T006']
