@@ -1,7 +1,0 @@
-numpy
-scipy
-matplotlib
-PyQt5
-vtk
-pandas
-cython
