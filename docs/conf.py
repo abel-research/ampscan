@@ -16,14 +16,24 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
-from mock import Mock as MagicMock
+#from mock import Mock as MagicMock
+#
+#class Mock(MagicMock):
+#    @classmethod
+#    def __getattr__(cls, name):
+#        return MagicMock()
+#
+#MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
+#		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
+#		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
+#		'mpl_toolkits.mplot3d', 'distutils.core.setup', 'struct', 
+#		'numpy.linalg', 'vtk.qt.QVTKRenderWindowInteractor', 'pandas',
+#		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
+#		'matplotlib.figure', 
+#		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
+#sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
+autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
 		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
 		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
 		'mpl_toolkits.mplot3d', 'distutils.core.setup', 'struct', 
@@ -31,8 +41,6 @@ MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util',
 		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
 		'matplotlib.figure', 
 		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
 
 # -- Project information -----------------------------------------------------
 
