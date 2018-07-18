@@ -241,5 +241,11 @@ Solution:
 
 This warning occured despite cython\_ext not being included. This occurred due to human error - I removed the 'x' from the '.pyx' when calling the exclude path in apidocs. Adding this solved the issue.
 
+\subsection{Hosting}
+
+At this point the documentation render correctly on a local machine. To set set up hosting, first create a readthedocs (RTD) account import the project. The repository in question must be set to 'public' - this can be configured in the settings on gitlab.
+Building documentation at this stage correctly creates most of the pages but not the module index - unusual because no errors occur on the build process.
+
+
 \end{document}
 

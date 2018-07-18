@@ -33,14 +33,14 @@ sys.path.insert(0, os.path.abspath('..'))
 #		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
 #sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
-autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
-		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
-		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
-		'mpl_toolkits.mplot3d', 'distutils.core.setup', 'struct', 
-		'numpy.linalg', 'vtk.qt.QVTKRenderWindowInteractor', 'pandas',
-		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
-		'matplotlib.figure', 
-		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
+#autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
+#		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
+#		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
+#		'mpl_toolkits.mplot3d', 'distutils.core.setup', 'struct', 
+#		'numpy.linalg', 'vtk.qt.QVTKRenderWindowInteractor', 'pandas',
+#		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
+#		'matplotlib.figure', 
+#		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
 
 # -- Project information -----------------------------------------------------
 
