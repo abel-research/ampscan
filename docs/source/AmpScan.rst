@@ -84,14 +84,6 @@ AmpScan.trim module
     :undoc-members:
     :show-inheritance:
 
-AmpScan.tsbSocketDesign module
-------------------------------
-
-.. automodule:: AmpScan.tsbSocketDesign
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------
