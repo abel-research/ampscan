@@ -5,7 +5,7 @@ Created on Thu Dec 15 13:43:43 2016
 @author: js22g12
 """
 
-from setuptools import setup, find_packages
+from setuptools import setup #, find_packages
 
 
 def readme():
