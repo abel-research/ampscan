@@ -5,7 +5,7 @@ Created on Thu Dec 15 13:43:43 2016
 @author: js22g12
 """
 
-from setuptools import setup #, find_packages
+from setuptools import setup, find_packages
 
 
 def readme():
@@ -22,7 +22,7 @@ setup(name='AmpScan',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
       packages=['AmpScan'],
-      install_requires=['numpy', 'pandas', 'matplotlib', 'scipy'],
+      install_requires=['numpy', 'pandas', 'matplotlib', 'scipy', 'sphinxcontrib-napoleon'],
       package_data={},
       include_package_data=True,
       zip_safe=False)
