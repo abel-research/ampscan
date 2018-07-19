@@ -1,7 +1,3 @@
-before_script:
-  - python.exe
-  - print("hello world")
-
 sample_job:
   script: python tests/sample_test.py
 # command to install dependencies
