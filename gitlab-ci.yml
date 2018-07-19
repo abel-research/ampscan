@@ -1,0 +1,10 @@
+language: python
+python:
+  - "3.6"
+script:
+  - pytest
+# command to install dependencies
+#script: python tests/test_all_of_the_units.py
+#branches:
+#  only:
+#    - master
