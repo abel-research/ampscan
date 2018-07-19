@@ -5,7 +5,7 @@ Created on Thu Dec 15 13:43:43 2016
 @author: js22g12
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def readme():
@@ -14,15 +14,15 @@ def readme():
 
 
 setup(name='AmpScan',
-      version='2017.11',
+      version='0.1',
       description=('Package for analysis of '
                    'surface scan data of residual limbs'),
       long_description=readme(),
       author='Joshua Steer',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
-      packages=['AmpScan',],
-      install_requires=['numpy', 'pandas', 'matplotlib', 'scipy', 'sphinxcontrib-napoleon', 'vtk'],
-      package_data={'example_stl':' 01_PhantomShell_ICEM_3mm.stl'},
+      packages=['AmpScan'],
+      install_requires=['numpy', 'pandas', 'matplotlib', 'scipy', 'sphinxcontrib-napoleon'],
+      package_data={},
       include_package_data=True,
       zip_safe=False)

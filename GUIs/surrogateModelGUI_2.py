@@ -5,14 +5,13 @@ Created on Tue Oct 10 16:21:12 2017
 @author: js22g12
 """
 
-import AmpScan
 import sys
 import copy
 import numpy as np
 from scipy.special import binom
 from scipy.interpolate import interp1d
-from AmpScan.core import AmpObject
-from AmpScan.ampVis import qtVtkWindow
+from AmpScan import AmpObject
+from AmpScan import qtVtkWindow
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
                              QMainWindow, QFileDialog, QWidget, QSlider,
                              QGroupBox, QVBoxLayout, QHBoxLayout, QLabel)
