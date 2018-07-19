@@ -4,6 +4,12 @@
 
 Would be nice to have a "Hello AmpScan" type function described here.
 
+## Build and Install Locally
+
+After cloning the repo, to use the GUIs a pip install is required
+To run in developer mode, from anaconda prompt in AmpScan directory:
+```pip install -e .```
+
 ## Building Docs Locally
 
 The documentation was generated using [Sphinx](http://www.sphinx-doc.org/en/master/index.html) which provides 
