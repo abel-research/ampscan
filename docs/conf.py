@@ -19,7 +19,8 @@ sys.path.insert(0, os.path.abspath('.'))
 
 from unittest.mock import MagicMock
 
-MOCK_MODULE = ["sip", "PyQt5", "PyQt5.QtGui", "PyQt5.QtCore", "PyQt5.QtWidgets"]
+MOCK_MODULE = ["sip", "PyQt5", "PyQt5.QtGui", "PyQt5.QtCore", "PyQt5.QtWidgets",
+                "PyQt5.QtWidgets.QWidget"]
 for i in MOCK_MODULE: sys.modules[i] = MagicMock()
 
 #from mock import Mock as MagicMock
