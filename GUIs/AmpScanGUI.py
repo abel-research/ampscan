@@ -1,5 +1,4 @@
-import os
-os.chdir('..')
+import AmpScan
 import sys
 import numpy as np
 from vtk.util import numpy_support

@@ -5,8 +5,7 @@ Created on Tue Oct 10 16:21:12 2017
 @author: js22g12
 """
 
-import os
-os.chdir('..')
+import AmpScan
 import sys
 import copy
 import numpy as np
