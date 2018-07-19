@@ -1,4 +1,4 @@
-script: tests/sample_test.py
+.script: tests/sample_test.py
 # command to install dependencies
 #script: python tests/test_all_of_the_units.py
 #branches:
