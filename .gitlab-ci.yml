@@ -1,6 +1,6 @@
 sample_job:
-    path
-#script: python tests/sample_test.py
+    script: path
+    #script: python tests/sample_test.py
 #command to install dependencies
 #script: python tests/test_all_of_the_units.py
 #branches:
