@@ -1,5 +1,6 @@
 before_script:
-  - python -v
+  - python
+  - print("hello world")
 
 sample_job:
   script: python tests/sample_test.py
