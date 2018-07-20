@@ -1,5 +1,7 @@
 import unittest
- 
+import os
+import sys
+
 class TestBasicFunction(unittest.TestCase):
     
     def test_running(self):
@@ -21,6 +23,10 @@ class TestBasicFunction(unittest.TestCase):
     def test_failure(self):
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")
+    
+    def test_AmpScan_imports(self):
+        print(os.path.abspath(os.pardir))
+        self.assertFalse(False)
  
 if __name__ == '__main__':
     unittest.main()
