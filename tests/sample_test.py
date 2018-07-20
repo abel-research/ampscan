@@ -26,7 +26,7 @@ class TestBasicFunction(unittest.TestCase):
     
     def test_AmpScan_imports(self):
         modPath = os.path.abspath(os.pardir)+"\\AmpScan"
-        print(modPath)
+	sys.path.insert(0, modpath)
         self.assertFalse(False)
  
 if __name__ == '__main__':
