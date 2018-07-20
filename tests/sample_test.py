@@ -27,12 +27,13 @@ class TestBasicFunction(unittest.TestCase):
     def test_AmpScan_imports(self):
         #modPath = os.path.abspath(os.getcwd())
         #sys.path.insert(0, modPath)
-        print("Check add new path 0:")
-        print(sys.path[0])
+        #print("Check add new path 0:")
+        #print(sys.path[0])
         import AmpScan.core
         s = str(type(AmpScan.core))
         print(s)
-        self.assertFalse(False)
+        s = str(type(AmpScan.core))
+        self.assertEqual(s, "<class 'module'>")
 
  
 if __name__ == '__main__':
