@@ -1,7 +1,9 @@
 import unittest
  
 class TestBasicFunction(unittest.TestCase):
-    def test(self):
+    import numpy, scipy, matplotlib, vtk
+    
+    def test_running(self):
         self.assertTrue(True)
         print("Running sample_test.py")
  
