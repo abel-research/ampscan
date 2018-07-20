@@ -25,7 +25,8 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
     
     def test_AmpScan_imports(self):
-        print(os.path.abspath(os.pardir))
+        modPath = os.path.abspath(os.pardir)+"\\AmpScan"
+        print(modPath)
         self.assertFalse(False)
  
 if __name__ == '__main__':
