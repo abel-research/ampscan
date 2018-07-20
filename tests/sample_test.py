@@ -20,7 +20,7 @@ class TestBasicFunction(unittest.TestCase):
     @unittest.expectedFailure
     def test_failure(self):
         s = str(type("string"))
-        self.assertEqual(s, "<class 'module'>", "Expected output")
+        self.assertEqual(s, "<class 'module'>")
  
 if __name__ == '__main__':
     unittest.main()
