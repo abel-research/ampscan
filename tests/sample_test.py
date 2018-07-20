@@ -16,6 +16,11 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
         s = str(type(vtk))
         self.assertEqual(s, "<class 'module'>")
+
+    @unittest.expectedFailure
+    def test_failure(self):
+        s = str(type("string"))
+        self.assertEqual(s, "<class 'module'>", "Expected output")
  
 if __name__ == '__main__':
     unittest.main()
