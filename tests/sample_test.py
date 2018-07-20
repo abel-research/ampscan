@@ -10,6 +10,12 @@ class TestBasicFunction(unittest.TestCase):
         import numpy, scipy, matplotlib, vtk
         s = str(type(numpy))
         self.assertEqual(s, "<class 'module'>")
+        s = str(type(scipy))
+        self.assertEqual(s, "<class 'module'>")
+        s = str(type(matplotlib))
+        self.assertEqual(s, "<class 'module'>")
+        s = str(type(vtk))
+        self.assertEqual(s, "<class 'module'>")
  
 if __name__ == '__main__':
     unittest.main()
