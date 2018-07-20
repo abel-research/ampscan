@@ -21,9 +21,6 @@ class TestBasicFunction(unittest.TestCase):
     def test_failure(self):
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")
-        
-    def test_ampscan_imports(self):
-        from Ampscan import align
  
 if __name__ == '__main__':
     unittest.main()
