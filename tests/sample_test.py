@@ -32,6 +32,7 @@ class TestBasicFunction(unittest.TestCase):
         #from modPath import align
         print("Check add new path 0:")
         print(sys.path[0])
+        from modPath import align
         self.assertFalse(False)
  
 if __name__ == '__main__':
