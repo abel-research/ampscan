@@ -32,8 +32,8 @@ class TestBasicFunction(unittest.TestCase):
         #from modPath import align
         print("Check add new path 0:")
         print(sys.path[0])
-        import align
-        s = str(type(align))
+        import core
+        s = str(type(core))
         self.assertEqual(s, "<class 'module'>")
 
  
