@@ -23,7 +23,7 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
         
     def test_ampscan_imports(self):
-        from Ampscan import align.py
+        from Ampscan import align
  
 if __name__ == '__main__':
     unittest.main()
