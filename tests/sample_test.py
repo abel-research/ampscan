@@ -27,7 +27,7 @@ class TestBasicFunction(unittest.TestCase):
     def test_AmpScan_imports(self):
         print("PATH 0:")
         print(sys.path[0])
-        modPath = os.path.abspath(os.getcwd())+"\\AmpScan"
+        modPath = os.path.abspath(os.getcwd())
         sys.path.insert(0, modPath)
         #from modPath import align
         print("Check add new path 0:")
