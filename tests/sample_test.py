@@ -25,11 +25,9 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
     
     def test_AmpScan_imports(self):
-        print("CWD:")
-        print(os.getcwd())
         print("PATH 0:")
         print(sys.path[0])
-        modPath = os.path.abspath(os.pardir)+"\\AmpScan"
+        modPath = os.path.abspath(os.getcwd())+"\\AmpScan"
         sys.path.insert(0, modPath)
         #from modPath import align
         print("Check add new path 0:")
