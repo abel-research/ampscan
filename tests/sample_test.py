@@ -33,7 +33,7 @@ class TestBasicFunction(unittest.TestCase):
         print("Check add new path 0:")
         print(sys.path[0])
         import AmpScan.core
-        s = str(type(core))
+        s = str(type(AmpScan.core))
         print(s)
         self.assertFalse(False)
 
