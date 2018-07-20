@@ -33,7 +33,9 @@ class TestBasicFunction(unittest.TestCase):
         print("Check add new path 0:")
         print(sys.path[0])
         import align
-        self.assertFalse(False)
+        s = str(type(align))
+        self.assertEqual(s, "<class 'module'>")
+
  
 if __name__ == '__main__':
     unittest.main()
