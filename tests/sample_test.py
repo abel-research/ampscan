@@ -6,7 +6,7 @@ class TestBasicFunction(unittest.TestCase):
         print("Running sample_test.py")
         self.assertTrue(True)
     
-    def test_imports(self):
+    def test_python_imports(self):
         import numpy, scipy, matplotlib, vtk
         s = str(type(numpy))
         self.assertEqual(s, "<class 'module'>")
@@ -21,6 +21,9 @@ class TestBasicFunction(unittest.TestCase):
     def test_failure(self):
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")
+        
+    def test_ampscan_imports(self):
+        from Ampscan import align.py
  
 if __name__ == '__main__':
     unittest.main()
