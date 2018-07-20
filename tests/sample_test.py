@@ -32,7 +32,7 @@ class TestBasicFunction(unittest.TestCase):
         #from modPath import align
         print("Check add new path 0:")
         print(sys.path[0])
-        import core
+        import AmpScan.core
         s = str(type(core))
         print(s)
         self.assertFalse(False)
