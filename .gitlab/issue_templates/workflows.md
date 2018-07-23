@@ -10,6 +10,10 @@ Key Actions
 
 > Include relevant software actions (eg. import stl, apply function etc)
 
+```Python
+Write code like this
+```
+
 ********************************************************************************
 
 Necessary Data
