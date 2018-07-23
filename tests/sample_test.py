@@ -9,6 +9,8 @@ class TestBasicFunction(unittest.TestCase):
         self.assertTrue(True)
     
     def test_python_imports(self):
+        modPath = os.path.abspath(os.getcwd())
+        sys.path.insert(0, modPath)
         import numpy, scipy, matplotlib, vtk, AmpScan.core
         s = str(type(numpy))
         self.assertEqual(s, "<class 'module'>")
