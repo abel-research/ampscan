@@ -44,14 +44,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         Initiation of the object
     """
 
-    def __init__(self, data=None, stype='limb'):
+    def __init__(self, data=None, stype='limb', unify=True):
         self.stype = stype
         self.createCMap()
         if isinstance(data, str):    
             if stype == 'FE':
                 self.addFE([data,])
             else:
-                self.read_stl(data)
+                self.read_stl(data, unify)
         elif isinstance(data, dict):
             for k, v in data.items():
                 setattr(self, k, v)
@@ -254,7 +254,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         fh = open(filename, 'wb')
         header = '%s' % (filename)
         header = header[:80].ljust(80, ' ')
-        packed = struct.pack('@i', len(data['faces']))
+        packed = struct.pack('@i', len(self.faces))
         fh.write(header)
         fh.write(packed)
         data_type = np.dtype([('normals', np.float32, (3, )),

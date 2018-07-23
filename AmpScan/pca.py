@@ -25,7 +25,7 @@ class pca(object):
         r"""
         Function to import multiple stl files from folder
         """
-        self.shapes = [AmpObject(f, 'limb') for f in 
+        self.shapes = [AmpObject(path + f, 'limb') for f in 
                        os.listdir(path) if f.endswith('.stl')]
         
     def register(self):
