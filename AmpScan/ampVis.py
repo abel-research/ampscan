@@ -22,7 +22,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
     def __init__(self):
         super(vtkRenWin, self).__init__()
         self.rens = [vtk.vtkRenderer(),]
-        self.cams = [vtk.vtkCamera(),]
+#        self.cams = [vtk.vtkCamera(),]
         self.axes = []
         self.AddRenderer(self.rens[0])
 #        self.setView()
@@ -32,7 +32,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
 #        self.rens.append(vtkRender())
 #        self.rens[0].SetBackground(0.1, 0.2, 0.4)
 #        self.rens[0].SetBackground(1.0,1.0,1.0)
-        self.rens[0].SetActiveCamera(self.cams[0])
+        #self.rens[0].SetActiveCamera(self.cams[0])
 #        self.axes.append(vtk.vtkCubeAxesActor())
         
     def renderActors(self, actors, viewport=0, 
@@ -46,7 +46,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
             actor.setShading(shading)
             self.rens[viewport].AddActor(actor)
         self.rens[viewport].ResetCamera()
-        self.cams[viewport].Zoom(zoom)
+        self.rens[viewport].GetActiveCamera().Zoom(zoom)
 
     def setScalarBar(self, actor, title=''):
         """
@@ -79,8 +79,10 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.rens[0].AddActor(self.scalar_bar)
 
     def setView(self, view = [0, -1, 0], viewport=0):
-        self.cams[viewport].SetPosition(view[0], view[1], view[2])
-        self.cams[viewport].SetViewUp(-0.0, 0.0, 1.0)
+        #self.cams[viewport].SetPosition(view[0], view[1], view[2])
+        #self.cams[viewport].SetViewUp(-0.0, 1.0, 0.0)
+        cam = self.rens[viewport].GetActiveCamera()
+        cam.Elevation(-90)
     
     def setBackground(self, color=[0.1, 0.2, 0.4]):
         """

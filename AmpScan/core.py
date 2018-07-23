@@ -249,22 +249,22 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             file path of the .stl file to save to
 
         """
-        self.calc_norm()
+        self.calcNorm()
         fv = self.vert[np.reshape(self.faces, len(self.faces)*3)]
-        fh = open(filename, 'wb')
-        header = '%s' % (filename)
-        header = header[:80].ljust(80, ' ')
-        packed = struct.pack('@i', len(self.faces))
-        fh.write(header)
-        fh.write(packed)
-        data_type = np.dtype([('normals', np.float32, (3, )),
-                              ('vertices', np.float32, (9, )),
-                              ('atttr', '<i2', (1, ))])
-        data_write = np.zeros(len(self.faces), dtype=data_type)
-        data_write['normals'] = self.norm
-        data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
-        data_write.tofile(fh)
-        fh.close()
+        with open(filename, 'wb') as fh:
+            header = '%s' % (filename)
+            header = header.split('/')[-1].encode('utf-8')
+            header = header[:80].ljust(80, b' ')
+            packed = struct.pack('@i', len(self.faces))
+            fh.write(header)
+            fh.write(packed)
+            data_type = np.dtype([('normals', np.float32, (3, )),
+                                  ('vertices', np.float32, (9, )),
+                                  ('atttr', '<i2', (1, ))])
+            data_write = np.zeros(len(self.faces), dtype=data_type)
+            data_write['normals'] = self.norm
+            data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
+            data_write.tofile(fh)
 
     def translate(self, trans):
         r"""

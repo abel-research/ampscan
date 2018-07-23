@@ -21,11 +21,11 @@ class pca(object):
         self.baseline = AmpObject(baseline, 'limb')
         
         
-    def importFolder(self, path):
+    def importFolder(self, path, unify=True):
         r"""
         Function to import multiple stl files from folder
         """
-        self.shapes = [AmpObject(path + f, 'limb') for f in 
+        self.shapes = [AmpObject(path + f, 'limb', unify=unify) for f in 
                        os.listdir(path) if f.endswith('.stl')]
         
     def register(self):
@@ -42,7 +42,8 @@ class pca(object):
         self.pca_mean = self.X.mean(axis=1)
         X_meanC = self.X - self.pca_mean[:, None]
         (self.pca_U, self.pca_S, self.pca_V) = np.linalg.svd(X_meanC, full_matrices=False)
-        self.pc_weights = np.dot(np.diag(self.pca_S), self.pca_V.T)
+        self.pc_weights = np.dot(np.diag(self.pca_S), self.pca_V)
+        self.pd_stdevs = np.std(self.pc_weights, axis=1)
     
     def newShape(self, sfs, scale = 'eigs'):
         r"""
