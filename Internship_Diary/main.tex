@@ -172,7 +172,7 @@ To resolve the autodocumentation, a debugging workflow was conceived:
 
 \end{itemize}
 
-\subsubsection{align.py}
+\subsubsection{Debugging}
 
 Traceback 1:
 
@@ -245,6 +245,18 @@ This warning occured despite cython\_ext not being included. This occurred due t
 
 At this point the documentation render correctly on a local machine. To set set up hosting, first create a readthedocs (RTD) account import the project. The repository in question must be set to 'public' - this can be configured in the settings on gitlab.
 Building documentation at this stage correctly creates most of the pages but not the module index - unusual because no errors occur on the build process.
+
+At this point it is unclear why the autodoc documents are not rendering; for the sake of time we move on now to testing.
+
+\section{Testing}
+Continuous Integration (CI) is the practice of merging work from a repositiory continuously throughout the day to avoid large clashes and conflicts in updates. This requires a testing suite to be built that ensures the basic functionality of the project is not affected by any particular branch. Gitlab provides tools to facilitate this.
+
+CI tools were setup to use a remote shell for for running tests (Joshua Steers University PC) - commits were configured to automatically run the test suite when merged.
+
+Both a YAML file and test directory were created in AmpScan. The YAML file was populated with YML syntax to direct Gitlab to the test file. This section traces the development of the tests written.
+
+\subsection{Import stl}
+Importing an stl using the !align! function is the most basic functional test of AmpScan. The module should be capable of recognising when an incorrect file format has been provided and provide an error message accordingly.
 
 
 \end{document}
