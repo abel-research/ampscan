@@ -43,7 +43,7 @@ class pca(object):
         X_meanC = self.X - self.pca_mean[:, None]
         (self.pca_U, self.pca_S, self.pca_V) = np.linalg.svd(X_meanC, full_matrices=False)
         self.pc_weights = np.dot(np.diag(self.pca_S), self.pca_V)
-        self.pd_stdevs = np.std(self.pc_weights, axis=1)
+        self.pc_stdevs = np.std(self.pc_weights, axis=1)
     
     def newShape(self, sfs, scale = 'eigs'):
         r"""
@@ -57,5 +57,5 @@ class pca(object):
         if scale == 'eigs':
             sf = (self.pca_U * sfs).sum(axis=1)
         elif scale == 'std':
-            sf = (self.pca_U * sfs).sum(axis=1)
+            sf = (self.pca_U * self.pc_stdevs * sfs).sum(axis=1)
         return self.pca_mean + sf

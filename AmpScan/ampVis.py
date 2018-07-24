@@ -230,21 +230,23 @@ class visMixin(object):
         Function to display the mesh in a vtk window
         """
         # Generate a renderer window
-        win = vtkRenWin(False, winWidth, winHeight)
+        win = vtkRenWin()
         # Set the number of viewports
-        win.setnumViewports(len(views))
+        win.setnumViewports(1)
         # Set the background colour
-        win.setBackground(background)
+        win.setBackground([1,1,1])
         # Set camera projection 
-        win.setProjection(projection)
-        win.SetSize(winWidth, winHeight)
-        win.OffScreenRenderingOn()
-        for i, view in enumerate(views):
-            win.addAxes(self.actors, color=[0.0, 0.0, 0.0], viewport=i)
-            win.setView(view, i)
-            win.setProjection(projection, viewport=i)
-            win.renderActors(self.actor, viewport=i, shading=shading, zoom=1.3)
+        renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+        renderWindowInteractor.SetRenderWindow(win)
+        renderWindowInteractor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
+        # Set camera projection 
+        win.setView()
+        win.renderActors([self.actor,], shading=True)
         win.Render()
+        win.rens[0].GetActiveCamera().Azimuth(180)
+        win.rens[0].GetActiveCamera().SetParallelProjection(True)
+        win.Render()
+        return win
 
 
     def addActor(self, CMap=None, bands=128, sRange=[0,8]):
