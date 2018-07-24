@@ -28,12 +28,19 @@ class pca(object):
         self.shapes = [AmpObject(path + f, 'limb', unify=unify) for f in 
                        os.listdir(path) if f.endswith('.stl')]
         
+    def sliceFiles(self, height):
+        r"""
+        Function to slice
+        """
+        for s in self.shapes:
+            s.planarTrim(height)
+        
     def register(self):
         r"""
         Function to register all the shapes to a baseline
         """
         self.registered = [registration(self.baseline, t) for t in self.shapes]
-        self.X = np.array([r.vert for r in self.registered])
+        self.X = np.array([r.vert.flatten() for r in self.registered]).T
         
     def pca(self):
         r"""

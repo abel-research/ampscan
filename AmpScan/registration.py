@@ -84,8 +84,9 @@ def registration(baseline, target, method='default', steps=5, direct=True):
         # Define vector from baseline point to intersect point
         D = G[np.arange(len(G)), GMag, :]
         bV = bV + D/step
-    bData = dict(zip(['vert', 'faces'], [bV, baseline.faces]))
+    bData = dict(zip(['vert', 'faces', 'values'], [bV, baseline.faces, baseline.values]))
     regObj = AmpObject(bData, stype='reg')
+    regObj.lp_smooth(5)
     
     def calcError(baseline, regObj, direct=True):
         """
@@ -110,7 +111,7 @@ def registration(baseline, target, method='default', steps=5, direct=True):
             values = np.linalg.norm(regObj.vert - baseline.vert, axis=1)
             return values
 
-    regObj.values[:] = calcError(baseline, regObj, False)
+    #regObj.values[:] = calcError(baseline, regObj, False)
     return regObj
 
         
