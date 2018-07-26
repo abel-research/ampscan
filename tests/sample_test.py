@@ -29,6 +29,8 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
 
     def test_import_stl(self):
+        import AmpScan.core
+        import AmpScan.tests
         from AmpScan.core import AmpObject
         from AmpScan.tests import sample_stl_sphere as stlFile
         Amp = AmpObject(stlFile)
