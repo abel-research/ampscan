@@ -14,7 +14,7 @@ def readme():
 
 
 setup(name='AmpScan',
-      version='0.1',
+      version='0.3',
       description=('Package for analysis of '
                    'surface scan data of residual limbs'),
       long_description=readme(),
@@ -25,4 +25,4 @@ setup(name='AmpScan',
       install_requires=['numpy', 'pandas', 'matplotlib', 'scipy', 'sphinxcontrib-napoleon'],
       package_data={},
       include_package_data=True,
-      zip_safe=False)
+      zip_safe=False,)
