@@ -28,13 +28,13 @@ class TestBasicFunction(unittest.TestCase):
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")
 
-    def test_import_stl(self):
-        modPath = os.path.abspath(os.getcwd())
-        sys.path.insert(0, modPath)
-        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_ASCII.stl"
-        from AmpScan.core import AmpObject
-        Amp = AmpObject(stlPath)
-        self.assertRaises(MemoryError)
+#    def test_import_stl(self):
+#        modPath = os.path.abspath(os.getcwd())
+#        sys.path.insert(0, modPath)
+#        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_ASCII.stl"
+#        from AmpScan.core import AmpObject
+#        Amp = AmpObject(stlPath)
+#        self.assertRaises(MemoryError)
 
 if __name__ == '__main__':
     unittest.main()
