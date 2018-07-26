@@ -32,7 +32,7 @@ class TestBasicFunction(unittest.TestCase):
         import AmpScan.core
         import AmpScan.tests
         from AmpScan.core import AmpObject
-        from AmpScan.tests import sample_stl_sphere as stlFile
+        from AmpScan.tests import sample_stl_sphere.stl as stlFile
         Amp = AmpObject(stlFile)
         self.assertRaises(MemoryError)
 
