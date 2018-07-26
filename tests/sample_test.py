@@ -30,7 +30,6 @@ class TestBasicFunction(unittest.TestCase):
 
     def test_import_stl(self):
         stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere.stl"
-        sys.path.insert(0, modPath)
         from AmpScan.core import AmpObject
         stlFile = "tests\\sample_stl_sphere.stl"
         Amp = AmpObject(stlPath)
