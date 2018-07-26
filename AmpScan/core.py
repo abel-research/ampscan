@@ -110,7 +110,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         else:								#if true, move on
             vert = np.resize(np.array(data['vertices']), (NFaces, 3))
             norm = np.array(data['normals'])
-            faces = np.reshape(range(NFaces*3), [-1,3])
+            faces = np.reshape(range(NFaces*3), [NFaces,3])
             self.faces = faces
             self.vert = vert
             self.norm = norm
