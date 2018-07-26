@@ -104,7 +104,11 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             # Read the remaining data and save as void, then close file
             data = np.fromfile(fh, data_type)
         # Write the data to a numpy arrays in AmpObj
-        vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
+        if NFaces =! data['vertices'].shape[0]:
+            ValueError:
+                print('Corrupt File')
+        vert = np.resize(np.array(data['vertices']), (NFaces, 3))
+
         norm = np.array(data['normals'])
         faces = np.reshape(range(NFaces*3), [-1,3])
         self.faces = faces
