@@ -44,14 +44,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         Initiation of the object
     """
 
-    def __init__(self, data=None, stype='limb', unify=True):
+    def __init__(self, data=None, stype='limb', unify=True, struc=True):
         self.stype = stype
         self.createCMap()
         if isinstance(data, str):    
             if stype == 'FE':
                 self.addFE([data,])
             else:
-                self.read_stl(data, unify)
+                self.read_stl(data, unify, struc)
         elif isinstance(data, dict):
             for k, v in data.items():
                 setattr(self, k, v)
@@ -76,7 +76,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
 
 
-    def read_stl(self, filename, unify=True):
+    def read_stl(self, filename, unify=True, struc=True):
         """
         Function to read .stl file from filename and import data into 
         the AmpObj 
@@ -108,7 +108,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         if not tfcond:							#if tfcond is false, raise error
             raise ValueError("Arrays don't match")
         else:								#if true, move on
-            vert = np.resize(np.array(data['vertices']), (NFaces, 3))
+            vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
             norm = np.array(data['normals'])
             faces = np.reshape(range(NFaces*3), [NFaces,3])
             self.faces = faces
@@ -119,7 +119,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             if unify is True:
                 self.unifyVert()
             # Call function to calculate the edges array
-            self.calcStruct()
+            if struc is True:
+                self.calcStruct()
         
     def calcStruct(self, norm=True, edges=True, 
                    edgeFaces=True, faceEdges=True, vNorm=False):
