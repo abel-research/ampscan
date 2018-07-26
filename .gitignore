@@ -3,7 +3,6 @@
 /*.egg-info
 /*.egg
 
-*.STL
 !ipynb tests/*.stl
 AmpScan/AmpScan
 AmpScan/*.pyc
