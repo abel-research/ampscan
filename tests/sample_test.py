@@ -29,11 +29,11 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
 
     def test_import_stl(self):
-        modPath = os.path.abspath(os.getcwd())
+        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere.stl"
         sys.path.insert(0, modPath)
         from AmpScan.core import AmpObject
-        from tests import sample_stl_sphere as stlFile
-        Amp = AmpObject(stlFile)
+        stlFile = "tests\\sample_stl_sphere.stl"
+        Amp = AmpObject(stlPath)
         self.assertRaises(MemoryError)
 
 if __name__ == '__main__':
