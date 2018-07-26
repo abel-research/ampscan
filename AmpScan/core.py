@@ -104,22 +104,22 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             # Read the remaining data and save as void, then close file
             data = np.fromfile(fh, data_type)
         # Write the data to a numpy arrays in AmpObj
-        if NFaces =! data['vertices'].shape[0]:
-            ValueError:
-                print('Corrupt File')
-        vert = np.resize(np.array(data['vertices']), (NFaces, 3))
-
-        norm = np.array(data['normals'])
-        faces = np.reshape(range(NFaces*3), [-1,3])
-        self.faces = faces
-        self.vert = vert
-        self.norm = norm
-        self.values = np.zeros([len(self.vert)])
-        # Call function to unify vertices of the array
-        if unify is True:
-            self.unifyVert()
-        # Call function to calculate the edges array
-        self.calcStruct()
+        tfcond = NFaces==data['vertices'].shape[0]			#assigns true or false to tfcond
+        if not tfcond:							#if tfcond is false, raise error
+            raise ValueError("Arrays don't match")
+        else:								#if true, move on
+            vert = np.resize(np.array(data['vertices']), (NFaces, 3))
+            norm = np.array(data['normals'])
+            faces = np.reshape(range(NFaces*3), [-1,3])
+            self.faces = faces
+            self.vert = vert
+            self.norm = norm
+            self.values = np.zeros([len(self.vert)])
+            # Call function to unify vertices of the array
+            if unify is True:
+                self.unifyVert()
+            # Call function to calculate the edges array
+            self.calcStruct()
         
     def calcStruct(self, norm=True, edges=True, 
                    edgeFaces=True, faceEdges=True, vNorm=False):
