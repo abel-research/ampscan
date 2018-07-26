@@ -32,7 +32,7 @@ class TestBasicFunction(unittest.TestCase):
         modPath = os.path.abspath(os.getcwd())
         sys.path.insert(0, modPath)
         from AmpScan.core import AmpObject
-        from AmpScan.tests import sample_stl_sphere.stl as stlFile
+        from AmpScan.tests import sample_stl_sphere as stlFile
         Amp = AmpObject(stlFile)
         self.assertRaises(MemoryError)
 
