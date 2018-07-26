@@ -89,21 +89,20 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             unify the coincident vertices of each face
 
         """
-        fh = open(filename, 'rb')
+        with open(filename, 'rb') as fh:
         # Defined no of bytes for header and no of faces
-        HEADER_SIZE = 80
-        COUNT_SIZE = 4
-        # State the data type and length in bytes of the normals and vertices
-        data_type = np.dtype([('normals', np.float32, (3, )),
-                              ('vertices', np.float32, (9, )),
-                              ('atttr', '<i2', (1, ))])
-        # Read the header of the STL
-        fh.read(HEADER_SIZE).lower()
-        # Read the number of faces
-        NFaces, = struct.unpack('@i', fh.read(COUNT_SIZE))
-        # Read the remaining data and save as void, then close file
-        data = np.fromfile(fh, data_type)
-        fh.close()
+            HEADER_SIZE = 80
+            COUNT_SIZE = 4
+            # State the data type and length in bytes of the normals and vertices
+            data_type = np.dtype([('normals', np.float32, (3, )),
+                                  ('vertices', np.float32, (9, )),
+                                  ('atttr', '<i2', (1, ))])
+            # Read the header of the STL
+            fh.read(HEADER_SIZE).lower()
+            # Read the number of faces
+            NFaces, = struct.unpack('@i', fh.read(COUNT_SIZE))
+            # Read the remaining data and save as void, then close file
+            data = np.fromfile(fh, data_type)
         # Write the data to a numpy arrays in AmpObj
         vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
         norm = np.array(data['normals'])
