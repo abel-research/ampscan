@@ -98,29 +98,31 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
                                   ('vertices', np.float32, (9, )),
                                   ('atttr', '<i2', (1, ))])
             # Read the header of the STL
-            fh.read(HEADER_SIZE).lower()
+            head = fh.read(HEADER_SIZE).lower()
             # Read the number of faces
             NFaces, = struct.unpack('@i', fh.read(COUNT_SIZE))
             # Read the remaining data and save as void, then close file
             data = np.fromfile(fh, data_type)
+        # Test if the file is ascii
+        if str(head[:5], 'utf-8') == 'solid':
+            raise ValueError("ASCII files not supported")
         # Write the data to a numpy arrays in AmpObj
         tfcond = NFaces==data['vertices'].shape[0]			#assigns true or false to tfcond
         if not tfcond:							#if tfcond is false, raise error
-            raise ValueError("Arrays don't match")
-        else:								#if true, move on
-            vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
-            norm = np.array(data['normals'])
-            faces = np.reshape(range(NFaces*3), [NFaces,3])
-            self.faces = faces
-            self.vert = vert
-            self.norm = norm
-            self.values = np.zeros([len(self.vert)])
-            # Call function to unify vertices of the array
-            if unify is True:
-                self.unifyVert()
-            # Call function to calculate the edges array
-            if struc is True:
-                self.calcStruct()
+            raise ValueError("File is corrupt")							#if true, move on
+        vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
+        norm = np.array(data['normals'])
+        faces = np.reshape(range(NFaces*3), [NFaces,3])
+        self.faces = faces
+        self.vert = vert
+        self.norm = norm
+        self.values = np.zeros([len(self.vert)])
+        # Call function to unify vertices of the array
+        if unify is True:
+            self.unifyVert()
+        # Call function to calculate the edges array
+        if struc is True:
+            self.calcStruct()
         
     def calcStruct(self, norm=True, edges=True, 
                    edgeFaces=True, faceEdges=True, vNorm=False):
