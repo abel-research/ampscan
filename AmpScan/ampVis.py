@@ -229,6 +229,8 @@ class visMixin(object):
         """
         Function to display the mesh in a vtk window
         """
+        if not hasattr(self, 'actor'):
+            self.addActor()
         # Generate a renderer window
         win = vtkRenWin()
         # Set the number of viewports
