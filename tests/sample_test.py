@@ -31,7 +31,7 @@ class TestBasicFunction(unittest.TestCase):
     @unittest.expectedFailure
     def test_import_stl(self):
         from AmpScan.core import AmpObject
-        from AmpScan.tests import sample_stl_sphere.stl as stlFile
+        from AmpScan.tests import sample_stl_sphere as stlFile
         Amp = AmpObject(stlFile)
         self.assertRaises(MemoryError)
 
