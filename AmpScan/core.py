@@ -18,10 +18,9 @@ from .smooth import smoothMixin
 from .analyse import analyseMixin
 from .ampVis import visMixin
 from .fe import feMixin
-from .tsbSocketDesign import socketDesignMixin
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, 
-                visMixin, feMixin, socketDesignMixin):
+                visMixin, feMixin):
     r"""
     Base class for the AmpScan project.
     Stores mesh data and extra information 

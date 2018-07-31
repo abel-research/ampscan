@@ -13,11 +13,11 @@ import matplotlib as mpl
 from PyQt5.QtWidgets import QSizePolicy
 import numpy as np
 from scipy.special import binom
-
-mpl.rcParams['axes.labelsize'] = 20
-mpl.rcParams['lines.linewidth'] = 3
-mpl.rcParams['xtick.labelsize'] = 15
-mpl.rcParams['ytick.labelsize'] = 15
+#
+#mpl.rcParams['axes.labelsize'] = 20
+#mpl.rcParams['lines.linewidth'] = 3
+#mpl.rcParams['xtick.labelsize'] = 15
+#mpl.rcParams['ytick.labelsize'] = 15
 
 class socketDesignMixin(object):
     """
