@@ -14,53 +14,19 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../'))
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
 
-#from unittest.mock import MagicMock
-#
-#MOCK_MODULE = ["sip", "PyQt5", "PyQt5.QtGui", "PyQt5.QtCore", "PyQt5.QtWidgets",
-#                "PyQt5.QtWidgets.QWidget", 
-#                "matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg",
-#                "PyQt5.QtWidgets.QSizePolicy"]
-#for i in MOCK_MODULE: sys.modules[i] = MagicMock()
-
-#from mock import Mock as MagicMock
-#
-#class Mock(MagicMock):
-#    @classmethod
-#    def __getattr__(cls, name):
-#        return MagicMock()
-#
-#MOCK_MODULES = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
-#		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
-#		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
-#		'mpl_toolkits.mplot3d', 'distutils.core.setup', 'struct', 
-#		'numpy.linalg', 'vtk.qt.QVTKRenderWindowInteractor', 'pandas',
-#		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
-#		'matplotlib.figure', 
-#		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
-#sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-#autodoc_mock_imports = ['numpy', 'scipy', 'matplotlib', 'vtk', 'vtk.util', 
-#		'PyQt5.QtCore', 'PyQt5.QtGui', 'Cython.Build.cythonize',
-#		'PyQt5.Widgets', 'scipy.optimize', 'vtk.qt', 
-#		'mpl_toolkits.mplot3d', 'distutils.core.setup', 'struct', 
-#		'numpy.linalg', 'vtk.qt.QVTKRenderWindowInteractor', 'pandas',
-#		'copy', 'scipy.spatial', 'scipy.special', 'scipy.interpolate',
-#		'matplotlib.figure', 
-#		'matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg']
 
 # -- Project information -----------------------------------------------------
 
 project = 'AmpScan'
-copyright = '2018, Oliver Stocks'
-author = 'Oliver Stocks'
+copyright = '2018, Joshua Steer'
+author = 'Joshua Steer'
 
 # The short X.Y version
 version = ''
 # The full version, including alpha/beta/rc tags
-release = '1'
+release = '0.3'
 
 
 # -- General configuration ---------------------------------------------------
@@ -72,13 +38,17 @@ release = '1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.todo',
+    'sphinx.ext.mathjax',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
 ]
+
+napoleon_numpy_docstring=True
+
+autodoc_mock_imports=['vtk']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -113,7 +83,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'bizstyle'
+html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -168,7 +138,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'AmpScan.tex', 'AmpScan Documentation',
-     'Oliver Stocks', 'manual'),
+     'Joshua Steer', 'manual'),
 ]
 
 
@@ -195,20 +165,3 @@ texinfo_documents = [
 
 
 # -- Extension configuration -------------------------------------------------
-
-#MOCK_MODULES = ["AmpScan.cython_ext"]
-#
-#class Mock(object):
-#    def __init__(self, *args):
-#        pass
-#
-#    def __getattr__(self, name):
-#        return Mock
-#
-#for mod_name in MOCK_MODULES:
-#    sys.modules[mod_name] = Mock()
-
-# -- Options for todo extension ----------------------------------------------
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True

@@ -1,5 +1,5 @@
 .. AmpScan documentation master file, created by
-   sphinx-quickstart on Tue Jul  3 13:52:34 2018.
+   sphinx-quickstart on Wed Aug  1 09:17:40 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -10,9 +10,6 @@ Welcome to AmpScan's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-   Intro
-   Fordevs
-   Examples
 
 
 Indices and tables
