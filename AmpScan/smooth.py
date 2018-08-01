@@ -6,7 +6,6 @@ Created on Thu Sep 14 13:25:23 2017
 """
 
 import numpy as np
-import pandas as pd
 
 class smoothMixin(object):
     
