@@ -14,7 +14,7 @@ def readme():
 
 
 setup(name='AmpScan',
-      version='0.3',
+      version='0.4',
       description=('Package for analysis of '
                    'surface scan data of residual limbs'),
       long_description=readme(),

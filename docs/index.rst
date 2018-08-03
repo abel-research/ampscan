@@ -9,10 +9,6 @@ design of effective prosthetic sockets.
 
 AmpScan is is still under active development by Joshua Steer.
 
-Examples
---------
-
-
 Installation
 ------------
 
@@ -24,6 +20,16 @@ A pip installation is also available through test PyPI. However, this installati
 is likely to not be the latest version of AmpScan:
 
 ``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
+
+
+Getting Started
+---------------
+
+.. toctree::
+   :maxdepth: 2
+
+   exampleDemos
+
 
 Developers Guide
 ----------------
