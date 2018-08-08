@@ -12,7 +12,6 @@ Requires numpy 1.13
 
 import numpy as np
 import struct
-from .align import rotMatrix
 from .trim import trimMixin
 from .smooth import smoothMixin
 from .analyse import analyseMixin
@@ -303,7 +302,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             Default is radians
 
         """
-        R = rotMatrix(rot, ang)
+        R = self.rotMatrix(rot, ang)
         self.vert[:, :] = np.dot(self.vert, np.transpose(R))
 
     def man_rot(self, rot):
@@ -331,3 +330,26 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
                              np.cross(ax, self.vert) * np.sin(ang) +
                              np.reshape(ax, (1, -1)) * dot * (1-np.cos(ang)))
         self.calc_norm()
+        
+    @staticmethod
+    def rotMatrix(R, ang='rad'):
+        r"""
+        Calculate the rotation matrix around 
+    
+        """
+        if ang == 'deg':
+            R = np.deg2rad(R)
+        angx = R[0]
+        angy = R[1]
+        angz = R[2]
+        Rx = np.array([[1, 0, 0],
+                       [0, np.cos(angx), -np.sin(angx)],
+                       [0, np.sin(angx), np.cos(angx)]])
+        Ry = np.array([[np.cos(angy), 0, np.sin(angy)],
+                       [0, 1, 0],
+                       [-np.sin(angy), 0, np.cos(angy)]])
+        Rz = np.array([[np.cos(angz), -np.sin(angz), 0],
+                       [np.sin(angz), np.cos(angz), 0],
+                       [0, 0, 1]])
+        R = np.dot(np.dot(Rz, Ry), Rx)
+        return R

@@ -8,9 +8,10 @@ Created on Thu Sep 14 13:15:30 2017
 import numpy as np
 from scipy import spatial
 from scipy.optimize import minimize
+from .core import AmpObject
 
 
-def align(moving, static, method = 'P2P'):
+class align(object):
     r"""
     Using this function for sample docstring (one line desc).
 
@@ -92,6 +93,12 @@ def align(moving, static, method = 'P2P'):
 
     """    
 
+    def __init__(self, moving, static, method = 'P2P'):
+        self.m = moving
+        self.s = static
+        self.icp()
+        amp = AmpObject()
+        
     def icp():
         """
         Automated alignment function between two meshes
@@ -124,27 +131,5 @@ def align(moving, static, method = 'P2P'):
         dist = tTree.query(self.vert, 10)[0]
         dist = dist.min(axis=1)
         return dist.sum()
-    
-    return moving
 
-def rotMatrix(R, ang='rad'):
-    r"""
-    Calculate the rotation matrix around 
 
-    """
-    if ang == 'deg':
-        R = np.deg2rad(R)
-    angx = R[0]
-    angy = R[1]
-    angz = R[2]
-    Rx = np.array([[1, 0, 0],
-                   [0, np.cos(angx), -np.sin(angx)],
-                   [0, np.sin(angx), np.cos(angx)]])
-    Ry = np.array([[np.cos(angy), 0, np.sin(angy)],
-                   [0, 1, 0],
-                   [-np.sin(angy), 0, np.cos(angy)]])
-    Rz = np.array([[np.cos(angz), -np.sin(angz), 0],
-                   [np.sin(angz), np.cos(angz), 0],
-                   [0, 0, 1]])
-    R = np.dot(np.dot(Rz, Ry), Rx)
-    return R
