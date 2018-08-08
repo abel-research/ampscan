@@ -131,8 +131,7 @@ class align(object):
         dist = tTree.query(self.vert, 10)[0]
         dist = dist.min(axis=1)
         return dist.sum()
-    
-    return moving
+
 
 def rotMatrix(R, ang='rad'):
     r"""
