@@ -133,24 +133,3 @@ class align(object):
         return dist.sum()
 
 
-def rotMatrix(R, ang='rad'):
-    r"""
-    Calculate the rotation matrix around 
-
-    """
-    if ang == 'deg':
-        R = np.deg2rad(R)
-    angx = R[0]
-    angy = R[1]
-    angz = R[2]
-    Rx = np.array([[1, 0, 0],
-                   [0, np.cos(angx), -np.sin(angx)],
-                   [0, np.sin(angx), np.cos(angx)]])
-    Ry = np.array([[np.cos(angy), 0, np.sin(angy)],
-                   [0, 1, 0],
-                   [-np.sin(angy), 0, np.cos(angy)]])
-    Rz = np.array([[np.cos(angz), -np.sin(angz), 0],
-                   [np.sin(angz), np.cos(angz), 0],
-                   [0, 0, 1]])
-    R = np.dot(np.dot(Rz, Ry), Rx)
-    return R
