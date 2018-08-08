@@ -97,7 +97,7 @@ class align(object):
         self.m = moving
         self.s = static
         self.icp()
-        amp = 
+        amp = AmpObject()
         
     def icp():
         """
