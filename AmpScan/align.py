@@ -8,9 +8,10 @@ Created on Thu Sep 14 13:15:30 2017
 import numpy as np
 from scipy import spatial
 from scipy.optimize import minimize
+from .core import AmpObject
 
 
-def align(moving, static, method = 'P2P'):
+class align(object):
     r"""
     Using this function for sample docstring (one line desc).
 
@@ -92,6 +93,12 @@ def align(moving, static, method = 'P2P'):
 
     """    
 
+    def __init__(self, moving, static, method = 'P2P'):
+        self.m = moving
+        self.s = static
+        self.icp()
+        amp = 
+        
     def icp():
         """
         Automated alignment function between two meshes
