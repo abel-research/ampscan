@@ -6,10 +6,11 @@ Created on Thu Sep 14 13:15:30 2017
 """
 
 import numpy as np
+import vtk
 from scipy import spatial
 from scipy.optimize import minimize
 from .core import AmpObject
-
+from .ampVis import vtkRenWin
 
 class align(object):
     r"""
@@ -96,16 +97,19 @@ class align(object):
     def __init__(self, moving, static, method = 'P2P'):
         self.m = moving
         self.s = static
-        self.icp()
-        amp = AmpObject()
+        if method is not None:
+            getattr(self, method)()
+            
+        #self.icp()
+        #amp = AmpObject()
         
-    def icp():
+    def icp(self):
         """
         Automated alignment function between two meshes
         
         """
 
-        tTree = spatial.cKDTree(self.baseline.vert)
+        tTree = spatial.cKDTree(self.s.vert)
         rot = np.array([0,0,0], dtype=float)
         res = minimize(self.calcDistError, rot, method='BFGS',
                        options={'gtol':1e-6, 'disp':True})
@@ -131,5 +135,37 @@ class align(object):
         dist = tTree.query(self.vert, 10)[0]
         dist = dist.min(axis=1)
         return dist.sum()
+    
+    def display(self):
+        r"""
+        Function to display the two aligned meshes in 
+        """
+        if not hasattr(self.s, 'actor'):
+            self.s.addActor()
+        if not hasattr(self.m, 'actor'):
+            self.m.addActor()
+        # Generate a renderer window
+        win = vtkRenWin()
+        # Set the number of viewports
+        win.setnumViewports(1)
+        # Set the background colour
+        win.setBackground([1,1,1])
+        # Set camera projection 
+        renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+        renderWindowInteractor.SetRenderWindow(win)
+        renderWindowInteractor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
+        # Set camera projection 
+        win.setView()
+        self.s.actor.setColor([1.0, 0.0, 0.0])
+        self.s.actor.setOpacity(0.5)
+        self.m.actor.setColor([0.0, 0.0, 1.0])
+        self.m.actor.setOpacity(0.5)
+        win.renderActors([self.s.actor, self.m.actor], shading=True)
+        win.Render()
+        win.rens[0].GetActiveCamera().Azimuth(180)
+        win.rens[0].GetActiveCamera().SetParallelProjection(True)
+        win.Render()
+        return win
+        
 
 

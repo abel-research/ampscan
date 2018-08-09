@@ -47,6 +47,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
             self.rens[viewport].AddActor(actor)
         self.rens[viewport].ResetCamera()
         self.rens[viewport].GetActiveCamera().Zoom(zoom)
+        self.Render()
 
     def setScalarBar(self, actor, title=''):
         """
@@ -261,7 +262,7 @@ class visMixin(object):
         #self._v = numpy_support.numpy_to_vtk(self.vert, deep=0)
         self.actor.setVert(self.vert)
         self.actor.setFaces(self.faces)
-        #self.actor.setNorm()
+        self.actor.setNorm()
         # Test if values array is non-zero
         if self.values.any():
             self.actor.setValues(self.values)
