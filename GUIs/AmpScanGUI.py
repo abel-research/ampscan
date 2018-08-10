@@ -118,13 +118,32 @@ class AmpScanGUI(QMainWindow):
 #        self.socket.actor.setOpacity(0.5)
     
     def runICP(self):
+        
         static = str(self.alCont.static.currentText())
         moving = str(self.alCont.moving.currentText())
+        self.fileManager.setTable(static, [1,0,0], 0.5, 2)
+        self.fileManager.setTable(moving, [0,0,1], 0.5, 2)
         print('Run the ICP code between %s and %s' % (static, moving))
 
     def runRegistration(self):
+        c1 = [31.0, 73.0, 125.0]
+        c3 = [170.0, 75.0, 65.0]
+        c2 = [212.0, 221.0, 225.0]
+        CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+        CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
+        CMap = np.c_[CMap1[:, :-1], CMap2]
+        self.CMapN2P = np.transpose(CMap)/255.0
+        self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
         baseline = str(self.regCont.baseline.currentText())
         target = str(self.regCont.target.currentText())
+        self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
+        self.fileManager.setTable(target, [0,0,1], 0.5, 0)
+        reg = registration(self.files[baseline], self.files[target])
+        reg.addActor(CMap = self.CMapN2P)
+        regName = target + '_reg'
+        self.files[regName] = reg
+        self.fileManager.addRow(regName, self.files[regName])
+        
         print('Run the Registration code between %s and %s' % (baseline, target))
         
     def register(self):
@@ -277,7 +296,14 @@ class fileManager(QMainWindow):
         for r in range(self.table.columnCount() - 1):
             row.append(self.table.item(i, r).text())
         row.append(self.table.item(i, r+1).checkState())
-        return row 
+        return row
+    
+    def setTable(self, name, color = [1.0, 1.0, 1.0], opacity=1.0, display=2):
+        for i in range(self.n):
+            if self.table.item(i, 0).text() == name:
+                self.table.item(i, 2).setText(str(color))
+                self.table.item(i, 3).setText(str(opacity))
+                self.table.item(i, 4).setCheckState(display)
 
 class AlignControls(QMainWindow):
     """

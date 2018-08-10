@@ -114,13 +114,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.faces = faces
         self.vert = vert
         self.norm = norm
-        self.values = np.zeros([len(self.vert)])
+        
         # Call function to unify vertices of the array
         if unify is True:
             self.unifyVert()
         # Call function to calculate the edges array
         if struc is True:
             self.calcStruct()
+        self.values = np.zeros([len(self.vert)])
         
     def calcStruct(self, norm=True, edges=True, 
                    edgeFaces=True, faceEdges=True, vNorm=False):
