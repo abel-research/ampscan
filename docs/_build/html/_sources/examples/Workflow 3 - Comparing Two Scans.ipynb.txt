@@ -1,0 +1,260 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Comparing Two Socket Scans"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import AmpScan"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<module 'AmpScan.align' from 'C:\\\\Users\\\\Oliver\\\\Anaconda3\\\\envs\\\\py3\\\\lib\\\\site-packages\\\\AmpScan\\\\align.py'>"
+      ]
+     },
+     "execution_count": 2,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "AmpScan.align"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "moving =\"M8_Cast1_Scan1.stl\"\n",
+    "static = \"M8_Cast2_Scan1.stl\""
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from AmpScan import align"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Help on module AmpScan.align in AmpScan:\n",
+      "\n",
+      "NAME\n",
+      "    AmpScan.align - Created on Thu Sep 14 13:15:30 2017\n",
+      "\n",
+      "DESCRIPTION\n",
+      "    @author: js22g12\n",
+      "\n",
+      "FUNCTIONS\n",
+      "    align(moving, static, method='P2P')\n",
+      "        Using this function for sample docstring (one line desc).\n",
+      "        \n",
+      "        A more extended description that provides details of how the function works.\n",
+      "        \n",
+      "        Parameters\n",
+      "        ----------\n",
+      "        moving : array_like\n",
+      "            Rot has a structure that can be iterated through implying it should be an\n",
+      "            array like structure\n",
+      "        static : data_type\n",
+      "            Description of tTree input and what it does.\n",
+      "        method : data_type\n",
+      "            Desc of method\n",
+      "        \n",
+      "        Returns\n",
+      "        -------\n",
+      "        type\n",
+      "            Explanation of anonymous return value of type ``type``.\n",
+      "        describe : type\n",
+      "            Explanation of return value named `describe`.\n",
+      "        out : type\n",
+      "            Explanation of `out`.\n",
+      "        type_without_description\n",
+      "        \n",
+      "        Other Parameters\n",
+      "        ----------------\n",
+      "        only_seldom_used_keywords : type\n",
+      "            Explanation\n",
+      "        common_parameters_listed_above : type\n",
+      "            Explanation\n",
+      "        \n",
+      "        Raises\n",
+      "        ------\n",
+      "        BadException\n",
+      "            Because you shouldn't have done that.\n",
+      "        \n",
+      "        See Also\n",
+      "        --------\n",
+      "        otherfunc : relationship (optional)\n",
+      "        newfunc : Relationship (optional), which could be fairly long, in which\n",
+      "                  case the line wraps here.\n",
+      "        thirdfunc, fourthfunc, fifthfunc\n",
+      "        \n",
+      "        Notes\n",
+      "        -----\n",
+      "        Notes about the implementation algorithm (if needed).\n",
+      "        \n",
+      "        This can have multiple paragraphs.\n",
+      "        \n",
+      "        You may include some math:\n",
+      "        \n",
+      "        .. math:: X(e^{j\\omega } ) = x(n)e^{ - j\\omega n}\n",
+      "        \n",
+      "        And even use a Greek symbol like :math:`\\omega` inline.\n",
+      "        \n",
+      "        References\n",
+      "        ----------\n",
+      "        Cite the relevant literature, e.g. [1]_.  You may also cite these\n",
+      "        references in the notes section above.\n",
+      "        \n",
+      "        .. [1] O. McNoleg, \"The integration of GIS, remote sensing,\n",
+      "           expert systems and adaptive co-kriging for environmental habitat\n",
+      "           modelling of the Highland Haggis using object-oriented, fuzzy-logic\n",
+      "           and neural-network techniques,\" Computers & Geosciences, vol. 22,\n",
+      "           pp. 585-588, 1996.\n",
+      "        \n",
+      "        Examples\n",
+      "        --------\n",
+      "        These are written in doctest format, and should illustrate how to\n",
+      "        use the function.\n",
+      "        \n",
+      "        >>> a = [1, 2, 3]\n",
+      "        >>> print [x + 3 for x in a]\n",
+      "        [4, 5, 6]\n",
+      "        >>> print \"a\\n\\nb\"\n",
+      "        a\n",
+      "        b\n",
+      "    \n",
+      "    rotMatrix(R, ang='rad')\n",
+      "        Calculate the rotation matrix around\n",
+      "\n",
+      "FILE\n",
+      "    c:\\users\\oliver\\anaconda3\\envs\\py3\\lib\\site-packages\\ampscan\\align.py\n",
+      "\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "help(align)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'module' object is not callable",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[1;32m<ipython-input-6-bbd2d5b93584>\u001b[0m in \u001b[0;36m<module>\u001b[1;34m()\u001b[0m\n\u001b[1;32m----> 1\u001b[1;33m \u001b[0malign\u001b[0m\u001b[1;33m(\u001b[0m\u001b[0mmoving\u001b[0m\u001b[1;33m,\u001b[0m \u001b[0mstatic\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[1;31mTypeError\u001b[0m: 'module' object is not callable"
+     ]
+    }
+   ],
+   "source": [
+    "align(moving, static)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "TypeError",
+     "evalue": "'module' object is not callable",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+      "\u001b[1;32m<ipython-input-8-dc8d1e32eac7>\u001b[0m in \u001b[0;36m<module>\u001b[1;34m()\u001b[0m\n\u001b[1;32m----> 1\u001b[1;33m \u001b[0malign\u001b[0m\u001b[1;33m(\u001b[0m\u001b[1;33m)\u001b[0m\u001b[1;33m\u001b[0m\u001b[0m\n\u001b[0m",
+      "\u001b[1;31mTypeError\u001b[0m: 'module' object is not callable"
+     ]
+    }
+   ],
+   "source": [
+    "align()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'M8_Cast1_Scan1.stl'"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "align.align(moving, static)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [conda env:py3]",
+   "language": "python",
+   "name": "conda-env-py3-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

@@ -1,0 +1,65 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Import stl"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "AmpScan is designed to work on binary stl files. The most basic usage involves importing an stl file into an AmpObject. An AmpObject is the most fundamental part the AmpScan package - it incorporates all the mesh manipulation tools and applies them to the input stl. The basic usage first requires the AmpObject to be imported:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from AmpScan.core import AmpObject"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The stl file should be provided as a string containing either the absolute or relative path. Here we use a binary stl sphere saved in the current working directory as ``sample_stl_sphere_BIN.stl``"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "fh = \"sample_stl_sphere_BIN.stl\"\n",
+    "amp = AmpObject(fh)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python [conda env:py3]",
+   "language": "python",
+   "name": "conda-env-py3-py"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.6"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
