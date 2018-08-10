@@ -13,7 +13,6 @@ AmpScan/Build
 ipynb tests/.ipynb_checkpoints
 AmpScan/.ipynb_checkpoints
 
-/build
 
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
