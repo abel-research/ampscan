@@ -13,7 +13,6 @@ AmpScan/Build
 ipynb tests/.ipynb_checkpoints
 AmpScan/.ipynb_checkpoints
 
-_build
 
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
@@ -38,5 +37,5 @@ instance/
 htmlcov/
 
 dist/
-build/
+
 *.egg-info/

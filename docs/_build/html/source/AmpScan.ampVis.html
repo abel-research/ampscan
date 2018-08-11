@@ -1,0 +1,388 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>AmpScan.ampVis module &mdash; AmpScan 0.3 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="search" title="Search" href="../search.html" /> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> AmpScan
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../exampleDemos.html">Examples</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../code.html">AmpScan’s Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../LICENSE.html">License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">AmpScan</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>AmpScan.ampVis module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/AmpScan.ampVis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast,
+.nboutput.nblast {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast + .nbinput {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+</style>
+<div class="section" id="module-AmpScan.ampVis">
+<span id="ampscan-ampvis-module"></span><h1>AmpScan.ampVis module<a class="headerlink" href="#module-AmpScan.ampVis" title="Permalink to this headline">¶</a></h1>
+<p>Created on Thu Sep 28 13:19:18 2017</p>
+<p>&#64;author: js22g12</p>
+<p>Functions that deal with the visualisation of the limb and data</p>
+<p>Includes interfaces to deal</p>
+<dl class="class">
+<dt id="AmpScan.ampVis.qtVtkWindow">
+<em class="property">class </em><code class="descname">qtVtkWindow</code><a class="headerlink" href="#AmpScan.ampVis.qtVtkWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sphinx.ext.autodoc.importer._MockObject</span></code></p>
+<p>Create a vtk window to be embeded within a qt GUI
+Inherites the QVTKRenderWindowInteractor class and the</p>
+<p>Fix issue with SetInteractorStyle</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="AmpScan.ampVis.visMixin">
+<em class="property">class </em><code class="descname">visMixin</code><a class="headerlink" href="#AmpScan.ampVis.visMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Visualisation methods that act upon the AmpObj itself
+Methods for generating the custom AmpObj actor to interface with vtk</p>
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.addActor">
+<code class="descname">addActor</code><span class="sig-paren">(</span><em>CMap=None, bands=128, sRange=[0, 8]</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.addActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to insert a vtk actor into the actors dictionary within
+the AmpObject</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="AmpScan.ampVis.visMixin.ampActor">
+<em class="property">class </em><code class="descname">ampActor</code><span class="sig-paren">(</span><em>CMap=None</em>, <em>bands=128</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sphinx.ext.autodoc.importer._MockObject</span></code></p>
+<p>Class that inherits methods from vtk actor
+Contains functions to set vertices, faces, scalars and color map
+from numpy arrays</p>
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setCMap">
+<code class="descname">setCMap</code><span class="sig-paren">(</span><em>CMap</em>, <em>bands=128</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setCMap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setColor">
+<code class="descname">setColor</code><span class="sig-paren">(</span><em>color=[1.0, 1.0, 1.0]</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setColor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setFaces">
+<code class="descname">setFaces</code><span class="sig-paren">(</span><em>faces</em>, <em>deep=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setFaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setNorm">
+<code class="descname">setNorm</code><span class="sig-paren">(</span><em>split=False</em>, <em>norm=None</em>, <em>deep=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setNorm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if deepcopy is neededin this function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setOpacity">
+<code class="descname">setOpacity</code><span class="sig-paren">(</span><em>opacity=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setOpacity" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setScalarRange">
+<code class="descname">setScalarRange</code><span class="sig-paren">(</span><em>sRange</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setScalarRange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setShading">
+<code class="descname">setShading</code><span class="sig-paren">(</span><em>shading=True</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setShading" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setValues">
+<code class="descname">setValues</code><span class="sig-paren">(</span><em>values</em>, <em>deep=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setValues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.ampActor.setVert">
+<code class="descname">setVert</code><span class="sig-paren">(</span><em>vert</em>, <em>deep=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.ampActor.setVert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to display the mesh in a vtk window</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.visMixin.genIm">
+<code class="descname">genIm</code><span class="sig-paren">(</span><em>actor=['limb'], winWidth=512, winHeight=512, views=[[0, -1, 0]], background=[1.0, 1.0, 1.0], projection=True, shading=True, mag=10, out='im', name='test.tiff'</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.visMixin.genIm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Output an image of an actor either as an array or a saved png file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="AmpScan.ampVis.vtkRenWin">
+<em class="property">class </em><code class="descname">vtkRenWin</code><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sphinx.ext.autodoc.importer._MockObject</span></code></p>
+<p>Sample docstring to see what’s what…</p>
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.addAxes">
+<code class="descname">addAxes</code><span class="sig-paren">(</span><em>actors, viewport=0, color=[1.0, 1.0, 1.0], font=None</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.addAxes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.getImage">
+<code class="descname">getImage</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.getImage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.getScreenshot">
+<code class="descname">getScreenshot</code><span class="sig-paren">(</span><em>fname</em>, <em>mag=10</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.getScreenshot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.renderActors">
+<code class="descname">renderActors</code><span class="sig-paren">(</span><em>actors</em>, <em>viewport=0</em>, <em>shading=True</em>, <em>zoom=1</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.renderActors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render the required AmpObj actor in the vtk viewport</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.setBackground">
+<code class="descname">setBackground</code><span class="sig-paren">(</span><em>color=[0.1, 0.2, 0.4]</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.setBackground" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the background colour of the renderer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.setProjection">
+<code class="descname">setProjection</code><span class="sig-paren">(</span><em>perspective=False</em>, <em>viewport=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.setProjection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the projection of the camera to either parallel or perspective</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.setScalarBar">
+<code class="descname">setScalarBar</code><span class="sig-paren">(</span><em>actor</em>, <em>title=''</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.setScalarBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set scalar bar based upon lookup table</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.setView">
+<code class="descname">setView</code><span class="sig-paren">(</span><em>view=[0, -1, 0], viewport=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.setView" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.ampVis.vtkRenWin.setnumViewports">
+<code class="descname">setnumViewports</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.ampVis.vtkRenWin.setnumViewports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to set multiple viewports within the vtkWindow</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<em>int</em>) – number of viewports required</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Joshua Steer.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.3',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
