@@ -124,6 +124,10 @@ class AmpScanGUI(QMainWindow):
         self.fileManager.setTable(static, [1,0,0], 0.5, 2)
         self.fileManager.setTable(moving, [0,0,1], 0.5, 2)
         print('Run the ICP code between %s and %s' % (static, moving))
+        if hasattr(self, 'alCont'):
+            self.alCont.getNames()
+        if hasattr(self, 'regCont'):
+            self.regCont.getNames()
 
     def runRegistration(self):
         c1 = [31.0, 73.0, 125.0]
@@ -138,11 +142,16 @@ class AmpScanGUI(QMainWindow):
         target = str(self.regCont.target.currentText())
         self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
         self.fileManager.setTable(target, [0,0,1], 0.5, 0)
-        reg = registration(self.files[baseline], self.files[target], steps = 20).reg
-        reg.addActor(CMap = self.CMapN2P)
+        reg = registration(self.files[baseline], self.files[target], steps = 5).reg
+        reg.addActor(CMap = self.CMap02P)
         regName = target + '_reg'
         self.files[regName] = reg
+        self.filesDrop.append(regName)
         self.fileManager.addRow(regName, self.files[regName])
+        if hasattr(self, 'alCont'):
+            self.alCont.getNames()
+        if hasattr(self, 'regCont'):
+            self.regCont.getNames()
         
         print('Run the Registration code between %s and %s' % (baseline, target))
         

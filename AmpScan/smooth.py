@@ -37,6 +37,8 @@ class smoothMixin(object):
             for j in np.arange(self.vert.shape[0]):
                 # Calculate the mean of the vertex set
                 self.vert[j, :] = neighVerts[ndx[j]:ndx[j+1]].mean(axis=0)
+        self.calcNorm()
+        self.calcVNorm()
     
     def smoothValues(self, n=1):
         """
