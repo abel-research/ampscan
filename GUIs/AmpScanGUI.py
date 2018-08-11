@@ -138,7 +138,7 @@ class AmpScanGUI(QMainWindow):
         target = str(self.regCont.target.currentText())
         self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
         self.fileManager.setTable(target, [0,0,1], 0.5, 0)
-        reg = registration(self.files[baseline], self.files[target])
+        reg = registration(self.files[baseline], self.files[target], steps = 20).reg
         reg.addActor(CMap = self.CMapN2P)
         regName = target + '_reg'
         self.files[regName] = reg
