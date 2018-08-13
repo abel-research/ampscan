@@ -145,26 +145,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  
-<style>
-/* CSS overrides for sphinx_rtd_theme */
-
-/* 24px margin */
-.nbinput.nblast,
-.nboutput.nblast {
-    margin-bottom: 19px;  /* padding has already 5px */
-}
-
-/* ... except between code cells! */
-.nblast + .nbinput {
-    margin-top: -19px;
-}
-
-.admonition > p:before {
-    margin-right: 4px;  /* make room for the exclamation icon */
-}
-</style>
-<div class="section" id="ampscan-package">
+  <div class="section" id="ampscan-package">
 <h1>AmpScan package<a class="headerlink" href="#ampscan-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
@@ -691,6 +672,9 @@ size of the vertices array enabling speed increases</p>
 
 </dd></dl>
 
+</div>
+<div class="section" id="ampscan-cython-ext-module">
+<h2>AmpScan.cython_ext module<a class="headerlink" href="#ampscan-cython-ext-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-AmpScan.fe">
 <span id="ampscan-fe-module"></span><h2>AmpScan.fe module<a class="headerlink" href="#module-AmpScan.fe" title="Permalink to this headline">¶</a></h2>
@@ -1336,6 +1320,81 @@ on the first line, separated by a colon.</p>
 </tbody>
 </table>
 </dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-AmpScan.tsbSocketDesign">
+<span id="ampscan-tsbsocketdesign-module"></span><h2>AmpScan.tsbSocketDesign module<a class="headerlink" href="#module-AmpScan.tsbSocketDesign" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Oct 11 09:05:19 2017</p>
+<p>&#64;author: js22g12</p>
+<p>Backend for matplotlib to create a moveable spline figure</p>
+<dl class="class">
+<dt id="AmpScan.tsbSocketDesign.dragSpline">
+<em class="property">class </em><code class="descname">dragSpline</code><span class="sig-paren">(</span><em>parent</em>, <em>Signal=None</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#AmpScan.tsbSocketDesign.mplCanvas" title="AmpScan.tsbSocketDesign.mplCanvas"><code class="xref py py-class docutils literal notranslate"><span class="pre">AmpScan.tsbSocketDesign.mplCanvas</span></code></a></p>
+<p>Numpy style docstring</p>
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.bezierCurve">
+<code class="descname">bezierCurve</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.bezierCurve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.connect">
+<code class="descname">connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.connect" title="Permalink to this definition">¶</a></dt>
+<dd><p>connect to all the events we need</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.disconnect">
+<code class="descname">disconnect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>disconnect all the stored connection ids</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.lock">
+<code class="descname">lock</code><em class="property"> = None</em><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.lock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.on_motion">
+<code class="descname">on_motion</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.on_motion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.on_press">
+<code class="descname">on_press</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.on_press" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.dragSpline.on_release">
+<code class="descname">on_release</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.dragSpline.on_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>on release we reset the press data</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="AmpScan.tsbSocketDesign.mplCanvas">
+<em class="property">class </em><code class="descname">mplCanvas</code><span class="sig-paren">(</span><em>parent=None</em>, <em>width=8</em>, <em>height=5</em>, <em>dpi=100</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.mplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.).</p>
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.mplCanvas.compute_initial_figure">
+<code class="descname">compute_initial_figure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.mplCanvas.compute_initial_figure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="AmpScan.tsbSocketDesign.socketDesignMixin">
+<em class="property">class </em><code class="descname">socketDesignMixin</code><a class="headerlink" href="#AmpScan.tsbSocketDesign.socketDesignMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Numpy style docstring</p>
+<dl class="method">
+<dt id="AmpScan.tsbSocketDesign.socketDesignMixin.TSBSocket">
+<code class="descname">TSBSocket</code><span class="sig-paren">(</span><em>B</em>, <em>stype=0</em><span class="sig-paren">)</span><a class="headerlink" href="#AmpScan.tsbSocketDesign.socketDesignMixin.TSBSocket" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
