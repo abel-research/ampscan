@@ -1,8 +1,6 @@
-Welcome to AmpScan's documentation!
-===================================
+AmpScan
+=======
 
-Description
------------
 AmpScan is a Python package that provides tools that provides FE analysis tools 
 that can be applied in a medical setting. These tools Particularly apply to the 
 design of effective prosthetic sockets.
@@ -12,7 +10,8 @@ AmpScan is is still under active development by Joshua Steer.
 Installation
 ------------
 
-The best option for installation is to clone directly from the gitlab repository. Use:
+The best option for installation is to build AmpScan from source. To clone directly 
+from the gitlab repository, use:
 
 ``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
 
@@ -40,9 +39,4 @@ Developers Guide
    LICENSE
 
 
-
-Indices and tables
-==================
-
 * :ref:`modindex`
-* :ref:`search`

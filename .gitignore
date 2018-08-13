@@ -13,6 +13,7 @@ AmpScan/Build
 ipynb tests/.ipynb_checkpoints
 AmpScan/.ipynb_checkpoints
 
+docs/_build
 
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
@@ -31,6 +32,7 @@ venv/
 __pycache__/
 
 instance/
+
 
 .pytest_cache/
 .coverage
