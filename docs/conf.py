@@ -15,7 +15,6 @@
 import os
 import sys
 import sphinx_rtd_theme
-import nbsphinx
 sys.path.insert(0, os.path.abspath('.'))
 
 
@@ -44,7 +43,6 @@ release = '0.3'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
-    'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'nbsphinx',
 ]
