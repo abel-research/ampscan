@@ -44,7 +44,6 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
-    'nbsphinx',
 ]
 
 napoleon_numpy_docstring=True
