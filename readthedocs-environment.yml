@@ -106,5 +106,4 @@ dependencies:
     - pi==0.1.2
     - pockets==0.6.2
     - sphinxcontrib-napoleon==0.6.1
-prefix: C:\Users\Oliver\Anaconda3\envs\py3
 
