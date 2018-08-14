@@ -1,3 +1,4 @@
+pip==18.0
 alabaster==0.7.10
 anaconda-client==1.6.14
 anaconda-navigator==1.8.7
