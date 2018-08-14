@@ -89,7 +89,6 @@ dependencies:
   - numpy=1.15.0
   - numpy-base=1.15.0
   - pyqt=5.9.2
-  - qt=5.9.6
   - scipy=1.1.0
   - sphinxcontrib=1.0
   - yaml=0.1.7
