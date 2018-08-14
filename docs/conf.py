@@ -29,6 +29,7 @@ version = ''
 # The full version, including alpha/beta/rc tags
 release = '0.3'
 
+on_rtd = os.environ.get('READTHEDOCS') == 'True'
 
 # -- General configuration ---------------------------------------------------
 
@@ -44,6 +45,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
+    'nbsphinx',
 ]
 
 napoleon_numpy_docstring=True
