@@ -14,6 +14,7 @@ dependencies:
   - entrypoints=0.2.3=py35_1
   - flask=1.0.2=py_1
   - flask-bootstrap=3.3.7.1=py_0
+  - freetype=2.9.1
   - future=0.16.0=py35_2
   - html5lib=1.0.1=py_0
   - hyperlink=17.3.1=py_0
