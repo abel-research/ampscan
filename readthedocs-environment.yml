@@ -4,13 +4,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - expat=2.2.5=hcc4222d_0
-  - libiconv=1.15=h1df5818_7
-  - libtiff=4.0.9=hb8ad9f9_1
-  - libxml2=2.9.8=hadb2253_1
-  - tbb=2018.0.4=he980bc4_1
-  - vc=14.1=h0510ff6_3
-  - vs2015_runtime=15.5.2=3
   - alabaster=0.7.11=py_3
   - anaconda-client=1.7.1=py_0
   - appdirs=1.4.3=py_1
