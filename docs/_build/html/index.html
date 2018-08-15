@@ -171,7 +171,7 @@
 that can be applied in a medical setting. These tools Particularly apply to the
 design of effective prosthetic sockets.</p>
 <p>AmpScan is is still under active development by Joshua Steer.</p>
-<div class="figure" id="id1">
+<div class="figure" id="id3">
 <a class="reference internal image-reference" href="_images/picture.png"><img alt="AmpFE flow diagram" src="_images/picture.png" style="width: 602.0px; height: 235.0px;" /></a>
 <p class="caption"><span class="caption-text">This is the caption of the figure (a simple paragraph).</span></p>
 </div>
@@ -184,6 +184,99 @@ from the gitlab repository, use:</p>
 is likely to not be the latest version of AmpScan:</p>
 <p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--index-url</span> <span class="pre">https://test.pypi.org/simple/</span> <span class="pre">AmpScan</span></code></p>
 </div>
+</div>
+<div class="section" id="ampscan-align-module">
+<h1>AmpScan.align module<a class="headerlink" href="#ampscan-align-module" title="Permalink to this headline">¶</a></h1>
+<p>Including this just to test:</p>
+<p>Created on Thu Sep 14 13:15:30 2017</p>
+<p>&#64;author: js22g12</p>
+<dl class="function">
+<dt>
+<code class="descname">align</code><span class="sig-paren">(</span><em>moving</em>, <em>static</em>, <em>method='P2P'</em><span class="sig-paren">)</span></dt>
+<dd><p>Using this function for sample docstring (one line desc).</p>
+<p>A more extended description that provides details of how the function works.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>moving</strong> (<em>array_like</em>) – Rot has a structure that can be iterated through implying it should be an
+array like structure</li>
+<li><strong>static</strong> (<em>data_type</em>) – Description of tTree input and what it does.</li>
+<li><strong>method</strong> (<em>data_type</em>) – Desc of method</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><em>type</em> – Explanation of anonymous return value of type <code class="docutils literal notranslate"><span class="pre">type</span></code>.</li>
+<li><strong>describe</strong> (<em>type</em>) – Explanation of return value named <cite>describe</cite>.</li>
+<li><strong>out</strong> (<em>type</em>) – Explanation of <cite>out</cite>.</li>
+<li><em>type_without_description</em></li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">Other Parameters:</th></tr>
+<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
+<li><strong>only_seldom_used_keywords</strong> (<em>type</em>) – Explanation</li>
+<li><strong>common_parameters_listed_above</strong> (<em>type</em>) – Explanation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BadException</span></code> – Because you shouldn’t have done that.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="docutils">
+<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">otherfunc()</span></code></dt>
+<dd>relationship (optional)</dd>
+<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">newfunc()</span></code></dt>
+<dd>Relationship (optional), which could be fairly long, in which case the line wraps here.</dd>
+</dl>
+<p class="last"><code class="xref py py-func docutils literal notranslate"><span class="pre">thirdfunc()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">fourthfunc()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">fifthfunc()</span></code></p>
+</div>
+<p class="rubric">Notes</p>
+<p>Notes about the implementation algorithm (if needed).</p>
+<p>This can have multiple paragraphs.</p>
+<p>You may include some math:</p>
+<div class="math notranslate nohighlight">
+\[X(e^{j\omega } ) = x(n)e^{ - j\omega n}\]</div>
+<p>And even use a Greek symbol like <span class="math notranslate nohighlight">\(\omega\)</span> inline.</p>
+<p class="rubric">References</p>
+<p>Cite the relevant literature, e.g. <a class="footnote-reference" href="#id2" id="id1">[1]</a>.  You may also cite these
+references in the notes section above.</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>O. McNoleg, “The integration of GIS, remote sensing,
+expert systems and adaptive co-kriging for environmental habitat
+modelling of the Highland Haggis using object-oriented, fuzzy-logic
+and neural-network techniques,” Computers &amp; Geosciences, vol. 22,
+pp. 585-588, 1996.</td></tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>These are written in doctest format, and should illustrate how to
+use the function.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">3</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span>
+<span class="go">[4, 5, 6]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;a</span><span class="se">\n\n</span><span class="s2">b&quot;</span>
+<span class="go">a</span>
+<span class="go">b</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<code class="descname">rotMatrix</code><span class="sig-paren">(</span><em>R</em>, <em>ang='rad'</em><span class="sig-paren">)</span></dt>
+<dd><p>Calculate the rotation matrix around</p>
+</dd></dl>
+
 <div class="section" id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">

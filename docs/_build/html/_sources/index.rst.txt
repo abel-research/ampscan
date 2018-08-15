@@ -28,6 +28,19 @@ is likely to not be the latest version of AmpScan:
 ``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
 
 
+AmpScan.align module
+====================
+
+Including this just to test:
+
+.. automodule:: AmpScan.align
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :noindex:
+
+
+
 Getting Started
 ---------------
 
