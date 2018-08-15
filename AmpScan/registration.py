@@ -19,7 +19,7 @@ class registration(object):
             getattr(self, method)()
         
         
-    def point2plane(self, neigh = 10, inside = True, smooth=0):
+    def point2plane(self, subset = None, neigh = 10, inside = True, smooth=1):
         """
         Function to register the regObject to the baseline mesh
         
@@ -39,9 +39,13 @@ class registration(object):
                          [self.b.vert, self.b.faces, self.b.values]))
         regData = copy.deepcopy(bData)
         self.reg = AmpObject(regData, stype='reg')
+        if subset is None:
+            rVert = self.reg.vert
+        else:
+            rVert = self.reg.vert[subset]
         for step in np.arange(self.steps, 0, -1, dtype=float):
             # Index of 10 centroids nearest to each baseline vertex
-            ind = tTree.query(self.reg.vert, neigh)[1]
+            ind = tTree.query(rVert, neigh)[1]
 #            D = np.zeros(self.reg.vert.shape)
             # Define normals for faces of nearest faces
             norms = self.t.norm[ind]
@@ -49,7 +53,7 @@ class registration(object):
             fPoints = self.t.vert[self.t.faces[ind, 0]]
             # Calculate dot product between point on face and normals
             d = np.einsum('ijk, ijk->ij', norms, fPoints)
-            t = d - np.einsum('ijk, ik->ij', norms, self.reg.vert)
+            t = d - np.einsum('ijk, ik->ij', norms, rVert)
             # Calculate the vector from old point to new point
             G = np.einsum('ijk, ij->ijk', norms, t)
             # Ensure new points lie inside points otherwise set to 99999
@@ -61,7 +65,7 @@ class registration(object):
                 GInd = GInd = self.calcBarycentric(G, ind)
             # Define vector from baseline point to intersect point
             D = G[np.arange(len(G)), GInd, :]
-            self.reg.vert += D/step
+            rVert += D/step
             if smooth > 0:
                 self.reg.lp_smooth(smooth)
         
