@@ -36,14 +36,6 @@ AmpScan.core module
     :undoc-members:
     :show-inheritance:
 
-AmpScan.cython\_ext module
---------------------------
-
-.. automodule:: AmpScan.cython_ext
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 AmpScan.fe module
 -----------------
 

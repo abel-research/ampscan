@@ -45,5 +45,3 @@ Developers Guide
    code
    LICENSE
 
-
-* :ref:`modindex`
