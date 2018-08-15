@@ -7,12 +7,6 @@ design of effective prosthetic sockets.
 
 AmpScan is is still under active development by Joshua Steer.
 
-.. figure:: picture.png
-   :scale: 100 %
-   :alt: AmpFE flow diagram
-
-   This is the caption of the figure (a simple paragraph).
-
 
 Installation
 ------------
