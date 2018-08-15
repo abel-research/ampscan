@@ -5,3 +5,4 @@ AmpScan.pca module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:

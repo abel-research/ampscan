@@ -5,3 +5,4 @@ AmpScan.align module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:

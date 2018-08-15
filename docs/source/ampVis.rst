@@ -5,3 +5,4 @@ AmpScan.ampVis module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:

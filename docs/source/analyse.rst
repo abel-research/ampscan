@@ -5,3 +5,4 @@ AmpScan.analyse module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:

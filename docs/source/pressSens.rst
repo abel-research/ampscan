@@ -5,3 +5,4 @@ AmpScan.pressSens module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:

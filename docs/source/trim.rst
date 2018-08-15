@@ -5,3 +5,4 @@ AmpScan.trim module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:

@@ -5,3 +5,4 @@ AmpScan.registration module
     :members:
     :undoc-members:
     :show-inheritance:
+    :noindex:
