@@ -4,14 +4,14 @@ AmpScan's Code
 .. toctree::
    :maxdepth: 3
    
-   _static/align
-   _static/ampVis
-   _static/analyse
-   _static/core
-   _static/fe
-   _static/pca
-   _static/pressSens
-   _static/registration
-   _static/smooth
-   _static/trim
-   _static/tsbSocketDesign
+   source/AmpScan.align
+   source/AmpScan.ampVis
+   source/AmpScan.analyse
+   source/AmpScan.core
+   source/AmpScan.fe
+   source/AmpScan.pca
+   source/AmpScan.pressSens
+   source/AmpScan.registration
+   source/AmpScan.smooth
+   source/AmpScan.trim
+   source/AmpScan.tsbSocketDesign

@@ -68,14 +68,6 @@ AmpScan.registration module
     :undoc-members:
     :show-inheritance:
 
-AmpScan.setup module
---------------------
-
-.. automodule:: AmpScan.setup
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 AmpScan.smooth module
 ---------------------
 
