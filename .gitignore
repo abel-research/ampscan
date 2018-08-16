@@ -15,6 +15,12 @@ AmpScan/.ipynb_checkpoints
 
 docs/_build
 
+
+
+GUIs/__pycache__
+GUIs/build
+GUIs/dist
+GUIS/*.spec
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
 *.ipynb_checkpoints
