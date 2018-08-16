@@ -38,17 +38,19 @@ dependencies:
   - pycparser=2.18=py_1
   - pygments=2.2.0=py_1
   - python=3.5.5
+  - pyqt
   - setuptools=40.0.0=py35_1
   - sphinx=1.7.5=py35_0
   - sphinx_rtd_theme=0.4.1=py_0
   - widgetsnbextension=3.4.0=py35_0
   - _nb_ext_conf=0.4.0=py35_1
-  - freetype=2.8
+  - freetype
   - matplotlib=2.2.2
   - numpy=1.15.0
   - numpy-base=1.15.0
   - scipy=1.1.0
   - sphinxcontrib=1.0
+  - vtk
   - pip:
     - msgpack==0.5.6
     - pi==0.1.2
