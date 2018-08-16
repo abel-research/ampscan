@@ -10,5 +10,7 @@ files used can be downloaded from the Gitlab repository.
 .. toctree::
    :maxdepth: 2
 
+   examples/TESTnb
    examples/Workflow1-Importstl
    examples/Workflow2-ImportTetMesh
+   
