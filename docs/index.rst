@@ -29,6 +29,7 @@ Getting Started
    :maxdepth: 3
 
    exampleDemos
+   examples/Workflow1-Importstl
 
 
 Developers Guide
