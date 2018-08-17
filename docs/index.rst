@@ -6,7 +6,7 @@ the design of prosthetic sockets. It provides functions for handling common desi
 such as importing, aligning and registering meshes. AmpScan relies heavily on `NumPy`_ and 
 `SciPy`_ to perform mathematical operations with vizualisation handled by `PyQt`_ and `VTK`_. 
 The package is still under active development by researchers at the University of Southampton 
-- this documentation should be considered the 'go to' for anyone interested in using or 
+- this documentation should be considered the 'go-to' for anyone interested in using or 
 developing AmpScan.
 
 .. _numpy: http://www.numpy.org/
