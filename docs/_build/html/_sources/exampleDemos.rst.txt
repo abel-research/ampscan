@@ -1,5 +1,5 @@
-Examples
-========
+Tutorials
+=========
 
 This section provides a series of workflows that demonstrate the 
 core functionality of AmpScan. Each is presented as a tutorial that 

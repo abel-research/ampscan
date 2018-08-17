@@ -1,5 +1,5 @@
-AmpScan's Code
-==============
+Module Documentation
+====================
 
 .. toctree::
    :maxdepth: 3
