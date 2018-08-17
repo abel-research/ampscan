@@ -14,7 +14,7 @@ AmpScan/Build
 ipynb tests/.ipynb_checkpoints
 AmpScan/.ipynb_checkpoints
 
-docs/_build
+docs/_build/
 
 GUIs/__pycache__
 GUIs/build

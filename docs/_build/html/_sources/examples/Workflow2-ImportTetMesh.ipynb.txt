@@ -16,11 +16,11 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 1,
    "metadata": {},
    "outputs": [],
    "source": [
-    "#from AmpScan.core import AmpObject\n",
+    "from AmpScan.core import AmpObject\n",
     "import numpy as np"
    ]
   },
@@ -33,7 +33,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 4,
+   "execution_count": 2,
    "metadata": {},
    "outputs": [],
    "source": [
