@@ -2,10 +2,10 @@ Tutorials
 =========
 
 This section provides a series of workflows that demonstrate the 
-core functionality of AmpScan. Each is presented as a tutorial that 
-can be replicated locally once you have installed AmpScan. The stl 
-files used can be downloaded from the Gitlab repository.
+core functionality of AmpScan. Some require sample stl 
+files - these can be downloaded from the Gitlab repository `here`_.
 
+.. _here: https://git.soton.ac.uk/js22g12/AmpScan/tree/master/docs/examples
 
 .. toctree::
    :maxdepth: 2

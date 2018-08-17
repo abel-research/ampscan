@@ -1,5 +1,6 @@
 *.pyc
 
+*.egg-info/
 /*.egg-info
 /*.egg
 
@@ -15,8 +16,6 @@ AmpScan/.ipynb_checkpoints
 
 docs/_build
 
-
-
 GUIs/__pycache__
 GUIs/build
 GUIs/dist
@@ -31,19 +30,14 @@ local ipynb tests
 MATLAB
 
 dist
+dist/
 
 venv/
 
-*.pyc
 __pycache__/
 
 instance/
 
-
 .pytest_cache/
 .coverage
 htmlcov/
-
-dist/
-
-*.egg-info/
