@@ -3,17 +3,10 @@ AmpScan
 
 AmpScan is a Python package that provides matrix manipulation tools specifically for 
 the design of prosthetic sockets. It provides functions for handling common design workflows 
-such as importing, aligning and registering meshes. AmpScan relies heavily on `NumPy`_ and 
-`SciPy`_ to perform mathematical operations with vizualisation handled by `PyQt`_ and `VTK`_. 
-The package is still under active development by researchers at the University of Southampton 
-- this documentation should be considered the 'go-to' for anyone interested in using or 
-developing AmpScan.
-
-.. _numpy: http://www.numpy.org/
-.. _SciPy: https://www.scipy.org/
-.. _PyQt: https://riverbankcomputing.com/software/pyqt/intro
-.. _VTK: https://www.vtk.org/
-
+such as importing, aligning and registering meshes. AmpScan relies heavily on [NumPy](http://www.numpy.org/) 
+and [SciPy](https://www.scipy.org/) to perform mathematical operations with vizualisation handled by 
+[PyQt](https://riverbankcomputing.com/software/pyqt/intro) and [VTK](https://www.vtk.org/). The package is 
+still under development by researchers at the University of Southampton.
 
 Installation
 ------------
