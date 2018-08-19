@@ -1,23 +1,28 @@
 AmpScan
 =======
 
-AmpScan is a Python package that provides tools that provides FE analysis tools 
-that can be applied in a medical setting. These tools Particularly apply to the 
-design of effective prosthetic sockets.
+AmpScan is a Python package that provides matrix manipulation tools specifically for 
+the design of prosthetic sockets. It provides functions for handling common design workflows 
+such as importing, aligning and registering meshes. AmpScan relies heavily on `NumPy`_ and 
+`SciPy`_ to perform mathematical operations with vizualisation handled by `PyQt`_ and `VTK`_. 
+The package is still under active development by researchers at the University of Southampton 
+- this documentation should be considered the 'go-to' for anyone interested in using or 
+developing AmpScan.
 
-AmpScan is is still under active development by Joshua Steer.
+.. _numpy: http://www.numpy.org/
+.. _SciPy: https://www.scipy.org/
+.. _PyQt: https://riverbankcomputing.com/software/pyqt/intro
+.. _VTK: https://www.vtk.org/
 
 
 Installation
 ------------
 
-The best option for installation is to build AmpScan from source. To clone directly 
-from the gitlab repository, use:
+For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
 ``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
 
-A pip installation is also available through test PyPI. However, this installation 
-is likely to not be the latest version of AmpScan:
+A pip installation is also available through test PyPI using:
 
 ``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
 

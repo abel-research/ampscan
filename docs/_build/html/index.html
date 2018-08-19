@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Examples" href="exampleDemos.html" /> 
+    <link rel="next" title="Tutorials" href="exampleDemos.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -77,10 +77,10 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="exampleDemos.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exampleDemos.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="code.html">AmpScan’s Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Module Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
 </ul>
 
@@ -167,24 +167,25 @@
 </style>
 <div class="section" id="ampscan">
 <h1>AmpScan<a class="headerlink" href="#ampscan" title="Permalink to this headline">¶</a></h1>
-<p>AmpScan is a Python package that provides tools that provides FE analysis tools
-that can be applied in a medical setting. These tools Particularly apply to the
-design of effective prosthetic sockets.</p>
-<p>AmpScan is is still under active development by Joshua Steer.</p>
+<p>AmpScan is a Python package that provides matrix manipulation tools specifically for
+the design of prosthetic sockets. It provides functions for handling common design workflows
+such as importing, aligning and registering meshes. AmpScan relies heavily on <a class="reference external" href="http://www.numpy.org/">NumPy</a> and
+<a class="reference external" href="https://www.scipy.org/">SciPy</a> to perform mathematical operations with vizualisation handled by <a class="reference external" href="https://riverbankcomputing.com/software/pyqt/intro">PyQt</a> and <a class="reference external" href="https://www.vtk.org/">VTK</a>.
+The package is still under active development by researchers at the University of Southampton
+- this documentation should be considered the ‘go-to’ for anyone interested in using or
+developing AmpScan.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>The best option for installation is to build AmpScan from source. To clone directly
-from the gitlab repository, use:</p>
+<p>For the most up to date version of AmpScan, clone directly from the gitlab repository using:</p>
 <p><code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://git.soton.ac.uk/js22g12/AmpScan.git</span></code></p>
-<p>A pip installation is also available through test PyPI. However, this installation
-is likely to not be the latest version of AmpScan:</p>
+<p>A pip installation is also available through test PyPI using:</p>
 <p><code class="docutils literal notranslate"><span class="pre">$</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--index-url</span> <span class="pre">https://test.pypi.org/simple/</span> <span class="pre">AmpScan</span></code></p>
 </div>
 <div class="section" id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="exampleDemos.html">Examples</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="exampleDemos.html">Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="examples/TESTnb.html">Test Output</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/Workflow1-Importstl.html">Import stl</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/Workflow2-ImportTetMesh.html">Import Tetrahedral Mesh</a></li>
@@ -197,7 +198,7 @@ is likely to not be the latest version of AmpScan:</p>
 <h2>Developers Guide<a class="headerlink" href="#developers-guide" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="code.html">AmpScan’s Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Module Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="LICENSE.html">License</a></li>
 </ul>
 </div>
@@ -212,7 +213,7 @@ is likely to not be the latest version of AmpScan:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="exampleDemos.html" class="btn btn-neutral float-right" title="Examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="exampleDemos.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>

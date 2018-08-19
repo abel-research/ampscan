@@ -1,32 +1,28 @@
-# AmpScan
+AmpScan
+=======
 
-## Getting Started
+AmpScan is a Python package that provides matrix manipulation tools specifically for 
+the design of prosthetic sockets. It provides functions for handling common design workflows 
+such as importing, aligning and registering meshes. AmpScan relies heavily on [NumPy](http://www.numpy.org/) 
+and [SciPy](https://www.scipy.org/) to perform mathematical operations with vizualisation handled by 
+[PyQt](https://riverbankcomputing.com/software/pyqt/intro) and [VTK](https://www.vtk.org/). The package is 
+still under development by researchers at the University of Southampton.
 
-Would be nice to have a "Hello AmpScan" type function described here.
+Installation
+------------
 
-## Build and Install Locally
+For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
-After cloning the repo, to use the GUIs a pip install is required
-To run in developer mode, from anaconda prompt in AmpScan directory:
+``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
 
-```pip install -e .```
+A pip installation is also available through test PyPI using:
 
-## Building Docs Locally
+``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
 
-The documentation was generated using [Sphinx](http://www.sphinx-doc.org/en/master/index.html) which provides 
-a [makefile](../docs/Makefile). This enables documentation to be generated with a single command (`make html`). Makefile should not 
-be altered.
-
-1. Clone the repository onto your local machine.
-2. Open a command prompt (anaconda) in the docs directory.
-3. Type `make html` and press enter.
-
-The documentation files will be generated in docs/_build/html. Note that one error should be produced during 
-the make process - this is expected and can be ignored.
 
 ## How to acknowledge
 
-Alex Dickinson, Joshua Steer: Find license [here](../LICENSE)
+Find license [here](../LICENSE)
 
 ## Structure
 
