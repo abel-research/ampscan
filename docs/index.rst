@@ -20,7 +20,7 @@ Installation
 
 For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
-``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
+``git clone https://git.soton.ac.uk/js22g12/AmpScan.git`` 
 
 A pip installation is also available through test PyPI using:
 
