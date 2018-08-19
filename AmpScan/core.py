@@ -290,7 +290,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         self.translate(-self.vert.mean(axis=0))
     
-    def rotate(self, rot, ang='rad'):
+    def rotate(self, rot, ang='rad', norms=True):
         r"""
         Rotate the AmpObj in 3D space
 
@@ -304,33 +304,21 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
 
         """
         R = self.rotMatrix(rot, ang)
-        self.vert[:, :] = np.dot(self.vert, np.transpose(R))
+        self.rotateMat(R, norms)
 
-    def man_rot(self, rot):
-        """
-        DEPRECIATED
-        Rotate the AmpObj in 3D space and re-calculate the normals 
-        
-        Parameters
-        -----------
-        rot: array-like
-            1x3 array of the rotation around [x, y, z]
             
-        Update this so calculated using matrices
+    def rotateMat(self, R, norms=True):
+        self.vert[:, :] = np.dot(self.vert, R.T)
+        if norms is True:
+            self.norm[:, :] = np.dot(self.norm, R.T)
+            self.vNorm[:, :] = np.dot(self.vNorm, R.T)
+            
+            
+    def rigidTransform(self, R, T):
+        self.rotateMat(R, True)
+        self.translate(T)
+        
 
-        """
-        Id = np.identity(3)
-        for i, r in enumerate(rot):
-            if r != 0:
-                ax = Id[i, :]
-                ang = np.deg2rad(rot[i])
-                dot = np.reshape(self.vert[:, 0] * ax[0] +
-                                 self.vert[:, 1] * ax[1] +
-                                 self.vert[:, 2] * ax[2], (-1, 1))
-                self.vert = (self.vert * np.cos(ang) +
-                             np.cross(ax, self.vert) * np.sin(ang) +
-                             np.reshape(ax, (1, -1)) * dot * (1-np.cos(ang)))
-        self.calc_norm()
         
     @staticmethod
     def rotMatrix(R, ang='rad'):

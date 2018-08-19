@@ -10,16 +10,30 @@ from scipy import spatial
 from .core import AmpObject
 
 class registration(object):
+    """
+    Class for registration of two AmpObjects
     
-    def __init__(self, baseline, target, method='point2plane', steps=5):
+    Parameters
+    ----------
+    baseline: AmpObject
+    	The baseline AmpObject, the vertices from this will be morphed onto the target
+    target: AmpObject
+    	The target AmpObject, the shape that the baseline attempts to morph onto
+    method: str
+    	A string of the method used for registration
+    *args:
+    	The arguments used for the registration methods
+    **kwargs:
+    	The keyword arguments used for the registration methods
+    """ 
+    def __init__(self, baseline, target, method='point2plane', *args, **kwargs):
         self.b = baseline
         self.t = target
-        self.steps = steps
-#        if method is not None:
-#            getattr(self, method)()
+        if method is not None:
+            getattr(self, method)(*args, **kwargs)
         
         
-    def point2plane(self, subset = None, neigh = 10, inside = True, smooth=1):
+    def point2plane(self, steps = 1, subset = None, neigh = 10, inside = True, smooth=1):
         """
         Function to register the regObject to the baseline mesh
         
@@ -43,7 +57,7 @@ class registration(object):
             rVert = self.reg.vert
         else:
             rVert = self.reg.vert[subset]
-        for step in np.arange(self.steps, 0, -1, dtype=float):
+        for step in np.arange(steps, 0, -1, dtype=float):
             # Index of 10 centroids nearest to each baseline vertex
             ind = tTree.query(rVert, neigh)[1]
 #            D = np.zeros(self.reg.vert.shape)
@@ -66,7 +80,7 @@ class registration(object):
             # Define vector from baseline point to intersect point
             D = G[np.arange(len(G)), GInd, :]
             rVert += D/step
-            if smooth > 0 and step < self.steps-1:
+            if smooth > 0 and step < steps-1:
 #                v = self.reg.vert[~subset]
                 self.reg.lp_smooth(smooth)
 #                self.reg.vert[~subset] = v

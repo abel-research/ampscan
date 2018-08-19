@@ -6,11 +6,14 @@ Created on Thu Sep 14 13:15:30 2017
 """
 
 import numpy as np
+import copy
 import vtk
+import math
 from scipy import spatial
 from scipy.optimize import minimize
 from .core import AmpObject
 from .ampVis import vtkRenWin
+
 
 class align(object):
     r"""
@@ -94,17 +97,19 @@ class align(object):
 
     """    
 
-    def __init__(self, moving, static, method = 'P2P'):
-        self.m = moving
+    def __init__(self, moving, static, method = 'linearICP', *args, **kwargs):
+        mData = dict(zip(['vert', 'faces', 'values'], 
+                         [moving.vert, moving.faces, moving.values]))
+        alData = copy.deepcopy(mData)
+        self.m = AmpObject(alData, stype='reg')
+        self.m.calcVNorm()
         self.s = static
+        self.s.calcVNorm()
         if method is not None:
-            getattr(self, method)()
-            
-        #self.icp()
-        #amp = AmpObject()
+            getattr(self, method)(*args, **kwargs)
         
     def icp(self):
-        """
+        r"""
         Automated alignment function between two meshes
         
         """
@@ -115,8 +120,8 @@ class align(object):
                        options={'gtol':1e-6, 'disp':True})
         
         
-    def calcDistError(rot, tTree):
-        """
+    def calcDistError(self, rot, tTree):
+        r"""
         Needs description. Note the blank line at the end of each 
         docstring - this is necessary.
 
@@ -135,6 +140,107 @@ class align(object):
         dist = tTree.query(self.vert, 10)[0]
         dist = dist.min(axis=1)
         return dist.sum()
+    
+    def linearICP(self, maxiter=20, inlier=0.5, initTransform=None):
+        """
+        Iterative Closest Point algorithm which relies on using least squares
+        method on a having made the minimisation problem into a set of linear 
+        equations
+        """
+        # Define the rotation, translation, error and quaterion arrays
+        Rs = np.zeros([3, 3, maxiter+1])
+        Ts = np.zeros([3, maxiter+1])
+        qs = np.r_[np.ones([1, maxiter+1]), 
+                   np.zeros([6, maxiter+1])]
+        dq  = np.zeros([7, maxiter+1])
+        dTheta = np.zeros([maxiter+1])
+        err = np.zeros([maxiter+1])
+        if initTransform is None:
+            initTransform = np.eye(4)
+        Rs[:, :, 0] = initTransform[:3, :3]
+        Ts[:, 0] = initTransform[3, :3]
+        qs[:4, 0] = self.rot2quat(Rs[:, :, 0]) 
+        qs[4:, 0] = Ts[:, 0]
+        # Define 
+        kdTree = spatial.cKDTree(self.s.vert)
+        self.m.rigidTransform(Rs[:, :, 0], Ts[:, 0])
+        [dist, idx] = kdTree.query(self.m.vert, 1)
+        err[0] = math.sqrt(dist.mean())
+        for i in range(maxiter):
+            [R, T] = self.point2plane(self.m.vert,
+                                      self.s.vert[idx, :], 
+                                      self.s.vNorm[idx, :])
+            Rs[:, :, i+1] = np.dot(R, Rs[:, :, i])
+            Ts[:, i+1] = np.dot(R, Ts[:, i]) + T
+            self.m.rigidTransform(R, T)
+            [dist, idx] = kdTree.query(self.m.vert, 1)
+            err[i+1] = math.sqrt(dist.mean())
+            qs[:, i+1] = np.r_[self.rot2quat(R), T]
+        R = Rs[:, :, -1]
+        #Simpl
+        [U, s, V] = np.linalg.svd(R)
+        R = np.dot(U, V.T)
+        self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(Ts[:, -1], 1)[:, None].T]
+        self.R = R
+        self.T = Ts[:, -1]
+        self.rmse = err[-1]
+        
+            
+    
+    @staticmethod
+    def point2plane(mv, sv, sn):
+        cn = np.c_[np.cross(mv, sn), sn]
+        C = np.dot(cn.T, cn)
+        v = sv - mv
+        b = np.zeros([6])
+        for i, col in enumerate(cn.T):
+            b[i] = (v * np.repeat(col[:, None], 3, axis=1) * sn).sum()
+        X = np.linalg.lstsq(C, b, rcond=None)[0]
+        [cx, cy, cz] = np.cos(X[:3])
+        [sx, sy, sz] = np.sin(X[:3])
+        R = np.array([[cy*cz, sx*sy*cz-cx*sz, cx*sy*cz+sx*sz],
+                      [cy*sz, cx*cz+sx*sy*sz, cx*sy*sz-sx*cz],
+                      [-sy,            sx*cy,          cx*cy]])
+        T = X[3:]
+        return (R, T)
+    
+    @staticmethod
+    def rot2quat(R):
+        [[Qxx, Qxy, Qxz],
+         [Qyx, Qyy, Qyz],
+         [Qzx, Qzy, Qzz]] = R
+        t = Qxx + Qyy + Qzz
+        if t >= 0:
+            r = math.sqrt(1+t)
+            s = 0.5/r
+            w = 0.5*r
+            x = (Qzy-Qyz)*s
+            y = (Qxz-Qzx)*s
+            z = (Qyx-Qxy)*s
+        else:
+            maxv = max([Qxx, Qyy, Qzz])
+            if maxv == Qxx:
+                r = math.sqrt(1+Qxx-Qyy-Qzz)
+                s = 0.5/r
+                w = (Qzy-Qyz)*s
+                x = 0.5*r
+                y = (Qyx+Qxy)*s
+                z = (Qxz+Qzx)*s
+            elif maxv == Qyy:
+                r = math.sqrt(1+Qyy-Qxx-Qzz)
+                s = 0.5/r
+                w = (Qxz-Qzx)*s
+                x = (Qyx+Qxy)*s
+                y = 0.5*r
+                z = (Qzy+Qyz)*s
+            else:
+                r = math.sqrt(1+Qzz-Qxx-Qyy)
+                s = 0.5/r
+                w = (Qyx-Qxy)*s
+                x = (Qxz+Qzx)*s
+                y = (Qzy+Qyz)*s
+                z = 0.5*r
+        return np.array([w, x, y, z])
     
     def display(self):
         r"""
@@ -166,6 +272,5 @@ class align(object):
         win.rens[0].GetActiveCamera().SetParallelProjection(True)
         win.Render()
         return win
-        
 
 
