@@ -15,8 +15,8 @@ class registration(object):
         self.b = baseline
         self.t = target
         self.steps = steps
-        if method is not None:
-            getattr(self, method)()
+#        if method is not None:
+#            getattr(self, method)()
         
         
     def point2plane(self, subset = None, neigh = 10, inside = True, smooth=1):
@@ -62,12 +62,14 @@ class registration(object):
                 GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
                 GInd = GMag.argmin(axis=1)
             else:
-                GInd = GInd = self.calcBarycentric(G, ind)
+                GInd = GInd = self.calcBarycentric(rVert, G, ind)
             # Define vector from baseline point to intersect point
             D = G[np.arange(len(G)), GInd, :]
             rVert += D/step
-            if smooth > 0:
+            if smooth > 0 and step < self.steps-1:
+#                v = self.reg.vert[~subset]
                 self.reg.lp_smooth(smooth)
+#                self.reg.vert[~subset] = v
         
         self.reg.calcStruct()
 #        self.reg.values[:] = self.calcError(False)
@@ -97,11 +99,11 @@ class registration(object):
             values = np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
             return values
         
-    def calcBarycentric(self, G, ind):
+    def calcBarycentric(self, vert, G, ind):
         P0 = self.t.vert[self.t.faces[ind, 0]]
         P1 = self.t.vert[self.t.faces[ind, 1]]
         P2 = self.t.vert[self.t.faces[ind, 2]]
-        NP = self.reg.vert[:, None, :] + G
+        NP = vert[:, None, :] + G
         
         v0 = P2 - P0
         v1 = P1 - P0
@@ -125,7 +127,7 @@ class registration(object):
         pdx = PD.argmin(axis=2)
         i, j = np.meshgrid(np.arange(P.shape[0]), np.arange(P.shape[1]))
         nearP = P[i.T, j.T, :, pdx]
-        nearG = nearP - self.reg.vert[:, None, :]
+        nearG = nearP - vert[:, None, :]
         G[~logic, :] = nearG[~logic, :] 
         GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
         GInd = GMag.argmin(axis=1)
