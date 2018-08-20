@@ -48,6 +48,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         if isinstance(data, str):    
             if stype == 'FE':
                 self.addFE([data,])
+            elif stype == 'surrogate':
+                self.addSurrogate(data)
             else:
                 self.read_stl(data, unify, struc)
         elif isinstance(data, dict):
