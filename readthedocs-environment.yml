@@ -19,6 +19,7 @@ dependencies:
   - jupyter_client=5.2.3=py_1
   - jupyter_core=4.4.0=py_0
   - jupyter_contrib_nbextensions
+  - jupyter_sphinx
   - msgpack-python=0.5.6
   - nb_anacondacloud=1.4.0=py35_0
   - nb_conda=2.2.1=py35_0
