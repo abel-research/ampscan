@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath('.'))
 
 project = 'AmpScan'
 copyright = '2018, Joshua Steer'
-author = 'Joshua Steer'
+author = 'Oliver Stocks'
 
 # The short X.Y version
 version = ''
