@@ -164,16 +164,25 @@ class align(object):
         # Define 
         kdTree = spatial.cKDTree(self.s.vert)
         self.m.rigidTransform(Rs[:, :, 0], Ts[:, 0])
+        inlier = math.ceil(self.m.vert.shape[0]*inlier)
         [dist, idx] = kdTree.query(self.m.vert, 1)
+        # Sort by distance
+        sort = np.argsort(dist)
+        # Keep only those within the inlier fraction
+        [dist, idx] = [dist[sort], idx[sort]]
+        [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
         err[0] = math.sqrt(dist.mean())
         for i in range(maxiter):
-            [R, T] = self.point2plane(self.m.vert,
+            [R, T] = self.point2plane(self.m.vert[sort],
                                       self.s.vert[idx, :], 
                                       self.s.vNorm[idx, :])
             Rs[:, :, i+1] = np.dot(R, Rs[:, :, i])
             Ts[:, i+1] = np.dot(R, Ts[:, i]) + T
             self.m.rigidTransform(R, T)
             [dist, idx] = kdTree.query(self.m.vert, 1)
+            sort = np.argsort(dist)
+            [dist, idx] = [dist[sort], idx[sort]]
+            [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
             err[i+1] = math.sqrt(dist.mean())
             qs[:, i+1] = np.r_[self.rot2quat(R), T]
         R = Rs[:, :, -1]

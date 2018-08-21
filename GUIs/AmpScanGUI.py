@@ -3,6 +3,7 @@ import numpy as np
 from vtk.util import numpy_support
 from AmpScan import AmpObject
 from AmpScan.registration import registration
+from AmpScan.align import align
 from AmpScan.ampVis import qtVtkWindow
 from AmpScan.pressSens import pressSense
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
@@ -123,7 +124,12 @@ class AmpScanGUI(QMainWindow):
         moving = str(self.alCont.moving.currentText())
         self.fileManager.setTable(static, [1,0,0], 0.5, 2)
         self.fileManager.setTable(moving, [0,0,1], 0.5, 2)
-        print('Run the ICP code between %s and %s' % (static, moving))
+        al = align(self.files[moving], self.files[static]).m
+        al.addActor()
+        alName = moving + '_al'
+        self.files[alName] = al
+        self.filesDrop.append(alName)
+        self.fileManager.addRow(alName, self.files[alName])
         if hasattr(self, 'alCont'):
             self.alCont.getNames()
         if hasattr(self, 'regCont'):
@@ -142,7 +148,8 @@ class AmpScanGUI(QMainWindow):
         target = str(self.regCont.target.currentText())
         self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
         self.fileManager.setTable(target, [0,0,1], 0.5, 0)
-        reg = registration(self.files[baseline], self.files[target], steps = 5).reg
+        reg = registration(self.files[baseline], self.files[target], steps = 5,
+                           smooth=1).reg
         reg.addActor(CMap = self.CMap02P)
         regName = target + '_reg'
         self.files[regName] = reg
