@@ -1,5 +1,5 @@
-AmpScan.pressSens module
-========================
+pressSens module
+================
 
 .. automodule:: AmpScan.pressSens
     :members:

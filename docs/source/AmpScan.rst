@@ -4,8 +4,8 @@ AmpScan package
 Submodules
 ----------
 
-AmpScan.align module
---------------------
+align module
+------------
 
 .. automodule:: AmpScan.align
     :members:
@@ -13,8 +13,8 @@ AmpScan.align module
     :show-inheritance:
     :noindex:
 
-AmpScan.ampVis module
----------------------
+ampVis module
+-------------
 
 .. automodule:: AmpScan.ampVis
     :members:
@@ -22,8 +22,8 @@ AmpScan.ampVis module
     :show-inheritance:
     :noindex:
 
-AmpScan.analyse module
-----------------------
+analyse module
+--------------
 
 .. automodule:: AmpScan.analyse
     :members:
@@ -31,8 +31,8 @@ AmpScan.analyse module
     :show-inheritance:
     :noindex:
 
-AmpScan.core module
--------------------
+core module
+-----------
 
 .. automodule:: AmpScan.core
     :members:
@@ -40,8 +40,8 @@ AmpScan.core module
     :show-inheritance:
     :noindex:
 
-AmpScan.fe module
------------------
+fe module
+---------
 
 .. automodule:: AmpScan.fe
     :members:
@@ -49,8 +49,8 @@ AmpScan.fe module
     :show-inheritance:
     :noindex:
 
-AmpScan.pca module
-------------------
+pca module
+----------
 
 .. automodule:: AmpScan.pca
     :members:
@@ -58,8 +58,8 @@ AmpScan.pca module
     :show-inheritance:
     :noindex:
 
-AmpScan.pressSens module
-------------------------
+pressSens module
+----------------
 
 .. automodule:: AmpScan.pressSens
     :members:
@@ -67,8 +67,8 @@ AmpScan.pressSens module
     :show-inheritance:
     :noindex:
 
-AmpScan.registration module
----------------------------
+registration module
+-------------------
 
 .. automodule:: AmpScan.registration
     :members:
@@ -76,8 +76,8 @@ AmpScan.registration module
     :show-inheritance:
     :noindex:
 
-AmpScan.smooth module
----------------------
+smooth module
+-------------
 
 .. automodule:: AmpScan.smooth
     :members:
@@ -85,8 +85,8 @@ AmpScan.smooth module
     :show-inheritance:
     :noindex:
 
-AmpScan.trim module
--------------------
+trim module
+-----------
 
 .. automodule:: AmpScan.trim
     :members:
@@ -94,8 +94,8 @@ AmpScan.trim module
     :show-inheritance:
     :noindex:
 
-AmpScan.tsbSocketDesign module
-------------------------------
+tsbSocketDesign module
+----------------------
 
 .. automodule:: AmpScan.tsbSocketDesign
     :members:

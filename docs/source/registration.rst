@@ -1,5 +1,5 @@
-AmpScan.registration module
-===========================
+registration module
+===================
 
 .. automodule:: AmpScan.registration
     :members:

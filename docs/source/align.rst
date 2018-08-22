@@ -1,5 +1,5 @@
-AmpScan.align module
-====================
+align module
+============
 
 .. automodule:: AmpScan.align
     :members:

@@ -1,5 +1,5 @@
-AmpScan.pca module
-==================
+pca module
+==========
 
 .. automodule:: AmpScan.pca
     :members:

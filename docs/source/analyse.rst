@@ -1,5 +1,5 @@
-AmpScan.analyse module
-======================
+analyse module
+==============
 
 .. automodule:: AmpScan.analyse
     :members:
