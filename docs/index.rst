@@ -18,11 +18,22 @@ developing AmpScan.
 Installation
 ------------
 
-For the most up to date version of AmpScan, clone directly from the gitlab repository using:
+AmpScan has a number of dependencies, we recommend using conda to deal with these. To create a new 
+environment to run AmpScan in:  
 
-``git clone https://git.soton.ac.uk/js22g12/AmpScan.git`` 
+``conda create -n env_name python=3 numpy scipy pyqt matplotlib``
 
-A pip installation is also available through test PyPI using:
+``conda install -c conda-forge vtk=8.1.0``
+
+For the most up to date version of AmpScan, clone directly from the gitlab repository into a virtual environment using:
+
+``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
+
+Navigate to the `AmpScan/` directory and run a pip install using:
+
+``pip install -e .``
+
+A pip installation is also available through test PyPI (not latest version) using:
 
 ``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
 
