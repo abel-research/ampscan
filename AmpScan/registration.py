@@ -10,8 +10,9 @@ from scipy import spatial
 from .core import AmpObject
 
 class registration(object):
-    """
-    Class for registration of two AmpObjects
+    r"""
+    Registration methods between two AmpObject meshes. This function morphs the baseline
+	vertices onto the surface of the target and returns a new AmpObject
     
     Parameters
     ----------
@@ -19,12 +20,26 @@ class registration(object):
     	The baseline AmpObject, the vertices from this will be morphed onto the target
     target: AmpObject
     	The target AmpObject, the shape that the baseline attempts to morph onto
-    method: str
+    method: str: default 'point2plane'
     	A string of the method used for registration
     *args:
     	The arguments used for the registration methods
     **kwargs:
     	The keyword arguments used for the registration methods
+	
+	Returns
+	-------
+	reg: AmpObject
+		The registered AmpObject, the vertices of this are on the surface of the target 
+		and it has the same number of vertices and face array as the baseline AmpObject
+		Access this accessing the registration.reg 
+	
+	Examples
+	--------
+	>>> baseline = AmpScan.AmpObject(basefh)
+	>>> target = AmpScan.AmpObject(targfh)
+	>>> reg = AmpScan.registration(steps=10, neigh=10, smooth=1).reg
+		
     """ 
     def __init__(self, baseline, target, method='point2plane', *args, **kwargs):
         self.b = baseline
@@ -33,17 +48,27 @@ class registration(object):
             getattr(self, method)(*args, **kwargs)
         
         
-    def point2plane(self, steps = 1, subset = None, neigh = 10, inside = True, smooth=1, fixBrim=False):
-        """
-        Function to register the regObject to the baseline mesh
-        
-        Need to add test to ensure inside triangle, currently not performing
-        that so ending up in weird places on plane 
+    def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, smooth=1, fixBrim=False):
+        r"""
+        Point to Plane method for registration between the two meshes 
         
         Parameters
         ----------
-        Steps: int, default 1
+        steps: int, default 1
             Number of iterations
+		neigh: int, default 10
+			Number of nearest neighbours to interrogate for each baseline point
+		inside: bool, default True
+			If True, a barycentric centre check is made to ensure the registered 
+			point lines within the target triangle
+		subset: array_like, default None
+			Indicies of the baseline nodes to include in the registration, default is none so 
+			all are used
+		smooth: int, default 1
+			Indicate number of laplacian smooth steps in between the steps 
+		fixBrim: bool, default False
+			If True, the nodes on the brim line will not be included in the smooth
+		
         """
         if fixBrim is True:
             eidx = (self.b.faceEdges == -99999).sum(axis=1).astype(bool)
@@ -106,8 +131,19 @@ class registration(object):
         self.reg.values[:] = self.calcError(False)
         
     def calcError(self, direct):
-        """
-        A function within a function will not be documented
+        r"""
+        Calculate the magnitude of distances between the baseline and registered array
+		
+		Parameters
+		----------
+		direct: bool, default True
+			If true, the magnitude can be positive or negative depending on whether the registered
+			vertex is inside or outside the baseline surface
+		
+		Returns
+		-------
+		values: array_like
+			Magnitude of distances
 
         """
         if direct is True:
@@ -130,6 +166,31 @@ class registration(object):
             return values
         
     def calcBarycentric(self, vert, G, ind):
+	r"""
+	Calculate the barycentric co-ordinates of each target face and the registered vertex, 
+	this ensures that the registered vertex is within the bounds of the target face. If not 
+	the registered vertex is moved to the nearest vertex on the target face 
+	
+	Parameters
+	----------
+	vert: array_like
+		The array of baseline vertices
+	G: array_like
+		The array of candidates for registered vertices. If neigh>1 then axis 2 will correspond 
+		to the number of nearest neighbours selected
+	ind: array_like
+		The index of the nearest faces to the baseline vertices
+	
+	Returns
+	-------
+	G: array_like 
+		The new array of candidates for registered vertices, from here, the one with 
+		smallest magnitude is selected. All these points will lie within the target face
+	GInd: array_like
+		The index of the shortest distance between each baseline vertex and the registered vertex
+		
+	"""
+	
         P0 = self.t.vert[self.t.faces[ind, 0]]
         P1 = self.t.vert[self.t.faces[ind, 1]]
         P2 = self.t.vert[self.t.faces[ind, 2]]
