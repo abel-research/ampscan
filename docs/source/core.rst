@@ -1,5 +1,5 @@
-AmpScan.core module
-===================
+core module
+===========
 
 .. automodule:: AmpScan.core
     :members:

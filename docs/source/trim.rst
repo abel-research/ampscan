@@ -1,5 +1,5 @@
-AmpScan.trim module
-===================
+trim module
+===========
 
 .. automodule:: AmpScan.trim
     :members:

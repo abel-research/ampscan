@@ -1,5 +1,5 @@
-AmpScan.fe module
-=================
+fe module
+=========
 
 .. automodule:: AmpScan.fe
     :members:

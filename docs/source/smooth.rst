@@ -1,5 +1,5 @@
-AmpScan.smooth module
-=====================
+smooth module
+=============
 
 .. automodule:: AmpScan.smooth
     :members:

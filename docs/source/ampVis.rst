@@ -1,5 +1,5 @@
-AmpScan.ampVis module
-=====================
+ampVis module
+=============
 
 .. automodule:: AmpScan.ampVis
     :members:

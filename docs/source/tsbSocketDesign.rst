@@ -1,5 +1,5 @@
-AmpScan.tsbSocketDesign module
-==============================
+tsbSocketDesign module
+======================
 
 .. automodule:: AmpScan.tsbSocketDesign
     :members:
