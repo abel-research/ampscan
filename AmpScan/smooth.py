@@ -6,6 +6,7 @@ Created on Thu Sep 14 13:25:23 2017
 """
 
 import numpy as np
+import copy
 
 class smoothMixin(object):
     
@@ -33,7 +34,8 @@ class smoothMixin(object):
         row, col = np.unravel_index(o_idx, self.edges.shape)
         for i in np.arange(n):
             # List all vertices 
-            neighVerts = self.vert[self.edges[row, 1-col], :]
+            vert = copy.deepcopy(self.vert)
+            neighVerts = vert[self.edges[row, 1-col], :]
             for j in np.arange(self.vert.shape[0]):
                 # Calculate the mean of the vertex set
                 self.vert[j, :] = neighVerts[ndx[j]:ndx[j+1]].mean(axis=0)

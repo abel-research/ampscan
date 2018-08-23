@@ -84,6 +84,8 @@ class registration(object):
 #                v = self.reg.vert[~subset]
                 self.reg.lp_smooth(smooth)
 #                self.reg.vert[~subset] = v
+            else:
+                self.reg.calcNorm()
         
         self.reg.calcStruct()
 #        self.reg.values[:] = self.calcError(False)
