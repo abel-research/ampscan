@@ -134,16 +134,16 @@ class registration(object):
         r"""
         Calculate the magnitude of distances between the baseline and registered array
 		
-		Parameters
-		----------
-		direct: bool, default True
-			If true, the magnitude can be positive or negative depending on whether the registered
-			vertex is inside or outside the baseline surface
-		
-		Returns
-		-------
-		values: array_like
-			Magnitude of distances
+        Parameters
+        ----------
+        direct: bool, default True
+            If true, the magnitude can be positive or negative depending on whether the registered
+            vertex is inside or outside the baseline surface
+
+        Returns
+        -------
+        values: array_like
+            Magnitude of distances
 
         """
         if direct is True:
@@ -166,31 +166,30 @@ class registration(object):
             return values
         
     def calcBarycentric(self, vert, G, ind):
-		r"""
-		Calculate the barycentric co-ordinates of each target face and the registered vertex, 
-		this ensures that the registered vertex is within the bounds of the target face. If not 
-		the registered vertex is moved to the nearest vertex on the target face 
-		
-		Parameters
-		----------
-		vert: array_like
-			The array of baseline vertices
-		G: array_like
-			The array of candidates for registered vertices. If neigh>1 then axis 2 will correspond 
-			to the number of nearest neighbours selected
-		ind: array_like
-			The index of the nearest faces to the baseline vertices
-		
-		Returns
-		-------
-		G: array_like 
-			The new array of candidates for registered vertices, from here, the one with 
-			smallest magnitude is selected. All these points will lie within the target face
-		GInd: array_like
-			The index of the shortest distance between each baseline vertex and the registered vertex
-			
-		"""
-	
+        r"""
+        Calculate the barycentric co-ordinates of each target face and the registered vertex, 
+        this ensures that the registered vertex is within the bounds of the target face. If not 
+        the registered vertex is moved to the nearest vertex on the target face 
+
+        Parameters
+        ----------
+        vert: array_like
+            The array of baseline vertices
+        G: array_like
+            The array of candidates for registered vertices. If neigh>1 then axis 2 will correspond 
+            to the number of nearest neighbours selected
+        ind: array_like
+            The index of the nearest faces to the baseline vertices
+        
+        Returns
+        -------
+        G: array_like 
+            The new array of candidates for registered vertices, from here, the one with 
+            smallest magnitude is selected. All these points will lie within the target face
+        GInd: array_like
+            The index of the shortest distance between each baseline vertex and the registered vertex
+            
+        """
         P0 = self.t.vert[self.t.faces[ind, 0]]
         P1 = self.t.vert[self.t.faces[ind, 1]]
         P2 = self.t.vert[self.t.faces[ind, 2]]
