@@ -1,12 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 13 13:54:23 2017
-
-@author: js22g12
-
-Core functions for the AmpObject
-
-Requires numpy 1.13
+Package for defining the core AmpObject
+Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 
 """
 
@@ -40,6 +35,12 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
     -------
     AmpObject
         Initiation of the object
+    
+    Examples
+    -------
+    >>> fh = 'test.stl'
+    >>> amp = AmpScan.AmpObject(fh)
+
     """
 
     def __init__(self, data=None, stype='limb', unify=True, struc=True):
@@ -60,20 +61,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             else:
                 self.calcStruct()
     
-    def createCMap(self, cmap=None, n = 50):
-        """
-        Function to generate a colormap for the AmpObj
-
-        """
-        if cmap is None:
-            c1 = [31.0, 73.0, 125.0]
-            c3 = [170.0, 75.0, 65.0]
-            c2 = [212.0, 221.0, 225.0]
-            CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
-            CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
-            CMap = np.c_[CMap1[:, :-1], CMap2]
-            self.CMapN2P = np.transpose(CMap)/255.0
-            self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
 
 
     def read_stl(self, filename, unify=True, struc=True):
@@ -87,6 +74,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             file path of the .stl file to read 
         unify: boolean, default True
             unify the coincident vertices of each face
+        struc: boolean, default True
+            Calculate the underlying structure of the mesh, such as edges
 
         """
         with open(filename, 'rb') as fh:
@@ -127,6 +116,29 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         
     def calcStruct(self, norm=True, edges=True, 
                    edgeFaces=True, faceEdges=True, vNorm=False):
+        r"""
+        Top level function to calculate the underlying structure of the 
+        AmpObject
+        
+        Parameters
+        ----------
+        norm: boolean, default True
+            If true, the normals of each face in the mesh will be calculated
+        edges: boolean, default True
+            If true, the edges of the mesh will be calculated, the refers to
+            the vertex index that make up any edge
+        edgeFaces: boolean, default True
+            If true, the edgeFaces array of the mesh will be calculated, this 
+            refers to the index of the three edges that make up each face
+        faceEdges: boolean, default True
+            If true, the faceEdges array will be calculated, this refers to 
+            index of the faces that are coincident to each edge. Normally, 
+            there are two faces per edge, if there is only one, then -99999 
+            will be used to indicate this 
+        vNorm: boolean, default False
+            If true, the normals of each vertex in the mesh will be calculated
+
+        """
         if norm is True:
             self.calcNorm()
         if edges is True:
@@ -139,9 +151,20 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             self.calcVNorm()
 
     def unifyVert(self):
-        """
+        r"""
         Function to unify coincident vertices of the mesh to reduce
-        size of the vertices array enabling speed increases
+        size of the vertices array enabling speed increases when performing
+        calculations using the vertex array
+        
+        Examples
+        --------
+        >>> fh = 'test.stl'
+        >>> amp = AmpObject(fh, unify=False)
+        >>> amp.vert.shape
+        (600, 3)
+        >>> amp.unifyVert()
+        >>> amp.vert.shape
+        (125, 3)
 
         """
         # Requires numpy 1.13
@@ -232,8 +255,13 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         
     def calcVNorm(self):
         """
-        Function to compute the vertex normals
-        Not required for the AmpActor but may be needed for ICP
+        Function to compute the vertex normals based upon the mean of the
+        connected face normals 
+        
+        Returns
+        -------
+        vNorm: ndarray
+            normal of each vertex
 
         """
         f = self.faces.flatten()
@@ -247,7 +275,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             self.vNorm[i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
 
     def save(self, filename):
-        """
+        r"""
         Function to save the AmpObj as a binary .stl file 
         
         Parameters
@@ -292,47 +320,89 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         self.translate(-self.vert.mean(axis=0))
     
-    def rotate(self, rot, ang='rad', norms=True):
+    def rotateAng(self, rot, ang='rad', norms=True):
         r"""
-        Rotate the AmpObj in 3D space
+        Rotate the AmpObj in 3D space according to three angles
 
         Parameters
         -----------
         rot: array_like
             Rotation around [x, y, z]
-        ang: str, optional
+        ang: str, default 'rad'
             Specify if the euler angles are in degrees or radians. 
             Default is radians
-
+        
+        Examples
+        --------
+        >>> amp = AmpObject('test.stl')
+        >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
+        >>> amp.rotateAng(ang, ang='rad')
         """
         R = self.rotMatrix(rot, ang)
-        self.rotateMat(R, norms)
+        self.rotate(R, norms)
 
             
-    def rotateMat(self, R, norms=True):
+    def rotate(self, R, norms=True):
+        r"""
+        Rotate the AmpObject using a rotation matrix 
+        
+        Parameters
+        ----------
+        R: array_like
+            A 3x3 array specifying the rotation matrix
+        norms: boolean, default True
+            
+        """
         self.vert[:, :] = np.dot(self.vert, R.T)
         if norms is True:
             self.norm[:, :] = np.dot(self.norm, R.T)
             self.vNorm[:, :] = np.dot(self.vNorm, R.T)
             
             
-    def rigidTransform(self, R, T):
-        self.rotateMat(R, True)
-        self.translate(T)
+    def rigidTransform(self, R=None, T=None):
+        r"""
+        Perform a rigid transformation on the AmpObject, first the rotation, 
+        then the translation 
+        
+        Parameters
+        ----------
+        R: array_like, default None
+            A 3x3 array specifying the rotation matrix
+        T: array_like, defauly None
+            An array of the form [x, y, z] which specifies the translation
+            
+        """
+        if R is not None:
+            self.rotateMat(R, True)
+        if T is not None:
+            self.translate(T)
         
 
         
     @staticmethod
-    def rotMatrix(R, ang='rad'):
+    def rotMatrix(rot, ang='rad'):
         r"""
-        Calculate the rotation matrix around 
+        Calculate the rotation matrix from three angles, the order is assumed 
+        as around the x, then y, then z axis
+        
+        Parameters
+        ----------
+        rot: array_like
+            Rotation around [x, y, z]
+        ang: str, default 'rad'
+            Specift if the Euler angles are in degrees or radians 
+        
+        Returns
+        -------
+        R: array_like
+            The calculated 3x3 rotation matrix 
     
         """
         if ang == 'deg':
-            R = np.deg2rad(R)
-        angx = R[0]
-        angy = R[1]
-        angz = R[2]
+            rot = np.deg2rad(rot)
+        angx = rot[0]
+        angy = rot[1]
+        angz = rot[2]
         Rx = np.array([[1, 0, 0],
                        [0, np.cos(angx), -np.sin(angx)],
                        [0, np.sin(angx), np.cos(angx)]])

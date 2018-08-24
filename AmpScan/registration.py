@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Sep 13 16:07:10 2017
-
-@author: js22g12
+Package for dealing with registration methods between two AmpObject meshes
+Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 """
 import numpy as np
 import copy
@@ -26,19 +25,19 @@ class registration(object):
     	The arguments used for the registration methods
     **kwargs:
     	The keyword arguments used for the registration methods
-	
-	Returns
-	-------
-	reg: AmpObject
-		The registered AmpObject, the vertices of this are on the surface of the target 
-		and it has the same number of vertices and face array as the baseline AmpObject
-		Access this accessing the registration.reg 
-	
-	Examples
-	--------
-	>>> baseline = AmpScan.AmpObject(basefh)
-	>>> target = AmpScan.AmpObject(targfh)
-	>>> reg = AmpScan.registration(steps=10, neigh=10, smooth=1).reg
+        
+    Returns
+    -------
+    reg: AmpObject
+        The registered AmpObject, the vertices of this are on the surface of the target 
+        and it has the same number of vertices and face array as the baseline AmpObject
+        Access this accessing the registration.reg 
+    
+    Examples
+    --------
+    >>> baseline = AmpScan.AmpObject(basefh)
+    >>> target = AmpScan.AmpObject(targfh)
+    >>> reg = AmpScan.registration(steps=10, neigh=10, smooth=1).reg
 		
     """ 
     def __init__(self, baseline, target, method='point2plane', *args, **kwargs):
@@ -56,18 +55,18 @@ class registration(object):
         ----------
         steps: int, default 1
             Number of iterations
-		neigh: int, default 10
-			Number of nearest neighbours to interrogate for each baseline point
-		inside: bool, default True
-			If True, a barycentric centre check is made to ensure the registered 
-			point lines within the target triangle
-		subset: array_like, default None
-			Indicies of the baseline nodes to include in the registration, default is none so 
-			all are used
-		smooth: int, default 1
-			Indicate number of laplacian smooth steps in between the steps 
-		fixBrim: bool, default False
-			If True, the nodes on the brim line will not be included in the smooth
+        int, default 10
+            Number of nearest neighbours to interrogate for each baseline point
+        inside: bool, default True
+            If True, a barycentric centre check is made to ensure the registered 
+            point lines within the target triangle
+        subset: array_like, default None
+            Indicies of the baseline nodes to include in the registration, default is none so 
+            all are used
+        smooth: int, default 1
+            Indicate number of laplacian smooth steps in between the steps 
+        fixBrim: bool, default False
+            If True, the nodes on the brim line will not be included in the smooth
 		
         """
         if fixBrim is True:
