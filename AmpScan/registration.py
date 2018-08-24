@@ -11,8 +11,8 @@ from .core import AmpObject
 
 class registration(object):
     r"""
-    Registration methods between two AmpObject meshes. This function morphs the baseline
-	vertices onto the surface of the target and returns a new AmpObject
+    Registration methods between two AmpObject meshes. This function morphs the baseline 
+    vertices onto the surface of the target and returns a new AmpObject
     
     Parameters
     ----------
