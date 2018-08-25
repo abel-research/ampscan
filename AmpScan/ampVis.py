@@ -269,7 +269,21 @@ class visMixin(object):
             self.actor.setCMap(CMap, bands)
             self.actor.setScalarRange(sRange)
             self.actor.Mapper.SetLookupTable(self.actor.lut)
-        
+
+    def createCMap(self, cmap=None, n = 50):
+        """
+        Function to generate a colormap for the AmpObj
+
+        """
+        if cmap is None:
+            c1 = [31.0, 73.0, 125.0]
+            c3 = [170.0, 75.0, 65.0]
+            c2 = [212.0, 221.0, 225.0]
+            CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+            CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
+            CMap = np.c_[CMap1[:, :-1], CMap2]
+            self.CMapN2P = np.transpose(CMap)/255.0
+            self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
 
     class ampActor(vtk.vtkActor):
         """
