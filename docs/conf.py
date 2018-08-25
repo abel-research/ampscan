@@ -63,6 +63,8 @@ html_use_index = False
 
 nbsphinx_kernel_name = 'python3'
 
+html_logo = "AmpScanlogosmall.svg"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

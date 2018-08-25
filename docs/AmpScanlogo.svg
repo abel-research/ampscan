@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="AmpScanlogo.svg">
+  <defs
+     id="defs2">
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect4602"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <linearGradient
+       id="linearGradient4544"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop4542" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.49497475"
+     inkscape:cx="113.5052"
+     inkscape:cy="393.00283"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     showguides="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="986"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4604" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path14"
+       sodipodi:type="arc"
+       sodipodi:cx="103.1875"
+       sodipodi:cy="103.66518"
+       sodipodi:rx="54.806545"
+       sodipodi:ry="21.166666"
+       sodipodi:start="0"
+       sodipodi:end="6.2796497"
+       sodipodi:open="true"
+       d="m 157.99405,103.66518 a 54.806545,21.166666 0 0 1 -54.75811,21.16665 54.806545,21.166666 0 0 1 -54.8549,-21.12924 54.806545,21.166666 0 0 1 54.66113,-21.204005 54.806545,21.166666 0 0 1 54.95153,21.091755"
+       style="stroke-width:0.1;fill:none;stroke:#4d4d4d;stroke-opacity:0;stroke-miterlimit:4;stroke-dasharray:none;fill-opacity:1" />
+    <path
+       style="fill:none;stroke:#4d4d4d;stroke-width:6.24916124;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 12.991702,69.729877 c 0,32.821533 0,65.644023 5.443276,93.640193 5.443275,27.99616 16.32945,51.16432 32.07213,69.65909 15.742681,18.49477 36.582953,32.47712 57.794692,31.22312 21.21174,-1.25399 42.70324,-17.50244 57.36444,-36.58886 14.6612,-19.08641 22.38741,-40.93216 26.33796,-62.66609 3.95056,-21.73393 4.12615,-43.35925 4.30173,-64.98255"
+       id="path4600"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect4602"
+       inkscape:original-d="m 12.991702,69.729877 c 7.39e-4,32.821533 7.39e-4,65.644023 0,98.467393 10.887515,23.16851 21.773691,46.33667 32.659429,69.50641 20.54482,13.90049 41.439586,27.80162 62.158279,41.70382 21.5978,-16.54986 43.19545,-32.6579 64.79208,-48.98546 7.72633,-21.8449 15.45251,-43.69065 23.17768,-65.5346 0.17643,-21.62403 0.35192,-43.24935 0.52676,-64.87266"
+       sodipodi:nodetypes="ccccccc" />
+    <ellipse
+       style="fill:none;fill-opacity:1;stroke:#4d4d4d;stroke-width:6.24916124;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="path4550"
+       cx="104.38548"
+       cy="69.03479"
+       rx="91.379852"
+       ry="43.672283" />
+  </g>
+</svg>
