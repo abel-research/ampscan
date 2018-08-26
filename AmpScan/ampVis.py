@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep 28 13:19:18 2017
-
-@author: js22g12
-
-Functions that deal with the visualisation of the limb and data
-
-Includes interfaces to deal 
+Classes and functions to deal with the visualisation of the AmpObjects. These
+include wrappers for vtk and Qt
+Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk 
 """
 
 import numpy as np
@@ -16,8 +12,13 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 
 class vtkRenWin(vtk.vtkRenderWindow):
-    """
-    Sample docstring to see what's what...
+    r"""
+    This class inherits from the vtkRenderWindow and wraps extra functions on
+    top 
+    
+    This window can be either be used on it's own, or embedded within a 
+    Qt Window
+
     """
     def __init__(self):
         super(vtkRenWin, self).__init__()
@@ -35,23 +36,49 @@ class vtkRenWin(vtk.vtkRenderWindow):
         #self.rens[0].SetActiveCamera(self.cams[0])
 #        self.axes.append(vtk.vtkCubeAxesActor())
         
-    def renderActors(self, actors, viewport=0, 
-                     shading=True, zoom=1):
-        """
-        Render the required AmpObj actor in the vtk viewport
+    def renderActors(self, actors, viewport=0, zoom=1.0):
+        r"""
+        Given a list of ampActors, this function removes those which are not in 
+        the new list, and adds in the new ones 
+        
+        Parameters
+        ----------
+        actors: list of ampActors
+            A list of actors to be displayed in the render window
+        viewport: int, default 0
+            The viewport index to render the actor within
+        zoom: float, default 1.0
+            The zoom magnitude of the camera
+        
         """
         for actor in self.rens[viewport].GetActors():
             self.rens[viewport].RemoveActor(actor)
         for actor in actors:
-            actor.setShading(shading)
             self.rens[viewport].AddActor(actor)
         self.rens[viewport].ResetCamera()
         self.rens[viewport].GetActiveCamera().Zoom(zoom)
         self.Render()
 
-    def setScalarBar(self, actor, title=''):
-        """
-        Set scalar bar based upon lookup table
+    def setScalarBar(self, actor, viewport=0, title=''):
+        r"""
+        Set the scalar bar within the window based upon a look-up table defined
+        within an actor
+        
+        Parmeters
+        ---------
+        actor: ampActor
+            The actor from which the lut is read from, the actor must have the
+            attribute actor.lut
+        viewport: int, default 0
+            The viewport index to render the scalar bar within 
+        title: str
+            The accompanying title for the scalar bar
+        
+        Returns
+        -------
+        scalar_bar
+            A vtkScalarBarActor attribute to the vtkRenWin
+        
         """
         if self.scalar_bar is not None:
             self.rens[0].RemoveActor(self.scalar_bar)
@@ -77,42 +104,82 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.scalar_bar.GetTitleTextProperty().SetColor(0, 0, 0)
         self.scalar_bar.GetTitleTextProperty().SetFontSize(20)
         self.scalar_bar.GetTitleTextProperty().ItalicOff()
-        self.rens[0].AddActor(self.scalar_bar)
+        self.rens[viewport].AddActor(self.scalar_bar)
 
     def setView(self, view = [0, -1, 0], viewport=0):
+        r"""
+        Function to set the camera view within the specified viewport
+        
+        Parameters
+        ----------
+        view: array_like, default [0, -1, 0]
+            The view of the vtk camera 
+        viewport: int, default 0
+            The index of the viewport to set the camera view
+        
+        """
         #self.cams[viewport].SetPosition(view[0], view[1], view[2])
         #self.cams[viewport].SetViewUp(-0.0, 1.0, 0.0)
         cam = self.rens[viewport].GetActiveCamera()
         cam.Elevation(-90)
     
     def setBackground(self, color=[0.1, 0.2, 0.4]):
-        """
+        r"""
         Set the background colour of the renderer
+        
+        Parameters
+        ----------
+        color: array_like
+            The RGB values as floats of the background colour between [0, 1]
+
         """
         for ren in self.rens:
             ren.SetBackground(color)
     
     def setProjection(self, perspective=False, viewport=0):
-        """
+        r"""
         Set the projection of the camera to either parallel or perspective 
+        
+        Parameters
+        ----------
+        perspective: boolean, default False
+            If true, then perspective will be used as the projection for the
+            camera
+        viewport: int, default 0
+            The index of the viewport to set the projection of the camera in
         
         """
         self.cams[viewport].SetParallelProjection(perspective)
         
             
     def addAxes(self, actors, viewport=0, color = [1.0, 1.0, 1.0], font=None):
+        r"""
+        Add 3D axes to the vtk window 
+        
+        Parameters
+        ----------
+        actors: list
+            List of ampActors, this is used to determine the necessary limits
+            of the axes
+        viewport: int, default 0
+            The index of the viewport add the axes into
+        color: array_like
+            The RGB values as floats of the axes line and text colour
+            between [0, 1]
+        """
         lim = []
+        ax = self.axes[viewport]
         for actor in actors:
             lim.append(actor.GetBounds())
         lim = np.array(lim)
-        self.axes[viewport].SetBounds(tuple(lim.max(axis=0)))
-        self.axes[viewport].SetCamera(self.cams[viewport])
-        self.axes[viewport].SetFlyModeToClosestTriad()
+        ax.SetBounds(tuple(lim.max(axis=0)))
+        ax.SetCamera(self.cams[viewport])
+        ax.SetFlyModeToClosestTriad()
         for axes in range(3):
-            self.axes[viewport].GetTitleTextProperty(axes).SetColor(color)
-            self.axes[viewport].GetLabelTextProperty(axes).SetColor(color)
-            self.axes[viewport].GetTitleTextProperty(axes).SetFontFamilyToCourier()
-            self.axes[viewport].GetLabelTextProperty(axes).SetFontFamilyToCourier()
+            ax.GetTitleTextProperty(axes).SetColor(color)
+            ax.GetLabelTextProperty(axes).SetColor(color)
+            ax.GetTitleTextProperty(axes).SetFontFamilyToCourier()
+            ax.GetLabelTextProperty(axes).SetFontFamilyToCourier()
 #        self.axes[viewport].GetXAxesLinesProperty().SetColor(color)
 #        self.axes[viewport].GetYAxesLinesProperty().SetColor(color)
 #        self.axes[viewport].GetZAxesLinesProperty().SetColor(color)
@@ -124,13 +191,14 @@ class vtkRenWin(vtk.vtkRenderWindow):
 
 
     def setnumViewports(self, n):
-        """
+        r"""
         Function to set multiple viewports within the vtkWindow
 
         Parameters
         ------------
         n: int
             number of viewports required
+        
         """
         dif = n - len(self.rens)
         if dif == 0:
@@ -153,14 +221,36 @@ class vtkRenWin(vtk.vtkRenderWindow):
         
     
     def getImage(self):
+        r"""
+        Return an array representation of the image 
+        
+        Returns
+        -------
+        im: ndarray
+            The array representation of the image 
+        
+        """
         vtkRGB = vtk.vtkUnsignedCharArray()
         self.GetPixelData(0, 0, self.winWidth-1, self.winHeight-1,
                           1, vtkRGB)
         vtkRGB.Squeeze()
-        self.im =  np.flipud(np.resize(np.array(vtkRGB),
-                                       [self.winWidth, self.winHeight, 3])) / 255.0
+        im =  np.flipud(np.resize(np.array(vtkRGB),
+                                  [self.winWidth, self.winHeight, 3])) / 255.0
+        return im
                                        
     def getScreenshot(self, fname, mag=10):
+        r"""
+        Generate a screenshot of the window and save to a png file
+        
+        Parameters
+        ----------
+        fname: str
+            The file handle to save the image to 
+        mag: int, default 10
+            The magnificaiton of the image, this will scale the resolution of 
+            the saved image by this face 
+        
+        """
         self.SetAlphaBitPlanes(1)
         w2if = vtk.vtkWindowToImageFilter()
         w2if.SetInput(self)
@@ -175,11 +265,8 @@ class vtkRenWin(vtk.vtkRenderWindow):
 
 
 class qtVtkWindow(QVTKRenderWindowInteractor):
-    """
-    Create a vtk window to be embeded within a qt GUI
-    Inherites the QVTKRenderWindowInteractor class and the 
-    
-    Fix issue with SetInteractorStyle 
+    r"""
+    This provides the interface between Qt and the vtkRenWin
     """
     
     def __init__(self):
@@ -190,45 +277,79 @@ class qtVtkWindow(QVTKRenderWindowInteractor):
         self.iren.Initialize()        
 
 class visMixin(object):
-    """
-    Visualisation methods that act upon the AmpObj itself
-    Methods for generating the custom AmpObj actor to interface with vtk
+    r"""
+    Set of visualisation methods that are contained within the AmpActor
+    
     """
 
-    def genIm(self, actor=['limb'], winWidth=512, winHeight=512,
-              views=[[0, -1, 0]], background=[1.0, 1.0, 1.0], projection=True,
-              shading=True, mag=10, out='im', name='test.tiff'):
-        """
-        Output an image of an actor either as an array or a saved png file
+    def genIm(self, size=[512, 512], views=[[0, -1, 0]], 
+              background=[1.0, 1.0, 1.0], projection=True,
+              shading=True, mag=10, out='im', fh='test.tiff'):
+        r"""
+        Creates a temporary off screen vtkRenWin which is then either returned
+        as a numpy array or saved as a .png file
         
+        Parameters
+        ----------
+        out: str: default 'im'
+            If 'im' the the image will be returned as an array, if 'fh' the 
+            image will be saved as .png image
+        size: array_like, default [512, 512]
+            The width and height of the vtkRenWin to create
+        views: array_like, default [[0, -1, 0],]
+            The camera view set for each viewport, the length of this also
+            sets the number of viewports
+        background: array_like, default [1, 1, 1]
+            The RGB values as floats of the background colour between [0, 1]
+        projection: boolean, default True
+            If true, then perspective will be used as the projection for the
+            camera
+        shading: boolean, default True
+            If true, shading will be used on the ampActor
+        mag: int, default 10
+            The magnification for saving the image
+        fh: str
+            The file handle used if out ='fh'
+        
+        Returns
+        -------
+        im: ndarray
+            The array representation of the image if out = 'im'
         
         """
         # Generate a renderer window
-        win = vtkRenWin(False, winWidth, winHeight)
+        win = vtkRenWin()
         # Set the number of viewports
         win.setnumViewports(len(views))
         # Set the background colour
         win.setBackground(background)
         # Set camera projection 
         win.setProjection(projection)
-        win.SetSize(winWidth, winHeight)
+        win.SetSize(size[0], size[1])
         win.OffScreenRenderingOn()
         for i, view in enumerate(views):
-            win.addAxes(self.actors, color=[0.0, 0.0, 0.0], viewport=i)
+            win.addAxes(self.actor, color=[0.0, 0.0, 0.0], viewport=i)
             win.setView(view, i)
             win.setProjection(projection, viewport=i)
             win.renderActors(self.actor, viewport=i, shading=shading, zoom=1.3)
         win.Render()
         if out == 'im':
-            win.getImage()
-            return win.im
+            im = win.getImage()
+            return im
         elif out == 'fh':
-            win.getScreenshot(name)
+            win.getScreenshot(fh)
             return
         
     def display(self):
-        """
-        Function to display the mesh in a vtk window
+        r"""
+        Function to display the ampActor within in an interactable 
+        vtkRenWin window
+        
+        Returns
+        -------
+        win: vtkRenWin
+            The generated vtkRenWin
+        
         """
         if not hasattr(self, 'actor'):
             self.addActor()
@@ -253,12 +374,11 @@ class visMixin(object):
 
 
     def addActor(self, CMap=None, bands=128, sRange=[0,8]):
-        """
-        Function to insert a vtk actor into the actors dictionary within 
-        the AmpObject 
+        r"""
+        Creates an ampActor based upon the ampObject 
         
         """
-        self.actor = self.ampActor()
+        self.actor = ampActor()
         #self._v = numpy_support.numpy_to_vtk(self.vert, deep=0)
         self.actor.setVert(self.vert)
         self.actor.setFaces(self.faces)
@@ -271,8 +391,15 @@ class visMixin(object):
             self.actor.Mapper.SetLookupTable(self.actor.lut)
 
     def createCMap(self, cmap=None, n = 50):
-        """
-        Function to generate a colormap for the AmpObj
+        r"""
+        Function to generate a linear colormap for the AmpObj based upon 
+        base colours 
+        
+        cmap: array_like
+            The rgb float values of the base colors used to generate the 
+            colormap
+        n: int, default 50
+            The number of bands that form the colormap
 
         """
         if cmap is None:
@@ -284,95 +411,180 @@ class visMixin(object):
             CMap = np.c_[CMap1[:, :-1], CMap2]
             self.CMapN2P = np.transpose(CMap)/255.0
             self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
+        
 
-    class ampActor(vtk.vtkActor):
+class ampActor(vtk.vtkActor):
+    r"""
+    A wrapper around the classic vtkActor that makes it easier to transfer 
+    data from the ampObject 
+    """
+
+    def __init__(self, CMap=None, bands=128):
+        super(visMixin.ampActor, self).__init__()
+        self.mesh = vtk.vtkPolyData()
+        self.points = vtk.vtkPoints()
+        self.polys = vtk.vtkCellArray()
+        self.Mapper = vtk.vtkPolyDataMapper()
+        #self.setVert(data['vert'])
+        #self.setFaces(data['faces'])
+        #self.setNorm()
+        #if CMap is not None:
+        #    self.setRect(data['values'])
+        #    self.setCMap(CMap, bands)
+        self.Mapper.InterpolateScalarsBeforeMappingOn()
+        self.Mapper.SetInputData(self.mesh)
+        #if CMap is not None:
+        #    self.setScalarRange()
+        #    self.Mapper.SetLookupTable(self.lut)
+        self.SetMapper(self.Mapper)
+        
+
+    def setVert(self, vert, deep=0):
         """
-        Class that inherits methods from vtk actor
-        Contains functions to set vertices, faces, scalars and color map
-        from numpy arrays 
+        Set the vertices of the ampActor
+        
+        Parameters
+        ----------
+        vert: ndarray
+            The numpy array specifying the vertices 
+        deep: int, default 0
+            If 1, the numpy array will be deep-copied to the ampActor
+        
         """
-
-        def __init__(self, CMap=None, bands=128):
-            super(visMixin.ampActor, self).__init__()
-            self.mesh = vtk.vtkPolyData()
-            self.points = vtk.vtkPoints()
-            self.polys = vtk.vtkCellArray()
-            self.Mapper = vtk.vtkPolyDataMapper()
-            #self.setVert(data['vert'])
-            #self.setFaces(data['faces'])
-            #self.setNorm()
-            #if CMap is not None:
-            #    self.setRect(data['values'])
-            #    self.setCMap(CMap, bands)
-            self.Mapper.InterpolateScalarsBeforeMappingOn()
-            self.Mapper.SetInputData(self.mesh)
-            #if CMap is not None:
-            #    self.setScalarRange()
-            #    self.Mapper.SetLookupTable(self.lut)
-            self.SetMapper(self.Mapper)
-            
-
-        def setVert(self, vert, deep=0):
-            self._v = numpy_support.numpy_to_vtk(vert, deep=deep)
-            self.points.SetData(self._v)
+        self._v = numpy_support.numpy_to_vtk(vert, deep=deep)
+        self.points.SetData(self._v)
 #            self.points.SetData(vert)
-            self.mesh.SetPoints(self.points)
-            
-        def setFaces(self, faces, deep=0):
-            self._faces = np.c_[np.tile(faces.shape[1], faces.shape[0]),
-                                faces].flatten().astype(np.int64)
-            self._f = numpy_support.numpy_to_vtkIdTypeArray(self._faces, deep=deep)
-            self.polys.SetCells(len(faces), self._f)
-            self.mesh.SetPolys(self.polys)
+        self.mesh.SetPoints(self.points)
         
-        def setNorm(self, split=False, norm=None, deep=0):
-            """
-            Check if deepcopy is neededin this function
-            """
-            if norm is not None:
-                self._n = numpy_support.numpy_to_vtk(norm, deep=deep)
-                self.mesh.GetPointData().SetNormals(self._n)
-            else:
-                self.norm = vtk.vtkPolyDataNormals()
-                self.norm.ComputePointNormalsOn()
-                self.norm.ComputeCellNormalsOff()
-                self.norm.SetFeatureAngle(30.0)
-                self.norm.SetInputData(self.mesh)
-                self.norm.Update()
-                self.mesh.DeepCopy(self.norm.GetOutput())
-            self.GetProperty().SetInterpolationToGouraud()
-
-        def setValues(self, values, deep=0):
-            self._values = numpy_support.numpy_to_vtk(values, deep=deep)
-            self.mesh.GetPointData().SetScalars(self._values)
-            
-        def setOpacity(self, opacity=1.0):
-            self.GetProperty().SetOpacity(opacity)
-            
-        def setColor(self, color=[1.0, 1.0, 1.0]):
-            self.GetProperty().SetColor(color)
-            
-        def setScalarRange(self, sRange):
-            self.Mapper.SetScalarRange(sRange[0], sRange[1])
-            
-
-        def setCMap(self, CMap, bands=128):
-            self.ctf = vtk.vtkColorTransferFunction()
-            self.ctf.SetColorSpaceToDiverging()
-            for ind, point in zip(np.linspace(0, 1, len(CMap)), CMap):
-                self.ctf.AddRGBPoint(ind, point[0], point[1], point[2])
-            self.lut = vtk.vtkLookupTable()
-            self.lut.SetNumberOfTableValues(bands)
-            self.lut.Build()
-            for i in range(bands):
-                rgb = list(self.ctf.GetColor(float(i) / bands)) + [1]
-                self.lut.SetTableValue(i, rgb)
+    def setFaces(self, faces, deep=0):
+        r"""
+        Sets the faces of the ampActor
         
-        def setShading(self, shading=True):
-            if shading is True:
-                self.GetProperty().LightingOn()
-            if shading is False:
-                self.GetProperty().LightingOff()
+        Parameters
+        ----------
+        faces: ndarray
+            The numpy array specifying the faces, or connectivity index based
+            upon the vertex array
+        deep: int, default 0
+            If 1, the numpy array will be deep-copied to the ampActor
+        """
+        self._faces = np.c_[np.tile(faces.shape[1], faces.shape[0]),
+                            faces].flatten().astype(np.int64)
+        self._f = numpy_support.numpy_to_vtkIdTypeArray(self._faces, deep=deep)
+        self.polys.SetCells(len(faces), self._f)
+        self.mesh.SetPolys(self.polys)
+    
+    def setNorm(self, norm=None, deep=0):
+        r"""
+        Sets or calculates the vertex normals 
+        
+        Parameters
+        ----------
+        norm: ndarray, default None
+            The numpy array specifying the face normals. If None, the inbuilt 
+            vtk method will be used to calculate the normals
+        deep: int, default 0
+            If 1, the numpy array will be deep-copied to the ampActor
+
+        """
+        if norm is not None:
+            self._n = numpy_support.numpy_to_vtk(norm, deep=deep)
+            self.mesh.GetPointData().SetNormals(self._n)
+        else:
+            self.norm = vtk.vtkPolyDataNormals()
+            self.norm.ComputePointNormalsOn()
+            self.norm.ComputeCellNormalsOff()
+            self.norm.SetFeatureAngle(30.0)
+            self.norm.SetInputData(self.mesh)
+            self.norm.Update()
+            self.mesh.DeepCopy(self.norm.GetOutput())
+        self.GetProperty().SetInterpolationToGouraud()
+
+    def setValues(self, values, deep=0):
+        """
+        Set the values of the ampActor
+        
+        Parameters
+        ----------
+        values: ndarray
+            Scalar data attached to each vertex
+        deep: int, default 0
+            If 1, the numpy array will be deep-copied to the ampActor
+        
+        """
+        self._values = numpy_support.numpy_to_vtk(values, deep=deep)
+        self.mesh.GetPointData().SetScalars(self._values)
+        
+    def setOpacity(self, opacity=1.0):
+        r"""
+        Sets the opacity of the ampActor
+        
+        Parameters
+        ----------
+        opacity: float, default 1.0
+            Opacity value between [0 1]
+        """
+        self.GetProperty().SetOpacity(opacity)
+        
+    def setColor(self, color=[1.0, 1.0, 1.0]):
+        r"""
+        Sets the color of the ampActor
+        
+        Parameters
+        ----------
+        color: array_like, default [1.0, 1.0, 1.0]
+            The RGB values as floats of the ampActor colour between [0, 1]
+        
+        """
+        self.GetProperty().SetColor(color)
+        
+    def setScalarRange(self, sRange):
+        r"""
+        Sets the scalar range on the ampActor
+        
+        Parameters
+        ----------
+        sRange: array_like
+            Specifies the lower and upper bound of the scalar range to display
+        """
+        self.Mapper.SetScalarRange(sRange[0], sRange[1])
+        
+
+    def setCMap(self, CMap, bands=128):
+        r"""
+        Sets the colormap used to display scalar values
+        
+        Parameters
+        ----------
+        CMap: array_like
+            The base colors used to define the color map
+        bands: int, default 128
+            The number of contour bands to divide up the color map
+        """
+        self.ctf = vtk.vtkColorTransferFunction()
+        self.ctf.SetColorSpaceToDiverging()
+        for ind, point in zip(np.linspace(0, 1, len(CMap)), CMap):
+            self.ctf.AddRGBPoint(ind, point[0], point[1], point[2])
+        self.lut = vtk.vtkLookupTable()
+        self.lut.SetNumberOfTableValues(bands)
+        self.lut.Build()
+        for i in range(bands):
+            rgb = list(self.ctf.GetColor(float(i) / bands)) + [1]
+            self.lut.SetTableValue(i, rgb)
+    
+    def setShading(self, shading=True):
+        r"""
+        Sets whether shading is used on the ampActor
+        
+        Parameters
+        ----------
+        shading: boolean, default True
+            If True, shading is used in the display of the ampActor
+        """
+        if shading is True:
+            self.GetProperty().LightingOn()
+        if shading is False:
+            self.GetProperty().LightingOff()
 
         
         
