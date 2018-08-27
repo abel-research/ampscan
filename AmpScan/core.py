@@ -356,7 +356,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         self.vert[:, :] = np.dot(self.vert, R.T)
         if norms is True:
             self.norm[:, :] = np.dot(self.norm, R.T)
-            self.vNorm[:, :] = np.dot(self.vNorm, R.T)
+            if hasattr(self, 'vNorm'):
+                self.vNorm[:, :] = np.dot(self.vNorm, R.T)
             
             
     def rigidTransform(self, R=None, T=None):
@@ -373,7 +374,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
             
         """
         if R is not None:
-            self.rotateMat(R, True)
+            self.rotate(R, True)
         if T is not None:
             self.translate(T)
         
