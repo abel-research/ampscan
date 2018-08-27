@@ -420,7 +420,7 @@ class ampActor(vtk.vtkActor):
     """
 
     def __init__(self, CMap=None, bands=128):
-        super(visMixin.ampActor, self).__init__()
+        super(ampActor, self).__init__()
         self.mesh = vtk.vtkPolyData()
         self.points = vtk.vtkPoints()
         self.polys = vtk.vtkCellArray()
