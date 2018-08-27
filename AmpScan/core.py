@@ -401,9 +401,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         """
         if ang == 'deg':
             rot = np.deg2rad(rot)
-        angx = rot[0]
-        angy = rot[1]
-        angz = rot[2]
+        [angx, angy, angz] = rot
         Rx = np.array([[1, 0, 0],
                        [0, np.cos(angx), -np.sin(angx)],
                        [0, np.sin(angx), np.cos(angx)]])

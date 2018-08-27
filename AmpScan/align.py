@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep 14 13:15:30 2017
-
-@author: js22g12
+Package for dealing with alignment methods between two AmpObject meshes
+Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
@@ -17,134 +16,67 @@ from .ampVis import vtkRenWin
 
 class align(object):
     r"""
-    Using this function for sample docstring (one line desc).
-
-    A more extended description that provides details of how the function works.
-
+    Automated alignment methods between two meshes
+    
     Parameters
     ----------
-    moving : array_like
-        Rot has a structure that can be iterated through implying it should be an
-        array like structure
-    static : data_type
-        Description of tTree input and what it does.
-    method : data_type
-        Desc of method
+    moving: AmpObject
+        The moving AmpObject that is to be aligned to the static object
+    static: AmpObject
+        The static AmpObject that the moving AmpObject that the moving object 
+        will be aligned to
+    method: str, default 'linPoint2Plane'
+        A string of the method used for alignment
+    *args:
+    	The arguments used for the registration methods
+    **kwargs:
+    	The keyword arguments used for the registration methods
 
     Returns
     -------
-    type
-        Explanation of anonymous return value of type ``type``.
-    describe : type
-        Explanation of return value named `describe`.
-    out : type
-        Explanation of `out`.
-    type_without_description
-
-    Other Parameters
-    ----------------
-    only_seldom_used_keywords : type
-        Explanation
-    common_parameters_listed_above : type
-        Explanation
-
-    Raises
-    ------
-    BadException
-        Because you shouldn't have done that.
-
-    See Also
-    --------
-    otherfunc : relationship (optional)
-    newfunc : Relationship (optional), which could be fairly long, in which
-              case the line wraps here.
-    thirdfunc, fourthfunc, fifthfunc
-
-    Notes
-    -----
-    Notes about the implementation algorithm (if needed).
-
-    This can have multiple paragraphs.
-
-    You may include some math:
-
-    .. math:: X(e^{j\omega } ) = x(n)e^{ - j\omega n}
-
-    And even use a Greek symbol like :math:`\omega` inline.
-
-    References
-    ----------
-    Cite the relevant literature, e.g. [1]_.  You may also cite these
-    references in the notes section above.
-
-    .. [1] O. McNoleg, "The integration of GIS, remote sensing,
-       expert systems and adaptive co-kriging for environmental habitat
-       modelling of the Highland Haggis using object-oriented, fuzzy-logic
-       and neural-network techniques," Computers & Geosciences, vol. 22,
-       pp. 585-588, 1996.
+    m: AmpObject
+        The aligned AmpObject, it same number of vertices and face array as 
+        the moving AmpObject
+        Access this using align.m
 
     Examples
     --------
-    These are written in doctest format, and should illustrate how to
-    use the function.
-
-    >>> a = [1, 2, 3]
-    >>> print [x + 3 for x in a]
-    [4, 5, 6]
-    >>> print "a\n\nb"
-    a
-    b
+    >>> static = AmpScan.AmpObject(staticfh)
+    >>> moving = AmpScan.AmpObject(movingfh)
+    >>> al = AmpScan.align(moving, static).m
 
     """    
 
-    def __init__(self, moving, static, method = 'linearICP', *args, **kwargs):
+    def __init__(self, moving, static, method = 'linPoint2Plane', *args, **kwargs):
         mData = dict(zip(['vert', 'faces', 'values'], 
                          [moving.vert, moving.faces, moving.values]))
         alData = copy.deepcopy(mData)
         self.m = AmpObject(alData, stype='reg')
         self.s = static
-        if method is not None:
-            getattr(self, method)(*args, **kwargs)
+        self.runICP(method=method, *args, **kwargs)
         
-    def icp(self):
-        r"""
-        Automated alignment function between two meshes
-        
-        """
-
-        tTree = spatial.cKDTree(self.s.vert)
-        rot = np.array([0,0,0], dtype=float)
-        res = minimize(self.calcDistError, rot, method='BFGS',
-                       options={'gtol':1e-6, 'disp':True})
-        
-        
-    def calcDistError(self, rot, tTree):
-        r"""
-        Needs description. Note the blank line at the end of each 
-        docstring - this is necessary.
-
-        """
-        Id = np.identity(3)
-        for i in range(3):
-            if rot[i] != 0:
-                ax = Id[i, :]
-                ang = np.deg2rad(rot[i])
-                dot = np.reshape(self.vert[:, 0] * ax[0] +
-                                 self.vert[:, 1] * ax[1] +
-                                 self.vert[:, 2] * ax[2], (-1, 1))
-                self.vert = (self.vert * np.cos(ang) +
-                             np.cross(ax, self.vert) * np.sin(ang) +
-                             np.reshape(ax, (1, -1)) * dot * (1-np.cos(ang)))
-        dist = tTree.query(self.vert, 10)[0]
-        dist = dist.min(axis=1)
-        return dist.sum()
     
-    def linearICP(self, metric = 'point2point', 
-                  maxiter=20, inlier=1.0, initTransform=None):
-        """
-        Iterative Closest Point algorithm which relies on using least squares
-        method on a having made the minimisation problem into a set of linear 
-        equations
+    def runICP(self, method = 'linPoint2Plane', maxiter=20, inlier=1.0,
+               initTransform=None, *args, **kwargs):
+        r"""
+        The function to run the ICP algorithm, this function calls one of 
+        multiple methods to calculate the affine transformation 
+        
+        Parameters
+        ----------
+        method: str, default 'linPoint2Plane'
+            A string of the method used for alignment
+        maxiter: int, default 20
+            Maximum number of iterations to run the ICP algorithm
+        inlier: float, default 1.0
+            The proportion of closest points to use to calculate the 
+            transformation, if < 1 then vertices with highest error are 
+            discounted
+        *args:
+        	The arguments used for the registration methods
+        **kwargs:
+        	The keyword arguments used for the registration methods
+        
         """
         # Define the rotation, translation, error and quaterion arrays
         Rs = np.zeros([3, 3, maxiter+1])
@@ -152,7 +84,7 @@ class align(object):
 #        qs = np.r_[np.ones([1, maxiter+1]), 
 #                   np.zeros([6, maxiter+1])]
 #        dq  = np.zeros([7, maxiter+1])
-        dTheta = np.zeros([maxiter+1])
+#        dTheta = np.zeros([maxiter+1])
         err = np.zeros([maxiter+1])
         if initTransform is None:
             initTransform = np.eye(4)
@@ -173,14 +105,20 @@ class align(object):
         [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
         err[0] = math.sqrt(dist.mean())
         for i in range(maxiter):
-            if metric == 'point2point':
-                [R, T] = getattr(self, metric)(self.m.vert[sort],
-                                               fC[idx, :])
-            else: 
-                [R, T] = getattr(self, metric)(self.m.vert[sort],
+            if method == 'linPoint2Point':
+                [R, T] = getattr(self, method)(self.m.vert[sort, :],
                                                fC[idx, :], 
-                                               self.s.norm[idx, :])
-                
+                                               *args, **kwargs)
+            elif method == 'linPoint2Plane': 
+                [R, T] = getattr(self, method)(self.m.vert[sort, :],
+                                               fC[idx, :], 
+                                               self.s.norm[idx, :],
+                                               *args, **kwargs)
+            elif method == 'optPoint2Point':
+                [R, T] = getattr(self, method)(self.m.vert[sort, :],
+                                               fC[idx, :],
+                                               *args, **kwargs)
+            else: KeyError('Not a supported alignment method')
             Rs[:, :, i+1] = np.dot(R, Rs[:, :, i])
             Ts[:, i+1] = np.dot(R, Ts[:, i]) + T
             self.m.rigidTransform(R, T)
@@ -202,7 +140,47 @@ class align(object):
             
     
     @staticmethod
-    def point2plane(mv, sv, sn):
+    def linPoint2Plane(mv, sv, sn):
+        r"""
+        Iterative Closest Point algorithm which relies on using least squares
+        method from converting the minimisation problem into a set of linear 
+        equations. This uses a 
+        
+        Parameters
+        ----------
+        mv: ndarray
+            The array of vertices to be moved 
+        sv: ndarray
+            The array of static vertices, these are the face centroids of the 
+            static mesh
+        sn: ndarray
+            The normals of the point in teh static array, these are derived 
+            from the normals of the faces for each centroid
+        
+        Returns
+        -------
+        R: ndarray
+            The optimal rotation array 
+        T: ndarray
+            The optimal translation array
+        
+        References
+        ----------
+        .. [1] Besl, Paul J.; N.D. McKay (1992). "A Method for Registration of 3-D
+           Shapes". IEEE Trans. on Pattern Analysis and Machine Intelligence (Los
+           Alamitos, CA, USA: IEEE Computer Society) 14 (2): 239-256.
+        
+        .. [2] Chen, Yang; Gerard Medioni (1991). "Object modelling by registration of
+           multiple range images". Image Vision Comput. (Newton, MA, USA:
+           Butterworth-Heinemann): 145-155
+
+        Examples
+        --------
+        >>> static = AmpScan.AmpObject(staticfh)
+        >>> moving = AmpScan.AmpObject(movingfh)
+        >>> al = AmpScan.align(moving, static, method='linPoint2Plane').m
+        
+        """
         cn = np.c_[np.cross(mv, sn), sn]
         C = np.dot(cn.T, cn)
         v = sv - mv
@@ -219,7 +197,43 @@ class align(object):
         return (R, T)
     
     @staticmethod
-    def point2point(mv, sv):
+    def linPoint2Point(mv, sv):
+        r"""
+        Point-to-Point Iterative Closest Point algorithm which 
+        relies on using singular value decomposition on the centered arrays.  
+        
+        Parameters
+        ----------
+        mv: ndarray
+            The array of vertices to be moved 
+        sv: ndarray
+            The array of static vertices, these are the face centroids of the 
+            static mesh
+        
+        Returns
+        -------
+        R: ndarray
+            The optimal rotation array 
+        T: ndarray
+            The optimal translation array
+        
+        References
+        ----------
+        .. [1] Besl, Paul J.; N.D. McKay (1992). "A Method for Registration of 3-D
+           Shapes". IEEE Trans. on Pattern Analysis and Machine Intelligence (Los
+           Alamitos, CA, USA: IEEE Computer Society) 14 (2): 239-256.
+        
+        .. [2] Chen, Yang; Gerard Medioni (1991). "Object modelling by registration of
+           multiple range images". Image Vision Comput. (Newton, MA, USA:
+           Butterworth-Heinemann): 145-155
+
+        Examples
+        --------
+        >>> static = AmpScan.AmpObject(staticfh)
+        >>> moving = AmpScan.AmpObject(movingfh)
+        >>> al = AmpScan.align(moving, static, method='linPoint2Point').m
+
+        """
         mCent = mv - mv.mean(axis=0)
         sCent = sv - sv.mean(axis=0)
         C = np.dot(mCent.T, sCent)
@@ -231,10 +245,119 @@ class align(object):
         R = np.dot(R, U.T)
         T = sv.mean(axis=0) - np.dot(R, mv.mean(axis=0))
         return (R, T)
+    
+    @staticmethod
+    def optPoint2Point(mv, sv, opt='L-BFGS-B'):
+        r"""
+        Direct minimisation of the rmse between the points of the two meshes. This 
+        method enables access to all of Scipy's minimisation algorithms 
         
+        Parameters
+        ----------
+        mv: ndarray
+            The array of vertices to be moved 
+        sv: ndarray
+            The array of static vertices, these are the face centroids of the 
+            static mesh
+        opt: str, default 'L_BFGS-B'
+            The string of the scipy optimiser to use 
+        
+        Returns
+        -------
+        R: ndarray
+            The optimal rotation array 
+        T: ndarray
+            The optimal translation array
+            
+        Examples
+        --------
+        >>> static = AmpScan.AmpObject(staticfh)
+        >>> moving = AmpScan.AmpObject(movingfh)
+        >>> al = AmpScan.align(moving, static, method='optPoint2Point', opt='SLSQP').m
+            
+        """
+        X = np.zeros(6)
+        lim = [-np.pi/4, np.pi/4] * 3 + [-5, 5] * 3
+        lim = np.reshape(lim, [6, 2])
+        try:
+            X = minimize(align.optDistError, X,
+                         args=(mv, sv),
+                         bounds=lim, method=opt)
+        except:
+            X = minimize(align.optDistError, X,
+                         args=(mv, sv),
+                         method=opt)
+        [angx, angy, angz] = X.x[:3]
+        Rx = np.array([[1, 0, 0],
+                       [0, np.cos(angx), -np.sin(angx)],
+                       [0, np.sin(angx), np.cos(angx)]])
+        Ry = np.array([[np.cos(angy), 0, np.sin(angy)],
+                       [0, 1, 0],
+                       [-np.sin(angy), 0, np.cos(angy)]])
+        Rz = np.array([[np.cos(angz), -np.sin(angz), 0],
+                       [np.sin(angz), np.cos(angz), 0],
+                       [0, 0, 1]])
+        R = np.dot(np.dot(Rz, Ry), Rx)
+        T = X.x[3:]
+        return (R, T)
+
+    @staticmethod
+    def optDistError(X, mv, sv):
+        r"""
+        The function to minimise. It performs the affine transformation then returns 
+        the rmse between the two vertex sets
+        
+        Parameters
+        ----------
+        X:  ndarray
+            The affine transformation corresponding to [Rx, Ry, Rz, Tx, Ty, Tz]
+        mv: ndarray
+            The array of vertices to be moved 
+        sv: ndarray
+            The array of static vertices, these are the face centroids of the 
+            static mesh
+
+        Returns
+        -------
+        err: float
+            The RMSE between the two meshes
+        
+        """
+        [angx, angy, angz] = X[:3]
+        Rx = np.array([[1, 0, 0],
+                       [0, np.cos(angx), -np.sin(angx)],
+                       [0, np.sin(angx), np.cos(angx)]])
+        Ry = np.array([[np.cos(angy), 0, np.sin(angy)],
+                       [0, 1, 0],
+                       [-np.sin(angy), 0, np.cos(angy)]])
+        Rz = np.array([[np.cos(angz), -np.sin(angz), 0],
+                       [np.sin(angz), np.cos(angz), 0],
+                       [0, 0, 1]])
+        R = np.dot(np.dot(Rz, Ry), Rx)
+        moved = np.dot(mv, R.T)
+        moved += X[3:]
+        dist = (moved - sv)**2
+        dist = dist.sum(axis=1)
+        err = np.sqrt(dist.mean())
+        return err
+
     
     @staticmethod
     def rot2quat(R):
+        """
+        Convert a rotation matrix to a quaternionic matrix
+        
+        Parameters
+        ----------
+        R: array_like
+            The 3x3 rotation array to be converted to a quaternionic matrix
+        
+        Returns
+        -------
+        Q: ndarray
+            The quaternionic matrix
+
+        """
         [[Qxx, Qxy, Qxz],
          [Qyx, Qyy, Qyz],
          [Qzx, Qzy, Qzz]] = R
@@ -273,7 +396,9 @@ class align(object):
     
     def display(self):
         r"""
-        Function to display the two aligned meshes in 
+        Display the static mesh and the aligned within an interactive VTK 
+        window 
+        
         """
         if not hasattr(self.s, 'actor'):
             self.s.addActor()

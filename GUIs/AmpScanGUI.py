@@ -125,7 +125,7 @@ class AmpScanGUI(QMainWindow):
         self.fileManager.setTable(static, [1,0,0], 0.5, 2)
         self.fileManager.setTable(moving, [0,0,1], 0.5, 2)
         al = align(self.files[moving], self.files[static], 
-                   maxiter=10, method='linearICP',metric='point2plane').m
+                   maxiter=10, method='linPoint2Plane').m
         al.addActor()
         alName = moving + '_al'
         self.files[alName] = al
