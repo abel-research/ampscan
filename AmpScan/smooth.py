@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep 14 13:25:23 2017
-
-@author: js22g12
+Package for dealing with smoothing functions for the AmpObject mesh
+Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
@@ -12,7 +11,8 @@ class smoothMixin(object):
     
     def lp_smooth(self, n=1):
         r"""
-        Function to apply a simple laplacian smooth to the mesh
+        Function to apply a laplacian smooth to the mesh. This method replaces 
+        each vertex with the mean of its connected neighbours 
 
         Parameters
         ----------
@@ -44,13 +44,16 @@ class smoothMixin(object):
     
     def smoothValues(self, n=1):
         """
-        Function to apply a simple laplacian smooth to the values array
+        Function to apply a simple laplacian smooth to the values array. 
+        Identical to the vertex smoothing expect it applies the smoothing 
+        to the values
 
         Parameters
         ----------
         
         n: int, default 1
             number of iterations of smoothing
+        
         """
         # Flatten the edges array to 1D
         e = self.edges.flatten()

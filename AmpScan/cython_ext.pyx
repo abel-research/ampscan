@@ -9,7 +9,7 @@ cimport numpy as np
 cimport cython
 
 
-cpdef np.ndarray[int] logEuPath(int [:, :] arr):
+cpdef np.ndarray[int] logEuPath_cy(int [:, :] arr):
     cdef int vmax = arr.shape[0]
     cdef list rows = list(range(vmax))
     order_np = np.zeros([vmax], dtype=int)
@@ -34,7 +34,7 @@ cpdef np.ndarray[int] logEuPath(int [:, :] arr):
     order[n+1] = val
     return order_np
 
-cpdef np.ndarray[float, ndim=2] planeEdgeIntersect(float [:, :] arr, float plane, int axisInd):
+cpdef np.ndarray[float, ndim=2] planeEdgeIntersect_cy(float [:, :] arr, float plane, int axisInd):
     cdef int emax = arr.shape[0]
     intersectPoints_np = np.zeros((emax, 3), dtype=np.float32)
     cdef float [:, :] intersectPoints = intersectPoints_np

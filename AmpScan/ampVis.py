@@ -149,7 +149,8 @@ class vtkRenWin(vtk.vtkRenderWindow):
             The index of the viewport to set the projection of the camera in
         
         """
-        self.cams[viewport].SetParallelProjection(perspective)
+        cam = self.rens[viewport].GetActiveCamera()
+        cam.SetParallelProjection(perspective)
         
             
     def addAxes(self, actors, viewport=0, color = [1.0, 1.0, 1.0], font=None):
@@ -167,13 +168,14 @@ class vtkRenWin(vtk.vtkRenderWindow):
             The RGB values as floats of the axes line and text colour
             between [0, 1]
         """
+        self.axes = vtk.vtkCubeAxesActor()
         lim = []
-        ax = self.axes[viewport]
+        ax = self.axes
         for actor in actors:
             lim.append(actor.GetBounds())
         lim = np.array(lim)
         ax.SetBounds(tuple(lim.max(axis=0)))
-        ax.SetCamera(self.cams[viewport])
+        ax.SetCamera(self.rens[viewport].GetActiveCamera())
         ax.SetFlyModeToClosestTriad()
         for axes in range(3):
             ax.GetTitleTextProperty(axes).SetColor(color)
@@ -231,11 +233,12 @@ class vtkRenWin(vtk.vtkRenderWindow):
         
         """
         vtkRGB = vtk.vtkUnsignedCharArray()
-        self.GetPixelData(0, 0, self.winWidth-1, self.winHeight-1,
+        width, height = self.GetSize()
+        self.GetPixelData(0, 0, width-1, height-1,
                           1, vtkRGB)
         vtkRGB.Squeeze()
         im =  np.flipud(np.resize(np.array(vtkRGB),
-                                  [self.winWidth, self.winHeight, 3])) / 255.0
+                                  [width, height, 3])) / 255.0
         return im
                                        
     def getScreenshot(self, fname, mag=10):
@@ -317,6 +320,8 @@ class visMixin(object):
             The array representation of the image if out = 'im'
         
         """
+        if not hasattr(self, 'actor'):
+            self.addActor()
         # Generate a renderer window
         win = vtkRenWin()
         # Set the number of viewports
@@ -328,10 +333,10 @@ class visMixin(object):
         win.SetSize(size[0], size[1])
         win.OffScreenRenderingOn()
         for i, view in enumerate(views):
-            win.addAxes(self.actor, color=[0.0, 0.0, 0.0], viewport=i)
+            win.addAxes([self.actor,], color=[0.0, 0.0, 0.0], viewport=i)
             win.setView(view, i)
-            win.setProjection(projection, viewport=i)
-            win.renderActors(self.actor, viewport=i, shading=shading, zoom=1.3)
+#            win.setProjection(projection, viewport=i)
+            win.renderActors([self.actor,], viewport=i, zoom=1.3)
         win.Render()
         if out == 'im':
             im = win.getImage()
