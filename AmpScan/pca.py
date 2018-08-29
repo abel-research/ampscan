@@ -35,11 +35,11 @@ class pca(object):
         for s in self.shapes:
             s.planarTrim(height)
         
-    def register(self):
+    def register(self, scale=None):
         r"""
         Function to register all the shapes to a baseline
         """
-        self.registered = [registration(self.baseline, t) for t in self.shapes]
+        self.registered = [registration(self.baseline, t, fixBrim=True, steps=10).reg for t in self.shapes]
         self.X = np.array([r.vert.flatten() for r in self.registered]).T
         
     def pca(self):

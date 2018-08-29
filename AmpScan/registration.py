@@ -47,7 +47,8 @@ class registration(object):
             getattr(self, method)(*args, **kwargs)
         
         
-    def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, smooth=1, fixBrim=False):
+    def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, 
+                    scale=False, smooth=1, fixBrim=False):
         r"""
         Point to Plane method for registration between the two meshes 
         
@@ -80,6 +81,13 @@ class registration(object):
                          [self.b.vert, self.b.faces, self.b.values]))
         regData = copy.deepcopy(bData)
         self.reg = AmpObject(regData, stype='reg')
+        if scale is not None:
+            tmin = self.t.vert.min(axis=0)[2]
+            rmin = self.reg.vert.min(axis=0)[2]
+            SF = 1 - ((tmin-scale)/(rmin-scale))
+            logic = self.reg.vert[:, 2] < scale
+            d = (self.reg.vert[logic, 2] - scale) * SF
+            self.reg.vert[logic, 2] += d
         normals = np.cross(self.t.vert[self.t.faces[:,1]] -
                          self.t.vert[self.t.faces[:,0]],
                          self.t.vert[self.t.faces[:,2]] -

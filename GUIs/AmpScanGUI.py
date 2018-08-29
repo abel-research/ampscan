@@ -143,7 +143,6 @@ class AmpScanGUI(QMainWindow):
         ang = float(button.text())
         idx = [0, 0, 1]
         self.files[moving].rotateAng([ang*i for i in idx], 'deg')
-        print(self.files[moving].actor.GetOrigin())
         self.files[moving].tform.RotateZ(ang)
         self.renWin.Render()
 
@@ -188,8 +187,8 @@ class AmpScanGUI(QMainWindow):
                    maxiter=10, method='linPoint2Plane').m
         al.tform = vtk.vtkTransform()
         al.tform.PostMultiply()
-        al.actor.SetUserTransform(al.tform)
         al.addActor()
+        al.actor.SetUserTransform(al.tform)
         alName = moving + '_al'
         self.files[alName] = al
         self.filesDrop.append(alName)
