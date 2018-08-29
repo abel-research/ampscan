@@ -370,7 +370,7 @@ class visMixin(object):
         renderWindowInteractor.SetInteractorStyle(vtk.vtkInteractorStyleTrackballCamera())
         # Set camera projection 
         win.setView()
-        win.renderActors([self.actor,], shading=True)
+        win.renderActors([self.actor,])
         win.Render()
         win.rens[0].GetActiveCamera().Azimuth(180)
         win.rens[0].GetActiveCamera().SetParallelProjection(True)
