@@ -16,5 +16,4 @@ via ``import AmpScan`` by navigating to the root directory and running
    examples/TESTnb
    examples/Workflow1-Importstl
    examples/Workflow2-ImportTetMesh
-   examples/Workflow3-AnalyseAmpObject
-   
+   examples/WorkFlow3-AnalyseAmpObject

@@ -64,7 +64,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
         Set the scalar bar within the window based upon a look-up table defined
         within an actor
         
-        Parmeters
+        Parameters
         ---------
         actor: ampActor
             The actor from which the lut is read from, the actor must have the

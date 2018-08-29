@@ -9,10 +9,11 @@ from AmpScan.pressSens import pressSense
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
-from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout,
-                             QMainWindow, QMessageBox, QComboBox,
+from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
+                             QMainWindow, QMessageBox, QComboBox, QButtonGroup,
                              QOpenGLWidget, QFileDialog,QLabel,QPushButton,
-                             QSlider, QWidget, QTableWidget, QTableWidgetItem)
+                             QSlider, QWidget, QTableWidget, QTableWidgetItem,
+                             QAbstractButton)
 
         
 class AmpScanGUI(QMainWindow):
@@ -102,21 +103,61 @@ class AmpScanGUI(QMainWindow):
         self.alCont = AlignControls(self.filesDrop, self)
         self.alCont.show()
         self.alCont.icp.clicked.connect(self.runICP)
-#        self.renWin.setnumViewports(2)
-#        self.renWin.setView(view=[-1, 0, 0], viewport=1)
-#        self.renWin.setProjection(True, 0)
-#        self.renWin.setProjection(True, 1)
-##        self.renWin.render(self.AmpObj.actors, dispActors=['limb',])
-##        self.renWin.render(self.AmpObj.actors, dispActors=['socket',],
-##                              viewport=1)
-#        self.renWin.renderActors([self.AmpObj.actor, self.socket.actor],
-#                                 viewport=0)
-#        self.renWin.renderActors([self.AmpObj.actor, self.socket.actor],
-#                                 viewport=1)
-#        self.AmpObj.actor.setColor([1.0, 0.0, 0.0])
-#        self.AmpObj.actor.setOpacity(0.5)
-#        self.socket.actor.setColor([0.0, 0.0, 1.0])
-#        self.socket.actor.setOpacity(0.5)
+        self.alCont.xrotButton.buttonClicked[QAbstractButton].connect(self.rotatex)
+        self.alCont.yrotButton.buttonClicked[QAbstractButton].connect(self.rotatey)
+        self.alCont.zrotButton.buttonClicked[QAbstractButton].connect(self.rotatez)
+        self.alCont.xtraButton.buttonClicked[QAbstractButton].connect(self.transx)
+        self.alCont.ytraButton.buttonClicked[QAbstractButton].connect(self.transy)
+        self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
+        
+    def rotatex(self, button):
+        moving = str(self.alCont.moving.currentText())
+        ang = [float(button.text()), 0, 0]
+        self.files[moving].rotateAng(ang, 'deg')
+        self.files[moving].actor.setVert(self.files[moving].vert)
+        self.renWin.Render()
+#        print('rotate x by %.1f' % ang)
+
+    def rotatey(self, button):
+        moving = str(self.alCont.moving.currentText())
+        ang = [0, float(button.text()), 0]
+        self.files[moving].rotateAng(ang, 'deg')
+        self.files[moving].actor.setVert(self.files[moving].vert)
+        self.renWin.Render()
+#        print('rotate y by %.1f' % ang)
+
+    def rotatez(self, button):
+        moving = str(self.alCont.moving.currentText())
+        ang = [0, 0, float(button.text())]
+        self.files[moving].rotateAng(ang, 'deg')
+        self.files[moving].actor.setVert(self.files[moving].vert)
+        self.renWin.Render()
+
+    def transx(self, button):
+        moving = str(self.alCont.moving.currentText())
+        ang = [float(button.text()), 0, 0]
+        self.files[moving].translate(ang)
+        self.files[moving].actor.setVert(self.files[moving].vert)
+        self.renWin.Render()
+#        print('rotate x by %.1f' % ang)
+
+    def transy(self, button):
+        moving = str(self.alCont.moving.currentText())
+        ang = [0, float(button.text()), 0]
+        self.files[moving].translate(ang)
+        self.files[moving].actor.setVert(self.files[moving].vert)
+        self.renWin.Render()
+#        print('rotate y by %.1f' % ang)
+
+    def transz(self, button):
+        moving = str(self.alCont.moving.currentText())
+        ang = [0, 0, float(button.text())]
+        self.files[moving].translate(ang)
+        self.files[moving].actor.setVert(self.files[moving].vert)
+        self.renWin.Render()
+#        print('rotate z by %.1f' % ang)
+#        self.files[moving].rotateAng(ang, 'deg')
+
     
     def runICP(self):
         
@@ -172,12 +213,7 @@ class AmpScanGUI(QMainWindow):
         self.regCont.show()
         self.regCont.reg.clicked.connect(self.runRegistration)
         
-#        self.renWin.setnumViewports(1)
-#        self.renWin.setProjection()
-#        self.RegObj = registration(self.socket, self.AmpObj)
-#        self.RegObj.addActor(CMap=self.AmpObj.CMapN2P)
-#        self.renWin.renderActors([self.RegObj.actor,])
-#        self.renWin.setScalarBar(self.RegObj.actor)
+
     
     def analyse(self):
         """
@@ -348,6 +384,28 @@ class AlignControls(QMainWindow):
         self.layout.addWidget(self.static, 0, 1)
         self.layout.addWidget(self.moving, 1, 1)
         self.layout.addWidget(self.icp, 2, 0, 1, -1)
+        rots = ['x', 'y', 'z']
+        vals = ['-5', '-0.5', '+0.5', '+5']
+        for i, r in enumerate(rots):
+            setattr(self, r + 'rotBox', QHBoxLayout())
+            setattr(self, r + 'rotButton', QButtonGroup())
+            lab = QLabel(r + ' rotation')
+            getattr(self, r + 'rotBox').addWidget(lab)
+            for v in vals:
+                button = QPushButton(v)
+                getattr(self, r + 'rotBox').addWidget(button)
+                getattr(self, r + 'rotButton').addButton(button)
+            self.layout.addLayout(getattr(self, r + 'rotBox'), i+3, 0, 1, -1)
+        for i, r in enumerate(rots):
+            setattr(self, r + 'traBox', QHBoxLayout())
+            setattr(self, r + 'traButton', QButtonGroup())
+            lab = QLabel(r + ' translation')
+            getattr(self, r + 'traBox').addWidget(lab)
+            for v in vals:
+                button = QPushButton(v)
+                getattr(self, r + 'traBox').addWidget(button)
+                getattr(self, r + 'traButton').addButton(button)
+            self.layout.addLayout(getattr(self, r + 'traBox'), i+6, 0, 1, -1)
         self.main.setLayout(self.layout)
         self.setWindowTitle("Alignment Manager")
         self.getNames()
@@ -388,7 +446,7 @@ class RegistrationControls(QMainWindow):
         self.layout.addWidget(self.target, 1, 1)
         self.layout.addWidget(self.reg, 2, 0, 1, -1)
         self.main.setLayout(self.layout)
-        self.setWindowTitle("Alignment Manager")
+        self.setWindowTitle("Registration Manager")
         self.getNames()
     
     def getNames(self):
@@ -402,6 +460,7 @@ class RegistrationControls(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+#    mainWin = AlignControls([''])
     mainWin = AmpScanGUI()
     mainWin.show()
     sys.exit(app.exec_())

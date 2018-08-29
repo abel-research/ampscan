@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # -- Project information -----------------------------------------------------
 
 project = 'AmpScan'
-copyright = '2018, Joshua Steer'
+copyright = '2018, AmpScan developers'
 author = 'Oliver Stocks'
 
 # The short X.Y version
@@ -64,6 +64,8 @@ html_use_index = False
 nbsphinx_kernel_name = 'python3'
 
 html_logo = "AmpScanlogosmall.svg"
+
+html_favicon = "AmpScanlogo.ico"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
