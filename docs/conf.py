@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('.'))
 # -- Project information -----------------------------------------------------
 
 project = 'AmpScan'
-copyright = '2018, Joshua Steer'
+copyright = '2018, AmpScan developers'
 author = 'Oliver Stocks'
 
 # The short X.Y version
