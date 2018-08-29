@@ -1,6 +1,7 @@
 import sys
 import numpy as np
 from vtk.util import numpy_support
+import vtk
 from AmpScan import AmpObject
 from AmpScan.registration import registration
 from AmpScan.align import align
@@ -34,7 +35,7 @@ class AmpScanGUI(QMainWindow):
         super(AmpScanGUI, self).__init__()
         self.vtkWidget = qtVtkWindow()
         self.renWin = self.vtkWidget._RenderWindow
-        self.renWin.setBackground()
+        self.renWin.setBackground([1,1,1])
         self.mainWidget = QWidget()
         self.files = {}
         self.filesDrop = list(self.files.keys())
@@ -59,10 +60,6 @@ class AmpScanGUI(QMainWindow):
         
         More writing...
 
-        Note
-        ----
-
-        @Josh_Steer if no stl is selected then the window crashes!
 
         """
         fname = QFileDialog.getOpenFileName(self, 'Open file',
@@ -73,6 +70,10 @@ class AmpScanGUI(QMainWindow):
         self.files[name] = AmpObject(fname[0], 'limb')
         amp = self.files[name]
         amp.addActor()
+        amp.tform = vtk.vtkTransform()
+        amp.tform.PostMultiply()
+        amp.actor.SetUserTransform(amp.tform)
+#        amp.centre()
         self.fileManager.addRow(name, amp)
         self.display()
         self.filesDrop.append(name)
@@ -82,6 +83,14 @@ class AmpScanGUI(QMainWindow):
             self.regCont.getNames()
 #        self.AmpObj.lp_smooth()
         
+    def chooseSaveFile(self):
+        fname = QFileDialog.getSaveFileName(self, 'Save file',
+                                            filter="Meshes (*.stl)")
+        if fname[0] == '':
+            return
+        moving = str(self.alCont.moving.currentText())
+        self.files[moving].save(fname[0])
+    
     def display(self):
         render = []
         for r in range(self.fileManager.n):
@@ -102,6 +111,7 @@ class AmpScanGUI(QMainWindow):
         """
         self.alCont = AlignControls(self.filesDrop, self)
         self.alCont.show()
+        self.alCont.centre.clicked.connect(self.centreMesh)
         self.alCont.icp.clicked.connect(self.runICP)
         self.alCont.xrotButton.buttonClicked[QAbstractButton].connect(self.rotatex)
         self.alCont.yrotButton.buttonClicked[QAbstractButton].connect(self.rotatey)
@@ -112,66 +122,81 @@ class AmpScanGUI(QMainWindow):
         
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
-        ang = [float(button.text()), 0, 0]
-        self.files[moving].rotateAng(ang, 'deg')
-        self.files[moving].actor.setVert(self.files[moving].vert)
+        ang = float(button.text())
+        idx = [1, 0, 0]
+        self.files[moving].rotateAng([ang*i for i in idx], 'deg')
+        self.files[moving].tform.RotateX(ang)
         self.renWin.Render()
 #        print('rotate x by %.1f' % ang)
 
     def rotatey(self, button):
         moving = str(self.alCont.moving.currentText())
-        ang = [0, float(button.text()), 0]
-        self.files[moving].rotateAng(ang, 'deg')
-        self.files[moving].actor.setVert(self.files[moving].vert)
+        ang = float(button.text())
+        idx = [0, 1, 0]
+        self.files[moving].rotateAng([ang*i for i in idx], 'deg')
+        self.files[moving].tform.RotateY(ang)
         self.renWin.Render()
 #        print('rotate y by %.1f' % ang)
 
     def rotatez(self, button):
         moving = str(self.alCont.moving.currentText())
-        ang = [0, 0, float(button.text())]
-        self.files[moving].rotateAng(ang, 'deg')
-        self.files[moving].actor.setVert(self.files[moving].vert)
+        ang = float(button.text())
+        idx = [0, 0, 1]
+        self.files[moving].rotateAng([ang*i for i in idx], 'deg')
+        print(self.files[moving].actor.GetOrigin())
+        self.files[moving].tform.RotateZ(ang)
         self.renWin.Render()
 
     def transx(self, button):
         moving = str(self.alCont.moving.currentText())
-        ang = [float(button.text()), 0, 0]
-        self.files[moving].translate(ang)
-        self.files[moving].actor.setVert(self.files[moving].vert)
+        t = [float(button.text()),0, 0]
+        self.files[moving].translate(t)
+        self.files[moving].tform.Translate(t)
         self.renWin.Render()
 #        print('rotate x by %.1f' % ang)
 
     def transy(self, button):
         moving = str(self.alCont.moving.currentText())
-        ang = [0, float(button.text()), 0]
-        self.files[moving].translate(ang)
-        self.files[moving].actor.setVert(self.files[moving].vert)
+        t = [0, float(button.text()), 0]
+        self.files[moving].translate(t)
+        self.files[moving].tform.Translate(t)
         self.renWin.Render()
 #        print('rotate y by %.1f' % ang)
 
     def transz(self, button):
         moving = str(self.alCont.moving.currentText())
-        ang = [0, 0, float(button.text())]
-        self.files[moving].translate(ang)
-        self.files[moving].actor.setVert(self.files[moving].vert)
+        t = [0, 0, float(button.text())]
+        self.files[moving].translate(t)
+        self.files[moving].tform.Translate(t)
         self.renWin.Render()
 #        print('rotate z by %.1f' % ang)
 #        self.files[moving].rotateAng(ang, 'deg')
 
+    def centreMesh(self):
+        moving = str(self.alCont.moving.currentText())
+        c = -1 * self.files[moving].vert.mean(axis=0)
+        t = c.tolist()
+        self.files[moving].centre()
+        self.files[moving].tform.Translate(t)
+        self.renWin.Render()
     
     def runICP(self):
         
         static = str(self.alCont.static.currentText())
         moving = str(self.alCont.moving.currentText())
-        self.fileManager.setTable(static, [1,0,0], 0.5, 2)
-        self.fileManager.setTable(moving, [0,0,1], 0.5, 2)
         al = align(self.files[moving], self.files[static], 
                    maxiter=10, method='linPoint2Plane').m
+        al.tform = vtk.vtkTransform()
+        al.tform.PostMultiply()
+        al.actor.SetUserTransform(al.tform)
         al.addActor()
         alName = moving + '_al'
         self.files[alName] = al
         self.filesDrop.append(alName)
         self.fileManager.addRow(alName, self.files[alName])
+        self.fileManager.setTable(static, [1,0,0], 0.5, 2)
+        self.fileManager.setTable(moving, [1,1,1], 1, 0)
+        self.fileManager.setTable(alName, [0,0,1], 0.5, 2)
         if hasattr(self, 'alCont'):
             self.alCont.getNames()
         if hasattr(self, 'regCont'):
@@ -271,6 +296,9 @@ class AmpScanGUI(QMainWindow):
         self.openFile = QAction(QIcon('open.png'), 'Open', self,
                                 shortcut='Ctrl+O',
                                 triggered=self.chooseOpenFile)
+        self.saveFile = QAction(QIcon('open.png'), 'Save', self,
+                                shortcut='Ctrl+S',
+                                triggered=self.chooseSaveFile)
         self.openFE = QAction(QIcon('open.png'), 'Open FE', self,
                                 triggered=self.chooseFE)
         self.openPress = QAction(QIcon('open.png'), 'Open Press', self,
@@ -291,6 +319,7 @@ class AmpScanGUI(QMainWindow):
         """
         self.fileMenu = self.menuBar().addMenu("&File")
         self.fileMenu.addAction(self.openFile)
+        self.fileMenu.addAction(self.saveFile)
         self.fileMenu.addSeparator()
         self.fileMenu.addAction(self.exitAct)
         self.alignMenu = self.menuBar().addMenu("&Align")
@@ -377,13 +406,15 @@ class AlignControls(QMainWindow):
         self.static = QComboBox()
         self.moving = QComboBox()
         self.icp = QPushButton("Run ICP")
+        self.centre = QPushButton("Centre")
         self.setCentralWidget(self.main)
         self.layout = QGridLayout()
         self.layout.addWidget(QLabel('Static'), 0, 0)
         self.layout.addWidget(QLabel('Moving'), 1, 0)
         self.layout.addWidget(self.static, 0, 1)
         self.layout.addWidget(self.moving, 1, 1)
-        self.layout.addWidget(self.icp, 2, 0, 1, -1)
+        self.layout.addWidget(self.centre, 2, 0, 1, -1)
+        self.layout.addWidget(self.icp, 3, 0, 1, -1)
         rots = ['x', 'y', 'z']
         vals = ['-5', '-0.5', '+0.5', '+5']
         for i, r in enumerate(rots):
@@ -395,7 +426,7 @@ class AlignControls(QMainWindow):
                 button = QPushButton(v)
                 getattr(self, r + 'rotBox').addWidget(button)
                 getattr(self, r + 'rotButton').addButton(button)
-            self.layout.addLayout(getattr(self, r + 'rotBox'), i+3, 0, 1, -1)
+            self.layout.addLayout(getattr(self, r + 'rotBox'), i+4, 0, 1, -1)
         for i, r in enumerate(rots):
             setattr(self, r + 'traBox', QHBoxLayout())
             setattr(self, r + 'traButton', QButtonGroup())
@@ -405,7 +436,7 @@ class AlignControls(QMainWindow):
                 button = QPushButton(v)
                 getattr(self, r + 'traBox').addWidget(button)
                 getattr(self, r + 'traButton').addButton(button)
-            self.layout.addLayout(getattr(self, r + 'traBox'), i+6, 0, 1, -1)
+            self.layout.addLayout(getattr(self, r + 'traBox'), i+7, 0, 1, -1)
         self.main.setLayout(self.layout)
         self.setWindowTitle("Alignment Manager")
         self.getNames()
