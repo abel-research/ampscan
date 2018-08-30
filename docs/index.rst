@@ -34,7 +34,7 @@ For the most up to date version of AmpScan, clone directly from the gitlab repos
 
 ``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
 
-Navigate to the `AmpScan/` directory and run a pip install using:
+Navigate to the `AmpScan/` directory and run a pip editable install using:
 
 ``pip install -e .``
 
