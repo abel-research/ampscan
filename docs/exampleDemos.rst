@@ -13,7 +13,6 @@ via ``import AmpScan`` by navigating to the root directory and running
 .. toctree::
    :maxdepth: 2
 
-   examples/TESTnb
    examples/Workflow1-Importstl
    examples/Workflow2-ImportTetMesh
    examples/WorkFlow3-AnalyseAmpObject
