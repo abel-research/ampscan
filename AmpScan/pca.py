@@ -25,8 +25,10 @@ class pca(object):
         r"""
         Function to import multiple stl files from folder
         """
-        self.shapes = [AmpObject(path + f, 'limb', unify=unify) for f in 
-                       os.listdir(path) if f.endswith('.stl')]
+        self.fnames = [f for f in os.listdir(path) if f.endswith('.stl')]
+        self.shapes = [AmpObject(path + f, 'limb', unify=unify) for f in self.fnames]
+        for s in self.shapes:
+            s.lp_smooth(3, brim=True)
         
     def sliceFiles(self, height):
         r"""
@@ -35,12 +37,22 @@ class pca(object):
         for s in self.shapes:
             s.planarTrim(height)
         
-    def register(self, scale=None):
+    def register(self, scale=None, save=None, baseline=True):
         r"""
         Function to register all the shapes to a baseline
         """
-        self.registered = [registration(self.baseline, t, fixBrim=True, steps=10).reg for t in self.shapes]
+        self.registered = []
+        for t in self.shapes:
+            r = registration(self.baseline, t, fixBrim=True, steps=5, scale=scale, smooth=1, neigh=50).reg
+            r.lp_smooth()
+            self.registered.append(r)
+        if save is not None:
+            for f, r in zip(self.fnames, self.registered):
+                r.save(save + f)
         self.X = np.array([r.vert.flatten() for r in self.registered]).T
+        if baseline is True:
+            self.X = np.c_[self.X, self.baseline.vert.flatten()]
+        
         
     def pca(self):
         r"""

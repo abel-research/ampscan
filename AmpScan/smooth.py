@@ -9,7 +9,7 @@ import copy
 
 class smoothMixin(object):
     
-    def lp_smooth(self, n=1):
+    def lp_smooth(self, n=1, brim = True):
         r"""
         Function to apply a laplacian smooth to the mesh. This method replaces 
         each vertex with the mean of its connected neighbours 
@@ -21,6 +21,10 @@ class smoothMixin(object):
             number of iterations of smoothing
         
         """
+        if brim is True:
+            eidx = (self.faceEdges == -99999).sum(axis=1).astype(bool)
+            vBrim = np.unique(self.edges[eidx, :])
+        else: vBrim = []
         # Flatten the edges array to 1D
         e = self.edges.flatten()
         # Get the indicies to sort edges 
@@ -36,7 +40,10 @@ class smoothMixin(object):
             # List all vertices 
             vert = copy.deepcopy(self.vert)
             neighVerts = vert[self.edges[row, 1-col], :]
-            for j in np.arange(self.vert.shape[0]):
+            vRange = np.arange(self.vert.shape[0])
+            log = np.isin(vRange, vBrim)
+            vRange = vRange[~log]
+            for j in vRange:
                 # Calculate the mean of the vertex set
                 self.vert[j, :] = neighVerts[ndx[j]:ndx[j+1]].mean(axis=0)
         self.calcNorm()

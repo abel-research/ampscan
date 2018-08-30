@@ -48,7 +48,7 @@ class registration(object):
         
         
     def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, 
-                    scale=False, smooth=1, fixBrim=False):
+                    scale=None, smooth=1, fixBrim=False):
         r"""
         Point to Plane method for registration between the two meshes 
         
@@ -70,9 +70,6 @@ class registration(object):
             If True, the nodes on the brim line will not be included in the smooth
 		
         """
-        if fixBrim is True:
-            eidx = (self.b.faceEdges == -99999).sum(axis=1).astype(bool)
-            vBrim = np.unique(self.b.edges[eidx, :])
         # Calc FaceCentroids
         fC = self.t.vert[self.t.faces].mean(axis=1)
         # Construct knn tree
@@ -84,7 +81,7 @@ class registration(object):
         if scale is not None:
             tmin = self.t.vert.min(axis=0)[2]
             rmin = self.reg.vert.min(axis=0)[2]
-            SF = 1 - ((tmin-scale)/(rmin-scale))
+            SF = ((tmin-scale)/(rmin-scale)) - 1
             logic = self.reg.vert[:, 2] < scale
             d = (self.reg.vert[logic, 2] - scale) * SF
             self.reg.vert[logic, 2] += d
@@ -122,14 +119,9 @@ class registration(object):
             D = G[np.arange(len(G)), GInd, :]
             rVert += D/step
             if smooth > 0 and step > 1:
-                if fixBrim is True:
-                    bPoints = rVert[vBrim, :].copy()
 #                v = self.reg.vert[~subset]
-                    self.reg.lp_smooth(smooth)
-                    self.reg.vert[vBrim, :] = bPoints
+                self.reg.lp_smooth(smooth, brim = fixBrim)
 #                self.reg.vert[~subset] = v
-                else:
-                    self.reg.lp_smooth(smooth)
             else:
                 self.reg.calcNorm()
         
