@@ -233,7 +233,7 @@ class registration(object):
         GInd = GMag.argmin(axis=1)
         return G, GInd
     
-    def plotResults(self, name=None, xrange=None):
+    def plotResults(self, name=None, xrange=None, color=None, alpha=None):
         r"""
         Function to generate a mpl figure. Includes a rendering of the 
         AmpObject, a histogram of the registration values 
@@ -245,7 +245,8 @@ class registration(object):
         
         """
         fig, ax = plt.subplots(1)
-        n, bins, _ = ax.hist(self.reg.values, 50, density=True, range=xrange)
+        n, bins, _ = ax.hist(self.reg.values, 50, density=True, range=xrange,
+                             color=color, alpha=alpha)
         mean = self.reg.values.mean()
         stdev = self.reg.values.std()
         ax.set_title(r'Distribution of shape variance, '
