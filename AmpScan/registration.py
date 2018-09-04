@@ -7,6 +7,7 @@ import numpy as np
 import copy
 from scipy import spatial
 from .core import AmpObject
+import matplotlib.pyplot as plt
 
 class registration(object):
     r"""
@@ -231,3 +232,25 @@ class registration(object):
         GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
         GInd = GMag.argmin(axis=1)
         return G, GInd
+    
+    def plotResults(self, name=None, xrange=None):
+        r"""
+        Function to generate a mpl figure. Includes a rendering of the 
+        AmpObject, a histogram of the registration values 
+        
+        Returns
+        -------
+        fig: mplfigure
+            A matplot figure of the standard analysis
+        
+        """
+        fig, ax = plt.subplots(1)
+        n, bins, _ = ax.hist(self.reg.values, 50, density=True, range=xrange)
+        mean = self.reg.values.mean()
+        stdev = self.reg.values.std()
+        ax.set_title(r'Distribution of shape variance, '
+                     '$\mu=%.2f$, $\sigma=%.2f$' % (mean, stdev))
+        ax.set_xlim(None)
+        if name is not None:
+            plt.savefig(name, dpi = 300)
+        return ax, n, bins

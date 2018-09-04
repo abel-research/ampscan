@@ -9,6 +9,7 @@ import numpy as np
 import vtk
 from vtk.util import numpy_support
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+vtk.vtkObject.GlobalWarningDisplayOff()
 
 
 class vtkRenWin(vtk.vtkRenderWindow):
@@ -238,7 +239,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
                           1, vtkRGB)
         vtkRGB.Squeeze()
         im =  np.flipud(np.resize(np.array(vtkRGB),
-                                  [width, height, 3])) / 255.0
+                                  [height, width, 3])) / 255.0
         return im
                                        
     def getScreenshot(self, fname, mag=10):
@@ -287,7 +288,7 @@ class visMixin(object):
 
     def genIm(self, size=[512, 512], views=[[0, -1, 0]], 
               background=[1.0, 1.0, 1.0], projection=True,
-              shading=True, mag=10, out='im', fh='test.tiff'):
+              shading=True, mag=10, out='im', fh='test.tiff', zoom=1.0):
         r"""
         Creates a temporary off screen vtkRenWin which is then either returned
         as a numpy array or saved as a .png file
@@ -331,12 +332,13 @@ class visMixin(object):
         # Set camera projection 
         win.setProjection(projection)
         win.SetSize(size[0], size[1])
+        win.Modified()
         win.OffScreenRenderingOn()
         for i, view in enumerate(views):
-            win.addAxes([self.actor,], color=[0.0, 0.0, 0.0], viewport=i)
+#            win.addAxes([self.actor,], color=[0.0, 0.0, 0.0], viewport=i)
             win.setView(view, i)
 #            win.setProjection(projection, viewport=i)
-            win.renderActors([self.actor,], viewport=i, zoom=1.3)
+            win.renderActors([self.actor,], zoom=zoom)
         win.Render()
         if out == 'im':
             im = win.getImage()
