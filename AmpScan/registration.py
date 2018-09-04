@@ -48,7 +48,7 @@ class registration(object):
         
         
     def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, 
-                    scale=None, smooth=1, fixBrim=False):
+                    scale=None, smooth=1, fixBrim=False, error=False):
         r"""
         Point to Plane method for registration between the two meshes 
         
@@ -127,9 +127,9 @@ class registration(object):
         
         self.reg.calcStruct()
 #        self.reg.values[:] = self.calcError(False)
-        self.reg.values[:] = self.calcError(False)
+        self.reg.values[:] = self.calcError(error)
         
-    def calcError(self, direct):
+    def calcError(self, direct=True):
         r"""
         Calculate the magnitude of distances between the baseline and registered array
 		
