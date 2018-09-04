@@ -64,10 +64,17 @@ class registration(object):
         subset: array_like, default None
             Indicies of the baseline nodes to include in the registration, default is none so 
             all are used
+        scale: float, default None
+            If not None scale the baseline mesh to match the target mesh in the z-direction, 
+            the value of scale will be used as a plane from which the nodes are scaled.
+            Nodes with a higher z value will not be scaled. 
         smooth: int, default 1
             Indicate number of laplacian smooth steps in between the steps 
         fixBrim: bool, default False
             If True, the nodes on the brim line will not be included in the smooth
+        error: bool, default False
+            If True, the polarity will be included when calculating the distance 
+            between the target and baseline mesh
 		
         """
         # Calc FaceCentroids
@@ -126,7 +133,6 @@ class registration(object):
                 self.reg.calcNorm()
         
         self.reg.calcStruct()
-#        self.reg.values[:] = self.calcError(False)
         self.reg.values[:] = self.calcError(error)
         
     def calcError(self, direct=True):
