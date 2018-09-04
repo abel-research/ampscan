@@ -11,10 +11,8 @@ from .trim import trimMixin
 from .smooth import smoothMixin
 from .analyse import analyseMixin
 from .ampVis import visMixin
-from .fe import feMixin
 
-class AmpObject(trimMixin, smoothMixin, analyseMixin, 
-                visMixin, feMixin):
+class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     r"""
     Base class for the AmpScan project.
     Stores mesh data and extra information 
@@ -28,7 +26,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
         Data input as either a string to import from an external file or a 
         dictionary to pull values directly
     stype : str, optional
-        descriptor of the type of data the AmpObject is representing, e.g 'FE',
+        descriptor of the type of data the AmpObject is representing, e.g 
         'limb' or 'socket'. Default is 'limb'
     
     Returns
@@ -46,20 +44,12 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin,
     def __init__(self, data=None, stype='limb', unify=True, struc=True):
         self.stype = stype
         self.createCMap()
-        if isinstance(data, str):    
-            if stype == 'FE':
-                self.addFE([data,])
-            elif stype == 'surrogate':
-                self.addSurrogate(data)
-            else:
-                self.read_stl(data, unify, struc)
+        if isinstance(data, str):
+            self.read_stl(data, unify, struc)
         elif isinstance(data, dict):
             for k, v in data.items():
                 setattr(self, k, v)
-            if stype == 'FE':
-                self.getSurf()
-            else:
-                self.calcStruct()
+            self.calcStruct()
     
 
 
