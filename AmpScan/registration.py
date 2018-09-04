@@ -150,14 +150,19 @@ class registration(object):
             values = np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
             # Calculate the unit vector normal between corresponding vertices
             # baseline and target
-            vector = (self.reg.vert - self.b.vert)/values[:, None]
-            # Calculate angle between the two unit vectors using normal of cross
-            # product between vNorm and vector and dot
-            normcrossP = np.linalg.norm(np.cross(vector, self.b.vNorm), axis=1)
-            dotP = np.einsum('ij,ij->i', vector, self.b.vNorm)
-            angle = np.arctan2(normcrossP, dotP)
-            polarity = np.ones(angle.shape)
-            polarity[angle < np.pi/2] =-1.0
+#            vector = (self.reg.vert - self.b.vert)/values[:, None]
+#            # Calculate angle between the two unit vectors using normal of cross
+#            # product between vNorm and vector and dot
+#            normcrossP = np.linalg.norm(np.cross(vector, self.b.vNorm), axis=1)
+#            dotP = np.einsum('ij,ij->i', vector, self.b.vNorm)
+#            angle = np.arctan2(normcrossP, dotP)
+#            polarity = np.ones(angle.shape)
+#            polarity[angle < np.pi/2] =-1.0
+            cent = self.b.vert.mean(axis=0)
+            r = np.linalg.norm(self.reg.vert - cent, axis=1)
+            b = np.linalg.norm(self.b.vert - cent, axis=1)
+            polarity = np.ones([self.reg.vert.shape[0]])
+            polarity[r<b] = -1
             values = values * polarity
             return values
         else:
