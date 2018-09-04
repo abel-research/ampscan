@@ -288,7 +288,8 @@ class visMixin(object):
 
     def genIm(self, size=[512, 512], views=[[0, -1, 0]], 
               background=[1.0, 1.0, 1.0], projection=True,
-              shading=True, mag=10, out='im', fh='test.tiff', zoom=1.0):
+              shading=True, mag=10, out='im', fh='test.tiff', 
+              zoom=1.0, az = 0, crop=False):
         r"""
         Creates a temporary off screen vtkRenWin which is then either returned
         as a numpy array or saved as a .png file
@@ -339,9 +340,17 @@ class visMixin(object):
             win.setView(view, i)
 #            win.setProjection(projection, viewport=i)
             win.renderActors([self.actor,], zoom=zoom)
+        win.rens[0].GetActiveCamera().Azimuth(az)
         win.Render()
         if out == 'im':
             im = win.getImage()
+            if crop is True:
+                mask = np.all(im == 1, axis=2)
+                mask = ~np.all(mask, axis=1)
+                im = im[mask, :, :]
+                mask = np.all(im == 1, axis=2)
+                mask = ~np.all(mask, axis=0)
+                im = im[:, mask, :]
             return im
         elif out == 'fh':
             win.getScreenshot(fh)
