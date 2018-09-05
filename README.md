@@ -53,6 +53,14 @@ Navigate to the `AmpScan/` directory and run a pip install using:
 
 ``pip install -e .``
 
+Maintainer Notes
+----------------
+
+Documentation for the AmpScan library is automatically generated using 
+[sphinx](http://www.sphinx-doc.org/en/master/). Any additional code should be documented in 
+accordance with 'numpy style' docstrings. A template can be found 
+[here](https://www.numpy.org/devdocs/docs/howto_document.html#example).
+
 How to acknowledge
 ------------------
 
