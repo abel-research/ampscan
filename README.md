@@ -12,18 +12,25 @@ visit the [AmpScan website](https://ampscan.readthedocs.io/en/latest/).
 Installing with Conda (Recommended)
 -----------------------------------
 
-AmpScan has a number of dependencies, we recommend using conda to deal with these. To create a new 
-environment to run AmpScan in:  
+AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. We recommend using 
+conda to deal with these. Before installation, ensure your environment is using Python 3. Verify that 
+you are running the latest version of pip:
 
-``conda create -n env_name python=3 numpy scipy pyqt matplotlib``
+``python -m pip install --upgrade pip``
 
-``conda install -c conda-forge vtk=8.1.0``
+Install dependencies using conda:
+
+``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
+
+Install AmpScan using pip:
+
+``pip install AmpScan``
 
 Installing with Pip
 -------------------
 
 AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. Before 
-installing, ensure you have the latest version of pip using:
+installing, ensure you have the latest version of pip:
 
 ``python -m pip install --upgrade pip``
 
