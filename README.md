@@ -33,9 +33,7 @@ Then install the dependencies using:
 
 You can then install AmpScan from test PyPI using:
 
-``python -m pip install --index-url https://test.pypi.org/simple/ AmpScan``
-
-TODO: update to pip install (not test PyPI)
+``pip install AmpScan``
 
 Developer Install
 -----------------
