@@ -1,4 +1,3 @@
-
 .. image:: AmpScanlogo.svg
    :width: 30%
    :align: center
@@ -21,27 +20,51 @@ developing AmpScan.
 .. _VTK: https://www.vtk.org/
 
 
-Installation
-------------
+Installing with Conda (Recommended)
+-----------------------------------
 
-AmpScan has a number of dependencies, we recommend using conda to deal with these. To create a new 
-environment to run AmpScan in:  
+AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. We recommend using 
+conda to deal with these. Before installation, ensure your environment is using Python 3. Verify that 
+you are running the latest version of pip:
 
-``conda create -n env_name python=3 numpy scipy pyqt matplotlib``
+``python -m pip install --upgrade pip``
 
-``conda install -c conda-forge vtk=8.1.0``
+Install dependencies using conda:
 
-For the most up to date version of AmpScan, clone directly from the gitlab repository into a virtual environment using:
+``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
+
+Install AmpScan using pip:
+
+``pip install AmpScan``
+
+
+Installing with Pip
+-------------------
+
+AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. Before 
+installing, ensure you have the latest version of pip:
+
+``python -m pip install --upgrade pip``
+
+Then install the dependencies using:
+
+``pip install numpy matplotlib scipy pyqt5 vtk==8.1.0``
+
+You can then install AmpScan from test PyPI using:
+
+``pip install AmpScan``
+
+
+Developer Install
+-----------------
+
+For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
 ``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
 
-Navigate to the `AmpScan/` directory and run a pip editable install using:
+Navigate to the `AmpScan/` directory and run a pip install using:
 
 ``pip install -e .``
-
-A pip installation is also available through test PyPI (not latest version) using:
-
-``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
 
 
 Getting Started

@@ -328,8 +328,11 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
         """
-        R = self.rotMatrix(rot, ang)
-        self.rotate(R, norms)
+        if type(rot)==type([]):
+            R = self.rotMatrix(rot, ang)
+            self.rotate(R, norms)
+        else:
+            raise TypeError("rotateAng requires a list")
 
             
     def rotate(self, R, norms=True):
