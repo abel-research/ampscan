@@ -22,7 +22,7 @@ setup(name='AmpScan',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
       packages=['AmpScan'],
-      install_requires=['numpy', 'matplotlib', 'scipy', 'pyqt5', 'vtk==8.1.0', 'sphinxcontrib-napoleon'],
+      install_requires=['numpy', 'matplotlib', 'scipy', 'sphinxcontrib-napoleon'],
       package_data={},
       include_package_data=True,
       zip_safe=False,)
