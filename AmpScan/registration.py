@@ -49,7 +49,7 @@ class registration(object):
         
         
     def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, 
-                    scale=None, smooth=1, fixBrim=False, error=False):
+                    scale=None, smooth=1, fixBrim=False, error='norm'):
         r"""
         Point to Plane method for registration between the two meshes 
         
@@ -136,15 +136,17 @@ class registration(object):
         self.reg.calcStruct()
         self.reg.values[:] = self.calcError(error)
         
-    def calcError(self, direct=True):
+    def calcError(self, method='norm'):
         r"""
         Calculate the magnitude of distances between the baseline and registered array
 		
         Parameters
         ----------
-        direct: bool, default True
-            If true, the magnitude can be positive or negative depending on whether the registered
-            vertex is inside or outside the baseline surface
+        method: str, default 'norm'
+            The method used to calculate the distances. 'abs' returns the absolute
+            distance. 'cent'calculates polarity based upon distance from centroid.
+            'norm' calculates dot product between baseline vertex normal and distance 
+            normal
 
         Returns
         -------
@@ -152,29 +154,62 @@ class registration(object):
             Magnitude of distances
 
         """
-        if direct is True:
-            self.b.calcVNorm()
-            values = np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
-            # Calculate the unit vector normal between corresponding vertices
-            # baseline and target
-#            vector = (self.reg.vert - self.b.vert)/values[:, None]
-#            # Calculate angle between the two unit vectors using normal of cross
-#            # product between vNorm and vector and dot
-#            normcrossP = np.linalg.norm(np.cross(vector, self.b.vNorm), axis=1)
-#            dotP = np.einsum('ij,ij->i', vector, self.b.vNorm)
-#            angle = np.arctan2(normcrossP, dotP)
-#            polarity = np.ones(angle.shape)
-#            polarity[angle < np.pi/2] =-1.0
-            cent = self.b.vert.mean(axis=0)
-            r = np.linalg.norm(self.reg.vert - cent, axis=1)
-            b = np.linalg.norm(self.b.vert - cent, axis=1)
-            polarity = np.ones([self.reg.vert.shape[0]])
-            polarity[r<b] = -1
-            values = values * polarity
+        method = '_registration__' + method + 'Dist'
+        try:
+            values = getattr(self, method)()
             return values
-        else:
-            values = np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
-            return values
+        except: ValueError('"%s" is not a method, try "abs", "cent" or "prod"' % method)
+        
+
+    
+    def __absDist(self):
+        r"""
+        Return the error based upon the absolute distance
+        
+        Returns
+        -------
+        values: array_like
+            Magnitude of distances
+
+        """
+        return np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
+    
+    def __centDist(self):
+        r"""
+        Return the error based upon distance from centroid 
+        
+        Returns
+        -------
+        values: array_like
+            Magnitude of distances
+
+        """
+        values = np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
+        cent = self.b.vert.mean(axis=0)
+        r = np.linalg.norm(self.reg.vert - cent, axis=1)
+        b = np.linalg.norm(self.b.vert - cent, axis=1)
+        polarity = np.ones([self.reg.vert.shape[0]])
+        polarity[r<b] = -1
+        return values * polarity
+
+    def __normDist(self):
+        r"""
+        Returns error based upon scalar product of normal 
+        
+        Returns
+        -------
+        values: array_like
+            Magnitude of distances
+
+        """
+        self.b.calcVNorm()
+        D = self.reg.vert - self.b.vert
+        n = self.b.vNorm
+        values = np.linalg.norm(D, axis=1)
+        polarity = np.sum(n*D, axis=1) < 0
+        values[polarity] *= -1.0
+        return values
+        
         
     def __calcBarycentric(self, vert, G, ind):
         r"""

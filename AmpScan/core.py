@@ -259,7 +259,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         row, col = np.unravel_index(o_idx, self.faces.shape)
         ndx = np.searchsorted(f[o_idx], range(self.vert.shape[0]), side='right')
         ndx = np.r_[0, ndx]
-        norms = self.norm[self.faces, :][row, col, :]
+        norms = self.norm[row, :]
         self.vNorm = np.zeros(self.vert.shape)
         for i in range(self.vert.shape[0]):
             self.vNorm[i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
