@@ -38,6 +38,7 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'AmpScan.core.AmpObject'>", "Not expected Object")
         with self.assertRaises(TypeError):
             Amp.rotateAng(7)
+            Amp.rotateAng({})
 
 if __name__ == '__main__':
     unittest.main()
