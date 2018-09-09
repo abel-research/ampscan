@@ -122,7 +122,7 @@ class registration(object):
                 GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
                 GInd = GMag.argmin(axis=1)
             else:
-                G, GInd = self.calcBarycentric(rVert, G, ind)
+                G, GInd = self.__calcBarycentric(rVert, G, ind)
             # Define vector from baseline point to intersect point
             D = G[np.arange(len(G)), GInd, :]
             rVert += D/step
@@ -176,7 +176,7 @@ class registration(object):
             values = np.linalg.norm(self.reg.vert - self.b.vert, axis=1)
             return values
         
-    def calcBarycentric(self, vert, G, ind):
+    def __calcBarycentric(self, vert, G, ind):
         r"""
         Calculate the barycentric co-ordinates of each target face and the registered vertex, 
         this ensures that the registered vertex is within the bounds of the target face. If not 

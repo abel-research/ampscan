@@ -1,7 +1,7 @@
 pca module
 ==========
 
-.. automodule:: AmpScan.pca
+.. automodule:: AmpScan.ssm
     :members:
     :undoc-members:
     :show-inheritance:

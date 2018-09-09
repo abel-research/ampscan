@@ -9,10 +9,10 @@ Module Documentation
    source/analyse
    source/core
    source/fe
-   source/pca
    source/pressSens
    source/registration
    source/smooth
+   source/ssm
    source/trim
    source/tsbSocketDesign
 
