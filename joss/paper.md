@@ -5,7 +5,7 @@ bibliography: paper.bib
 ---
 # Summary
 
-The increasing accessability of digitised surface scanners are incresingly used. In particular, these devices are being used with prosthetics and orthotics clinics where they are used to capture the patients individual geometry. These scans are imported into computer-aided design packages in order to generate patient-specific medical devices. Despite this, the analysis performed on these scans is limited.
+The increasing accessibility of digitised surface scanners are increasingly used. In particular, these devices are being used with prosthetics and orthotics clinics where they are used to capture the patients individual geometry. These scans are imported into computer-aided design packages in order to generate patient-specific medical devices. Despite this, the analysis performed on these scans is limited.
 
 In a previously published paper [@Dickinson:2016], a method was detailed for comparing between pairs of surface scans using alignment, registration and visualisation. In this paper, this method was used for evaluation of the accuracy and inter- and intra-reliability of the scanners. Further studies have also demonstrated using this package for comparing the consistency of casting techniques [Dickinson: ], statistical shape modelling across the population [@Worsley: ISPO World] and quantifying rectifications between the residual limb and the prosthetic socket [@Steer: AOPA]. 
 
@@ -15,11 +15,10 @@ Further, several researchers have indicated an interest in using these scanners 
 
 The AmpScan package has been designed with clinical researchers in mind, with an appreciation that they may not have an extensive knowledge of code. To this aim, this software has been developed in Python and leverages the commonly used libraries of NumPy, SciPy, matplotlib, vtk and pyqt. As such full functionality of the software can be utlisied without requiring additional installs such as CMake. The core analysis of the package can be carried out with, additionally, a simple GUI has been supplied to allow the user to access the core functionality of AmpScan without scripting.  
 
-In general, the core process for analysis of the scans involves:
-1) Import of the baseline STL file as an AmpObject
-2) Import of the target STL file as an AmpObject 
+The core functionality of AmpScan is summarised below with a more detailed description available in the online [documentation](https://ampscan.readthedocs.io/en/latest/):
+- The [AmpObject](https://ampscan.readthedocs.io/en/latest/source/AmpScan.html#AmpScan.core.AmpObject), this is the key object of the package and holds the key data and methods. The key data held within the AmpObject is the mesh data including arrays of the vertices, faces, normals and field values. Additionally, the vtk actor for visualisation is also stored. The [core](https://ampscan.readthedocs.io/en/latest/source/core.html) methods of the AmpObject include imports for .stl files, saving .stl files, rotation and translation. Additional methods are added via mixins for [analysis](https://ampscan.readthedocs.io/en/latest/source/analyse.html), [smoothing](https://ampscan.readthedocs.io/en/latest/source/smooth.html), [trimming](https://ampscan.readthedocs.io/en/latest/source/trim.html) and [visualisation](https://ampscan.readthedocs.io/en/latest/source/ampVis.html). 
 
-Other packages perform the specific tasks of AmpScan more comprehensively such as [mayavi](https://docs.enthought.com/mayavi/mayavi/index.html) for scientfic data visualisation, [open3d](http://www.open3d.org/docs/getting_started.html) for alignment and registration techniques. We encourage researchers who have developed their own alignment and registration algorithms in python, further the package does not contain any mesh fixing tools that may be required from messy scans. Until such methods are implemented, the authors recommend [meshlab](http://www.meshlab.net/) which also contains methods for alignment and visualisation.
+Other packages perform the specific tasks of AmpScan more comprehensively such as [mayavi](https://docs.enthought.com/mayavi/mayavi/index.html) for scientific data visualisation, [open3d](http://www.open3d.org/docs/getting_started.html) for alignment and registration techniques. We encourage researchers who have developed their own alignment and registration algorithms in python, further the package does not contain any mesh fixing tools that may be required from messy scans. Until such methods are implemented, the authors recommend [meshlab](http://www.meshlab.net/) which also contains methods for alignment and visualisation.
 
 
 
