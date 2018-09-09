@@ -9,7 +9,7 @@ The increasing accessibility of digitised surface scanners are increasingly used
 
 In a previously published paper [@Dickinson:2016], a method was detailed for comparing between pairs of surface scans using alignment, registration and visualisation. In this paper, this method was used for evaluation of the accuracy and inter- and intra-reliability of the scanners. Further studies have also demonstrated using this package for comparing the consistency of casting techniques [Dickinson: ], statistical shape modelling across the population [@Worsley: ISPO World] and quantifying rectifications between the residual limb and the prosthetic socket [@Steer: AOPA]. 
 
-![A Graphical summary of the AmpScan process](AmpScan_Overview.png)
+[A Graphical summary of the AmpScan process](AmpScan_Overview.png)
 
 This method was written in MATLAB, however, this was considered restrictive for other researchers to access as they may not possess a MATLAB license.  In order to maximise access to the developed techniques and improve performance, especially for 3D visualisation, the methods were rewritten from scratch within Python, including updated algorithms for each stage of the aforementioned process. 
 
