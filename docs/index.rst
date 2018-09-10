@@ -6,9 +6,18 @@
 AmpScan
 =======
 
-AmpScan is an open-source Python package for analysis and visualisation of digitised surface scan data, specifically for applications within Prosthetics and Orthotics. These industries are increasingly using surface scanners as part of clinical practice to capture the patient's individual geometry to design personalised devices. AmpScan gives researchers within this field access to powerful tools to analyse the collected scans to help inform clinical practice towards improved patient-outcomes. This package has been designed to be accessible for researchers with only a limited knowledge of Python. Therefore, analysis procedures can all be accessed using the lightweight Graphical User Interface. 
+AmpScan is an open-source Python package for analysis and visualisation of digitised surface scan data, 
+specifically for applications within Prosthetics and Orthotics. These industries are increasingly using 
+surface scanners as part of clinical practice to capture the patient's individual geometry to design 
+personalised devices. AmpScan gives researchers within this field access to powerful tools to analyse 
+the collected scans to help inform clinical practice towards improved patient-outcomes. This package 
+has been designed to be accessible for researchers with only a limited knowledge of Python. Therefore, 
+analysis procedures can all be accessed using the lightweight Graphical User Interface. 
 
-AmpScan relies heavily on [NumPy](http://www.numpy.org/) and [SciPy](https://www.scipy.org/) to perform mathematical operations with visualisation handled by [PyQt](https://riverbankcomputing.com/software/pyqt/intro) and [VTK](https://www.vtk.org/). The package is still under development by researchers at the University of Southampton. For full documentation, visit the [AmpScan website](https://ampscan.readthedocs.io/en/latest/).
+AmpScan relies heavily on [NumPy](http://www.numpy.org/) and [SciPy](https://www.scipy.org/) to perform 
+mathematical operations with visualisation handled by [PyQt](https://riverbankcomputing.com/software/pyqt/intro) 
+and [VTK](https://www.vtk.org/). The package is still under development by researchers at the University of Southampton. 
+For full documentation, visit the [AmpScan website](https://ampscan.readthedocs.io/en/latest/).
 
 .. _numpy: http://www.numpy.org/
 .. _SciPy: https://www.scipy.org/
