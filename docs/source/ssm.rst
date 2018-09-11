@@ -1,4 +1,4 @@
-pca module
+ssm module
 ==========
 
 .. automodule:: AmpScan.ssm
