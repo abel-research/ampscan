@@ -14,16 +14,16 @@ the collected scans to help inform clinical practice towards improved patient-ou
 has been designed to be accessible for researchers with only a limited knowledge of Python. Therefore, 
 analysis procedures can all be accessed using the lightweight Graphical User Interface. 
 
-AmpScan relies heavily on [NumPy](http://www.numpy.org/) and [SciPy](https://www.scipy.org/) to perform 
-mathematical operations with visualisation handled by [PyQt](https://riverbankcomputing.com/software/pyqt/intro) 
-and [VTK](https://www.vtk.org/). The package is still under development by researchers at the University of Southampton. 
-For full documentation, visit the [AmpScan website](https://ampscan.readthedocs.io/en/latest/).
+AmpScan relies heavily on numpy_ and scipy_ to perform 
+mathematical operations with visualisation handled by PyQt_
+and VTK_. The package is still under development by researchers at the University of Southampton. 
+For full documentation, visit the AmpScan_ website.
 
 .. _numpy: http://www.numpy.org/
 .. _SciPy: https://www.scipy.org/
 .. _PyQt: https://riverbankcomputing.com/software/pyqt/intro
 .. _VTK: https://www.vtk.org/
-
+.. _AmpScan: https://ampscan.readthedocs.io/en/latest/
 
 Installing with Conda (Recommended)
 -----------------------------------
