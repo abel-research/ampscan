@@ -36,34 +36,18 @@ AmpScan.core module
     :undoc-members:
     :show-inheritance:
 
-AmpScan.fe module
------------------
-
-.. automodule:: AmpScan.fe
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.pca module
-------------------
-
-.. automodule:: AmpScan.pca
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.pressSens module
-------------------------
-
-.. automodule:: AmpScan.pressSens
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 AmpScan.registration module
 ---------------------------
 
 .. automodule:: AmpScan.registration
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+AmpScan.ssm module
+------------------
+
+.. automodule:: AmpScan.ssm
     :members:
     :undoc-members:
     :show-inheritance:
@@ -80,14 +64,6 @@ AmpScan.trim module
 -------------------
 
 .. automodule:: AmpScan.trim
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-AmpScan.tsbSocketDesign module
-------------------------------
-
-.. automodule:: AmpScan.tsbSocketDesign
     :members:
     :undoc-members:
     :show-inheritance:

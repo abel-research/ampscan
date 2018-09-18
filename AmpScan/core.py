@@ -100,6 +100,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         if unify is True:
             self.unifyVert()
         # Call function to calculate the edges array
+#        self.fixNorm()
         if struc is True:
             self.calcStruct()
         self.values = np.zeros([len(self.vert)])
@@ -242,6 +243,18 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
                          self.vert[self.faces[:,0]])
         mag = np.linalg.norm(norms, axis=1)
         self.norm = np.divide(norms, mag[:,None])
+    
+    def fixNorm(self):
+        r"""
+        Fix normals of faces so they all face outwards 
+        """
+        fC = self.vert[self.faces].mean(axis=1)
+        cent = self.vert.mean(axis=0)
+        polarity = np.sum(self.norm * (fC-cent), axis=1) < 0
+        if polarity.mean() > 0.5:
+            self.faces[:, [1,2]] = self.faces[:, [2,1]]
+            self.calcNorm()
+            if hasattr(self, 'vNorm'): self.calcVNorm()
         
     def calcVNorm(self):
         """
@@ -259,7 +272,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         row, col = np.unravel_index(o_idx, self.faces.shape)
         ndx = np.searchsorted(f[o_idx], range(self.vert.shape[0]), side='right')
         ndx = np.r_[0, ndx]
-        norms = self.norm[self.faces, :][row, col, :]
+        norms = self.norm[row, :]
         self.vNorm = np.zeros(self.vert.shape)
         for i in range(self.vert.shape[0]):
             self.vNorm[i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
@@ -328,8 +341,11 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
         """
-        R = self.rotMatrix(rot, ang)
-        self.rotate(R, norms)
+        if type(rot)==type([]):
+            R = self.rotMatrix(rot, ang)
+            self.rotate(R, norms)
+        else:
+            raise TypeError("rotateAng requires a list")
 
             
     def rotate(self, R, norms=True):
@@ -369,7 +385,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             self.translate(T)
         
 
-        
     @staticmethod
     def rotMatrix(rot, ang='rad'):
         r"""
@@ -403,3 +418,19 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
                        [0, 0, 1]])
         R = np.dot(np.dot(Rz, Ry), Rx)
         return R
+    
+    def flip(self, axis=1):
+        r"""
+        Flip the mesh in a plane
+        
+        Parameters
+        ----------
+        axis: int, default 1
+            The axis in which to flip the mesh
+
+        """
+        self.vert[:, axis] *= -1.0
+        # Switch face order to normals face same direction
+        self.faces[:, [1, 2]] = self.faces[:, [2, 1]]
+        self.calcNorm()
+        self.calcVNorm()

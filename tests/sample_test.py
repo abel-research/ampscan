@@ -21,20 +21,24 @@ class TestBasicFunction(unittest.TestCase):
         s = str(type(vtk))
         self.assertEqual(s, "<class 'module'>")
         s = str(type(AmpScan.core))
-        self.assertEqual(s, "<class 'module'>")
+        self.assertEqual(s, "<class 'module'>", "Failed import: AmpScan.core")
 
     @unittest.expectedFailure
     def test_failure(self):
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")
 
-#    def test_import_stl(self):
-#        modPath = os.path.abspath(os.getcwd())
-#        sys.path.insert(0, modPath)
-#        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_ASCII.stl"
-#        from AmpScan.core import AmpObject
-#        Amp = AmpObject(stlPath)
-#        self.assertRaises(MemoryError)
+    def test_import_stl(self):
+        modPath = os.path.abspath(os.getcwd())
+        sys.path.insert(0, modPath)
+        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_BIN.stl"
+        from AmpScan.core import AmpObject
+        Amp = AmpObject(stlPath)
+        s = str(type(Amp))
+        self.assertEqual(s, "<class 'AmpScan.core.AmpObject'>", "Not expected Object")
+        with self.assertRaises(TypeError):
+            Amp.rotateAng(7)
+            Amp.rotateAng({})
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,3 @@
-
 .. image:: AmpScanlogo.svg
    :width: 30%
    :align: center
@@ -7,41 +6,70 @@
 AmpScan
 =======
 
-AmpScan is a Python package that provides matrix manipulation tools specifically for 
-the design of prosthetic sockets. It provides functions for handling common design workflows 
-such as importing, aligning and registering meshes. AmpScan relies heavily on `NumPy`_ and 
-`SciPy`_ to perform mathematical operations with vizualisation handled by `PyQt`_ and `VTK`_. 
-The package is still under active development by researchers at the University of Southampton 
-- this documentation should be considered the 'go-to' for anyone interested in using or 
-developing AmpScan.
+AmpScan is an open-source Python package for analysis and visualisation of digitised surface scan data, 
+specifically for applications within Prosthetics and Orthotics. These industries are increasingly using 
+surface scanners as part of clinical practice to capture the patient's individual geometry to design 
+personalised devices. AmpScan gives researchers within this field access to powerful tools to analyse 
+the collected scans to help inform clinical practice towards improved patient-outcomes. This package 
+has been designed to be accessible for researchers with only a limited knowledge of Python. Therefore, 
+analysis procedures can all be accessed using the lightweight Graphical User Interface. 
+
+AmpScan relies heavily on numpy_ and scipy_ to perform 
+mathematical operations with visualisation handled by PyQt_
+and VTK_. The package is still under development by researchers at the University of Southampton. 
+For full documentation, visit the AmpScan_ website.
 
 .. _numpy: http://www.numpy.org/
 .. _SciPy: https://www.scipy.org/
 .. _PyQt: https://riverbankcomputing.com/software/pyqt/intro
 .. _VTK: https://www.vtk.org/
+.. _AmpScan: https://ampscan.readthedocs.io/en/latest/
+
+Installing with Conda (Recommended)
+-----------------------------------
+
+AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. We recommend using 
+conda to deal with these. Before installation, ensure your environment is using Python 3. Verify that 
+you are running the latest version of pip:
+
+``python -m pip install --upgrade pip``
+
+Install dependencies using conda:
+
+``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
+
+Install AmpScan using pip:
+
+``pip install AmpScan``
 
 
-Installation
-------------
+Installing with Pip
+-------------------
 
-AmpScan has a number of dependencies, we recommend using conda to deal with these. To create a new 
-environment to run AmpScan in:  
+AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. Before 
+installing, ensure you have the latest version of pip:
 
-``conda create -n env_name python=3 numpy scipy pyqt matplotlib``
+``python -m pip install --upgrade pip``
 
-``conda install -c conda-forge vtk=8.1.0``
+Then install the dependencies using:
 
-For the most up to date version of AmpScan, clone directly from the gitlab repository into a virtual environment using:
+``pip install numpy matplotlib scipy pyqt5 vtk==8.1.0``
+
+You can then install AmpScan from test PyPI using:
+
+``pip install AmpScan``
+
+
+Developer Install
+-----------------
+
+For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
 ``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
 
-Navigate to the `AmpScan/` directory and run a pip editable install using:
+Navigate to the `AmpScan/` directory and run a pip install using:
 
 ``pip install -e .``
-
-A pip installation is also available through test PyPI (not latest version) using:
-
-``$ pip install --index-url https://test.pypi.org/simple/ AmpScan``
 
 
 Getting Started
