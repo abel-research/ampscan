@@ -576,6 +576,7 @@ class ampActor(vtk.vtkActor):
         for i in range(bands):
             rgb = list(self.ctf.GetColor(float(i) / bands)) + [1]
             self.lut.SetTableValue(i, rgb)
+        self.Mapper.SetLookupTable(self.lut)
     
     def setShading(self, shading=True):
         r"""
