@@ -3,6 +3,10 @@ import os
 import sys
 
 class TestBasicFunction(unittest.TestCase):
+
+    def SetUp(self):
+        modPath = os.path.abspath(os.getcwd())
+        sys.path.insert(0, modPath)
     
     def test_running(self):
         print("Running sample_test.py")
