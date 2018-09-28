@@ -40,5 +40,14 @@ class TestBasicFunction(unittest.TestCase):
             Amp.rotateAng(7)
             Amp.rotateAng({})
 
+    def test_trim(self):
+        # a new test for the trim module
+        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_BIN.stl"
+        from AmpScan.core import AmpObject
+        Amp = AmpObject(stlPath)
+        with self.assertRaises(TypeError):
+            Amp.planarTrim([], [])
+        
+
 if __name__ == '__main__':
     unittest.main()
