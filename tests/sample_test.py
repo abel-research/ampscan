@@ -45,8 +45,8 @@ class TestBasicFunction(unittest.TestCase):
         stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_BIN.stl"
         from AmpScan.core import AmpObject
         Amp = AmpObject(stlPath)
-        #with self.assertRaises(TypeError):
-            #Amp.planarTrim([], [])
+        with self.assertRaises(TypeError):
+            Amp.planarTrim([], plane=[])
         
 
 if __name__ == '__main__':
