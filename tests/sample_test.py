@@ -13,8 +13,6 @@ class TestBasicFunction(unittest.TestCase):
         self.assertTrue(True)
     
     def test_python_imports(self):
-        modPath = os.path.abspath(os.getcwd())
-        sys.path.insert(0, modPath)
         import numpy, scipy, matplotlib, vtk, AmpScan.core
         s = str(type(numpy))
         self.assertEqual(s, "<class 'module'>")
@@ -32,9 +30,7 @@ class TestBasicFunction(unittest.TestCase):
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")
 
-    def test_import_stl(self):
-        modPath = os.path.abspath(os.getcwd())
-        sys.path.insert(0, modPath)
+    def test_rotate(self):
         stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_BIN.stl"
         from AmpScan.core import AmpObject
         Amp = AmpObject(stlPath)
