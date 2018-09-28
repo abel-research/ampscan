@@ -30,7 +30,7 @@ class trimMixin(object):
         >>> amp.planarTrim(100, 2)
 
         """
-        if isinstance(height, float) and isinstance(plane, int):
+        if type(height)==float:
             # planar values for each vert on face 
             fv = self.vert[self.faces, plane]
             # Number points on each face are above cut plane
@@ -51,4 +51,4 @@ class trimMixin(object):
             self.vert = self.vert[~delv, :]
             self.calcStruct()
         else:
-            raise TypeError("height arg must be a float and plane arg must be an int")
+            raise TypeError("height arg must be a float")
