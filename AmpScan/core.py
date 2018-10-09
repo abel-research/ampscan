@@ -341,7 +341,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
         """
-        if type(rot)==type([]):
+        if isinstance(rot, (tuple, list, np.ndarray)):
             R = self.rotMatrix(rot, ang)
             self.rotate(R, norms)
         else:
