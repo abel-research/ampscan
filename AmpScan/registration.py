@@ -86,53 +86,52 @@ class registration(object):
                          [self.b.vert, self.b.faces, self.b.values]))
         regData = copy.deepcopy(bData)
         self.reg = AmpObject(regData, stype='reg')
+        self.disp = AmpObject({'vert': np.zeros(self.reg.vert.shape),
+                               'faces': self.reg.faces,
+                               'values':self.reg.values})
         if scale is not None:
             tmin = self.t.vert.min(axis=0)[2]
             rmin = self.reg.vert.min(axis=0)[2]
             SF = ((tmin-scale)/(rmin-scale)) - 1
             logic = self.reg.vert[:, 2] < scale
             d = (self.reg.vert[logic, 2] - scale) * SF
-            self.reg.vert[logic, 2] += d
+            self.disp.vert[logic, 2] += d
+            self.reg.vert = self.b.vert + self.disp.vert
         normals = np.cross(self.t.vert[self.t.faces[:,1]] -
                          self.t.vert[self.t.faces[:,0]],
                          self.t.vert[self.t.faces[:,2]] -
                          self.t.vert[self.t.faces[:,0]])
         mag = (normals**2).sum(axis=1)
-        if subset is None:
-            rVert = self.reg.vert
-        else:
-            rVert = self.reg.vert[subset]
         for step in np.arange(steps, 0, -1, dtype=float):
             # Index of 10 centroids nearest to each baseline vertex
-            ind = tTree.query(rVert, neigh)[1]
-#            D = np.zeros(self.reg.vert.shape)
+            ind = tTree.query(self.reg.vert, neigh)[1]
             # Define normals for faces of nearest faces
             norms = normals[ind]
             # Get a point on each face
             fPoints = self.t.vert[self.t.faces[ind, 0]]
             # Calculate dot product between point on face and normals
             d = np.einsum('ijk, ijk->ij', norms, fPoints)
-            t = (d - np.einsum('ijk, ik->ij', norms, rVert))/mag[ind]
+            t = (d - np.einsum('ijk, ik->ij', norms, self.reg.vert))/mag[ind]
             # Calculate the vector from old point to new point
-            G = rVert[:, None, :] + np.einsum('ijk, ij->ijk', norms, t)
+            G = self.reg.vert[:, None, :] + np.einsum('ijk, ij->ijk', norms, t)
             # Ensure new points lie inside points otherwise set to 99999
             # Find smallest distance from old to new point 
             if inside is False:
-                G = G - rVert[:, None, :]
+                G = G - self.reg.vert[:, None, :]
                 GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
                 GInd = GMag.argmin(axis=1)
             else:
-                G, GInd = self.__calcBarycentric(rVert, G, ind)
+                G, GInd = self.__calcBarycentric(self.reg.vert, G, ind)
             # Define vector from baseline point to intersect point
             D = G[np.arange(len(G)), GInd, :]
-            rVert += D/step
+#            rVert += D/step
+            self.disp.vert += D/step
             if smooth > 0 and step > 1:
-#                v = self.reg.vert[~subset]
-                self.reg.lp_smooth(smooth, brim = fixBrim)
-#                self.reg.vert[~subset] = v
+                self.disp.lp_smooth(smooth, brim = fixBrim)
+                self.reg.vert = self.b.vert + self.disp.vert
             else:
+                self.reg.vert = self.b.vert + self.disp.vert
                 self.reg.calcNorm()
-        
         self.reg.calcStruct()
         self.reg.values[:] = self.calcError(error)
         

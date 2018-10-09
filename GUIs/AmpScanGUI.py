@@ -1,12 +1,10 @@
 import sys
 import numpy as np
-from vtk.util import numpy_support
 import vtk
 from AmpScan import AmpObject
 from AmpScan.registration import registration
 from AmpScan.align import align
 from AmpScan.ampVis import qtVtkWindow
-from AmpScan.pressSens import pressSense
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)

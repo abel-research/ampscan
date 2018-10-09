@@ -9,6 +9,7 @@ import os
 import numpy as np
 from .core import AmpObject
 from .registration import registration
+import os
 
 
 class pca(object):
@@ -60,7 +61,7 @@ class pca(object):
 
         """
         self.fnames = [f for f in os.listdir(path) if f.endswith('.stl')]
-        self.shapes = [AmpObject(path + f, 'limb', unify=unify) for f in self.fnames]
+        self.shapes = [AmpObject(os.path.join(path, f), 'limb', unify=unify) for f in self.fnames]
         for s in self.shapes:
             s.lp_smooth(3, brim=True)
         
@@ -100,7 +101,7 @@ class pca(object):
             self.registered.append(r)
         if save is not None:
             for f, r in zip(self.fnames, self.registered):
-                r.save(save + f)
+                r.save(os.path.join(save, f))
         self.X = np.array([r.vert.flatten() for r in self.registered]).T
         if baseline is True:
             self.X = np.c_[self.X, self.baseline.vert.flatten()]
