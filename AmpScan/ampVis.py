@@ -289,7 +289,7 @@ class visMixin(object):
     def genIm(self, size=[512, 512], views=[[0, -1, 0]], 
               background=[1.0, 1.0, 1.0], projection=True,
               shading=True, mag=10, out='im', fh='test.tiff', 
-              zoom=1.0, az = 0, crop=False):
+              zoom=1.0, az = 0, crop=False, cam=None):
         r"""
         Creates a temporary off screen vtkRenWin which is then either returned
         as a numpy array or saved as a .png file
@@ -326,6 +326,7 @@ class visMixin(object):
             self.addActor()
         # Generate a renderer window
         win = vtkRenWin()
+        win.OffScreenRenderingOn()
         # Set the number of viewports
         win.setnumViewports(len(views))
         # Set the background colour
@@ -334,13 +335,15 @@ class visMixin(object):
         win.setProjection(projection)
         win.SetSize(size[0], size[1])
         win.Modified()
-        win.OffScreenRenderingOn()
+        
         for i, view in enumerate(views):
 #            win.addAxes([self.actor,], color=[0.0, 0.0, 0.0], viewport=i)
             win.setView(view, i)
 #            win.setProjection(projection, viewport=i)
             win.renderActors([self.actor,], zoom=zoom)
         win.rens[0].GetActiveCamera().Azimuth(az)
+        if cam is not None:
+            win.rens[0].SetActiveCamera(cam)
         win.Render()
         if out == 'im':
             im = win.getImage()
@@ -351,7 +354,7 @@ class visMixin(object):
                 mask = np.all(im == 1, axis=2)
                 mask = ~np.all(mask, axis=0)
                 im = im[:, mask, :]
-            return im
+            return im, win
         elif out == 'fh':
             win.getScreenshot(fh)
             return

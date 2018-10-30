@@ -30,25 +30,26 @@ class trimMixin(object):
         >>> amp.planarTrim(100, 2)
 
         """
-        if type(height)==float:
+#        if isinstance(height, float):
             # planar values for each vert on face 
-            fv = self.vert[self.faces, plane]
-            # Number points on each face are above cut plane
-            fvlogic = (fv > height).sum(axis=1)
-            # Faces with points both above and below cut plane
-            adjf = self.faces[np.logical_or(fvlogic == 2, fvlogic == 1)]
-            # Get adjacent vertices
-            adjv = np.unique(adjf)
-            # Get vert above height and set to height
-            abvInd = adjv[self.vert[adjv, plane] > height]
-            self.vert[abvInd, plane] = height
-            # Find all verts above plane
-            delv = self.vert[:, plane] > height
-            # Reorder verts to account for deleted one
-            vInd = np.cumsum(~delv) - 1
-            self.faces = self.faces[fvlogic != 3, :]
-            self.faces = vInd[self.faces]
-            self.vert = self.vert[~delv, :]
-            self.calcStruct()
-        else:
-            raise TypeError("height arg must be a float")
+        fv = self.vert[self.faces, plane]
+        # Number points on each face are above cut plane
+        fvlogic = (fv > height).sum(axis=1)
+        # Faces with points both above and below cut plane
+        adjf = self.faces[np.logical_or(fvlogic == 2, fvlogic == 1)]
+        # Get adjacent vertices
+        adjv = np.unique(adjf)
+        # Get vert above height and set to height
+        abvInd = adjv[self.vert[adjv, plane] > height]
+        self.vert[abvInd, plane] = height
+        # Find all verts above plane
+        delv = self.vert[:, plane] > height
+        # Reorder verts to account for deleted one
+        vInd = np.cumsum(~delv) - 1
+        self.faces = self.faces[fvlogic != 3, :]
+        self.faces = vInd[self.faces]
+        self.vert = self.vert[~delv, :]
+        self.values = self.values[~delv]
+        self.calcStruct()
+#        else:
+#            raise TypeError("height arg must be a float")
