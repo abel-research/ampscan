@@ -131,7 +131,7 @@ class align(object):
         R = Rs[:, :, -1]
         #Simpl
         [U, s, V] = np.linalg.svd(R)
-        R = np.dot(U, V.T)
+        R = np.dot(U, V)
         self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(Ts[:, -1], 1)[:, None].T]
         self.R = R
         self.T = Ts[:, -1]
