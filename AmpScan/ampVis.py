@@ -267,6 +267,60 @@ class vtkRenWin(vtk.vtkRenderWindow):
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
 
+    def Pick_point(self, loc):
+        """
+        This is used to select a point on the rendered mesh and returns the
+        coordinates
+        """
+        #print(loc)
+        
+        x, y = loc
+        #print(x,y)
+        #renWin = vtkRenWin()
+        renderer = self.rens[0]
+        #self._RenderWindow.AddRenderer(renderer)
+        #act = vtk.vtkActor(actor)
+        picker = vtk.vtkPointPicker()
+        #picker.PickFromListOn()
+        #picker.AddPickList(act)
+        picker.SetTolerance(0.01)
+        picker.Pick(x, y, 0, renderer)
+        #points = picker.GetCellId()
+        #sid = picker.GetSubId()
+        points = picker.GetPickedPositions()
+        #pcoords = picker.GetSelectionPoint()
+        #print(points)
+        numPoints = points.GetNumberOfPoints()
+        print(numPoints)
+        if numPoints<1: return
+        #for i in range(numPoints):
+            #pnt = points.GetPoint(i)
+            #print(pnt)
+            #self.marker(pnt[0], pnt[1], pnt[2], i)
+        pnt = points.GetPoint(0)
+        print(pnt)
+        #self.marker(*pcoords)
+        self.marker(pnt[0], pnt[1], pnt[2])
+
+    def marker(self, x,y,z):
+        """
+        mark the picked point with a sphere
+        """
+        sphere = vtk.vtkSphereSource()
+        sphere.SetRadius(3)
+        res = 20
+        sphere.SetThetaResolution(res)
+        sphere.SetPhiResolution(res)
+        sphere.SetCenter(x,y,z)
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInputConnection(sphere.GetOutputPort())
+
+        marker = vtk.vtkActor()
+        marker.SetMapper(mapper)
+        self.rens[0].AddActor(marker)
+        marker.GetProperty().SetColor( (1,0,0) )
+        self.Render()
+
 
 class qtVtkWindow(QVTKRenderWindowInteractor):
     r"""
@@ -279,6 +333,7 @@ class qtVtkWindow(QVTKRenderWindowInteractor):
         self.SetInteractorStyle(self.style)
         self.iren = self._RenderWindow.GetInteractor()
         self.iren.Initialize()        
+
 
 class visMixin(object):
     r"""
@@ -602,6 +657,3 @@ class ampActor(vtk.vtkActor):
             self.GetProperty().LightingOn()
         if shading is False:
             self.GetProperty().LightingOff()
-
-        
-        
