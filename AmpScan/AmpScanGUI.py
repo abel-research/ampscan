@@ -123,7 +123,7 @@ class AmpScanGUI(QMainWindow):
         Pick a point on the mesh.
         """
         #vtkRenWin.Pick_point(self.renWin, loc = [-59.2877082824707, -2.0703632831573486, 70.64564514160156])
-        self.vtkWidget.iren.AddObserver('LeftButtonPressEvent', self.pick_loc)
+        self.vtkWidget.iren.AddObserver('RightButtonPressEvent', self.pick_loc)
         self.renWin.Render()
     
     def pick_loc(self, event, x):
@@ -131,8 +131,12 @@ class AmpScanGUI(QMainWindow):
         calcs the location of click
         """
         #print(event, x)
+        self.vtkWidget.iren.RemoveObservers('RightButtonPressEvent')
         loc = event.GetEventPosition()
-        vtkRenWin.Pick_point(self.renWin, loc)
+        pnt = vtkRenWin.Pick_point(self.renWin, loc)
+        [name, _, color, opacity, display] = self.fileManager.getRow(0)
+        self.files[name].MeasurementsOut(pnt)
+        
         
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
