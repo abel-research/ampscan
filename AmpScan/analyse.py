@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
+from .output import getPDF
 #from .cython_ext import planeEdgeIntersect_cy, logEuPath_cy
 
 
@@ -19,7 +20,7 @@ class analyseMixin(object):
     figure 
 
     """
-
+           
     def plot_slices(self, axis=2, slWidth=10):
         r"""
         Generate a mpl figure with information about the AmpObject
@@ -50,15 +51,17 @@ class analyseMixin(object):
         # Find the brim edges 
         ind = np.where(self.faceEdges[:,1] == -99999)
         # Define max Z from lowest point on brim
-        maxZ = self.vert[self.edges[ind, :], 2].min()
+        #maxZ = (self.vert[self.edges[ind, :], 2]).min()
+        maxZ = (self.vert[:, 2]).max() - (self.vert[:, 2]).min()
         fig = plt.figure()
         fig.set_size_inches(6, 4.5)
 
         ax1 = fig.add_subplot(221, projection='3d')
         ax2 = fig.add_subplot(222)
         #Z position of slices 
-        slices = np.arange(self.vert[:,2].min() + slWidth,
+        slices = np.arange((self.vert[:,2]).min() + slWidth,
                            maxZ, slWidth)
+        #slices = np.arange(slWidth, maxZ, slWidth)
         polys = self.create_slices(slices, axis)
         PolyArea = np.zeros([len(polys)])
         for i, poly in enumerate(polys):
@@ -235,3 +238,29 @@ class analyseMixin(object):
                                      (edges[:, axis+3] - edges[:, axis]))
         return intersectPoints
 
+    
+    def MeasurementsOut(self, pos):
+        """
+        Calculates perimeter of mesh at intervals from mid-patella to the
+        end of stump
+        Takes position of mid-patella (x,y,z) coordinates as input 
+        """
+        zval = pos[2]
+        maxZ = (self.vert[:, 2]).max() - (self.vert[:, 2]).min()
+        # Get 6 equally spaced pts between mid-patella and stump end
+        slices = np.linspace(zval, maxZ, 6)
+        # uses create_slices
+        polys = self.create_slices(slices, 2)
+        # calc perimeter of slices
+        perimeter = np.zeros([len(polys)])
+        for i,poly in enumerate(polys):
+            nverts = np.arange(len(poly)-1)
+            dists = []
+            for x in nverts:
+                dist = np.linalg.norm(poly[x,0]-poly[x+1,0])
+                dists.append(dist)
+            perimeter[i] = sum(dists)
+        # distance between slice and mid-patella
+        lngth = slices - zval
+        print(lngth, perimeter)
+        getPDF(lngth, perimeter)
