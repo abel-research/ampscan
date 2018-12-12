@@ -1,12 +1,10 @@
 import sys
 import numpy as np
-from vtk.util import numpy_support
 import vtk
 from AmpScan import AmpObject
 from AmpScan.registration import registration
 from AmpScan.align import align
-from AmpScan.ampVis import qtVtkWindow
-from AmpScan.pressSens import pressSense
+from AmpScan.ampVis import qtVtkWindow, vtkRenWin
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
@@ -119,6 +117,26 @@ class AmpScanGUI(QMainWindow):
         self.alCont.xtraButton.buttonClicked[QAbstractButton].connect(self.transx)
         self.alCont.ytraButton.buttonClicked[QAbstractButton].connect(self.transy)
         self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
+    
+    def Point_Pick(self):
+        """
+        Pick a point on the mesh.
+        """
+        #vtkRenWin.Pick_point(self.renWin, loc = [-59.2877082824707, -2.0703632831573486, 70.64564514160156])
+        self.vtkWidget.iren.AddObserver('RightButtonPressEvent', self.pick_loc)
+        self.renWin.Render()
+    
+    def pick_loc(self, event, x):
+        """
+        calcs the location of click
+        """
+        #print(event, x)
+        self.vtkWidget.iren.RemoveObservers('RightButtonPressEvent')
+        loc = event.GetEventPosition()
+        pnt = vtkRenWin.Pick_point(self.renWin, loc)
+        [name, _, color, opacity, display] = self.fileManager.getRow(0)
+        self.files[name].MeasurementsOut(pnt)
+        
         
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
@@ -310,6 +328,8 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.register)
         self.analyse = QAction(QIcon('open.png'), 'Analyse', self,
                                 triggered=self.analyse)
+        self.pick = QAction(QIcon('open.png'), 'Pick', self,
+                                triggered=self.Point_Pick)
 
     def createMenus(self):
         """
@@ -331,7 +351,9 @@ class AmpScanGUI(QMainWindow):
         self.analyseMenu.addAction(self.analyse)
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
-        
+        self.PointMenu = self.menuBar().addMenu("&Pick Point")
+        self.PointMenu.addAction(self.pick)
+
 class fileManager(QMainWindow):
     """
     Controls to manage the displayed 
