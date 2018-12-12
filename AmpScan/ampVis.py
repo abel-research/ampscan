@@ -275,21 +275,34 @@ class vtkRenWin(vtk.vtkRenderWindow):
         #print(loc)
         
         x, y = loc
+        #print(x,y)
+        #renWin = vtkRenWin()
         renderer = self.rens[0]
-        picker = vtk.vtkPointPicker()
+        #self._RenderWindow.AddRenderer(renderer)
+        #act = vtk.vtkActor(actor)
+        picker = vtk.vtkCellPicker()
+        #picker.PickFromListOn()
+        #picker.AddPickList(act)
         picker.SetTolerance(0.01)
         picker.Pick(x, y, 0, renderer)
+        #points = picker.GetCellId()
+        #sid = picker.GetSubId()
         points = picker.GetPickedPositions()
+        #pcoords = picker.GetSelectionPoint()
+        #print(points)
         numPoints = points.GetNumberOfPoints()
-        print(numPoints)
+        #print(numPoints)
         if numPoints<1: return
         #for i in range(numPoints):
             #pnt = points.GetPoint(i)
             #print(pnt)
             #self.marker(pnt[0], pnt[1], pnt[2], i)
         pnt = points.GetPoint(0)
-        print(pnt)
+        #print(pnt)
+        #self.marker(*pcoords)
         self.marker(pnt[0], pnt[1], pnt[2])
+        return pnt
+        
 
     def marker(self, x,y,z):
         """
