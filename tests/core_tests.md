@@ -2,4 +2,7 @@
 
 ## Unit tests
 - STL import
+
+## Functional Tests
+- Rotate example
 - 
