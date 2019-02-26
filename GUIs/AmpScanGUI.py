@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
                              QMainWindow, QMessageBox, QComboBox, QButtonGroup,
                              QOpenGLWidget, QFileDialog,QLabel,QPushButton,
                              QSlider, QWidget, QTableWidget, QTableWidgetItem,
-                             QAbstractButton)
+                             QAbstractButton, QCheckBox)
 
         
 class AmpScanGUI(QMainWindow):
@@ -88,6 +88,10 @@ class AmpScanGUI(QMainWindow):
             return
         moving = str(self.alCont.moving.currentText())
         self.files[moving].save(fname[0])
+        if self.pnt is not None:
+            f = open(fname[0]+'.txt','w+')
+            f.write('Picked Coordinates = {}'.format(self.pnt))
+        
     
     def display(self):
         render = []
@@ -122,7 +126,6 @@ class AmpScanGUI(QMainWindow):
         """
         Pick a point on the mesh.
         """
-        #vtkRenWin.Pick_point(self.renWin, loc = [-59.2877082824707, -2.0703632831573486, 70.64564514160156])
         self.vtkWidget.iren.AddObserver('RightButtonPressEvent', self.pick_loc)
         self.renWin.Render()
     
@@ -133,9 +136,13 @@ class AmpScanGUI(QMainWindow):
         #print(event, x)
         self.vtkWidget.iren.RemoveObservers('RightButtonPressEvent')
         loc = event.GetEventPosition()
-        pnt = vtkRenWin.Pick_point(self.renWin, loc)
-        [name, _, color, opacity, display] = self.fileManager.getRow(0)
-        self.files[name].MeasurementsOut(pnt)
+        self.pnt = vtkRenWin.Pick_point(self.renWin, loc)
+        #[name, _, color, opacity, display] = self.fileManager.getRow(0)
+        #self.files[name].MeasurementsOut(pnt)
+    
+    def removePick(self):
+        self.pnt = None
+        vtkRenWin.delMarker(self.renWin)
         
         
     def rotatex(self, button):
@@ -234,7 +241,8 @@ class AmpScanGUI(QMainWindow):
         self.fileManager.setTable(target, [0,0,1], 0.5, 0)
         reg = registration(self.files[baseline], self.files[target], steps = 5,
                            smooth=1).reg
-        reg.addActor(CMap = self.CMap02P)
+        #reg.addActor(CMap = self.CMap02P)
+        reg.addActor(CMap = self.CMapN2P)
         regName = target + '_reg'
         self.files[regName] = reg
         self.filesDrop.append(regName)
@@ -243,7 +251,12 @@ class AmpScanGUI(QMainWindow):
             self.alCont.getNames()
         if hasattr(self, 'regCont'):
             self.regCont.getNames()
-        
+        #im = []
+        if self.regCont.tick.isChecked() is True:
+            reg.actor.setScalarRange([-10,10])
+            reg.actor.setShading(False)
+            reg.CMapOut(colors=self.CMapN2P)
+            reg.plotResults(name="distributionofshapevariance.png")
         print('Run the Registration code between %s and %s' % (baseline, target))
         
     def register(self):
@@ -330,6 +343,8 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.analyse)
         self.pick = QAction(QIcon('open.png'), 'Pick', self,
                                 triggered=self.Point_Pick)
+        self.removePick = QAction(QIcon('open.png'), 'Clear all picked points', self,
+                                triggered = self.removePick)
 
     def createMenus(self):
         """
@@ -353,6 +368,7 @@ class AmpScanGUI(QMainWindow):
         self.kineticMenu.addAction(self.openPress)
         self.PointMenu = self.menuBar().addMenu("&Pick Point")
         self.PointMenu.addAction(self.pick)
+        self.PointMenu.addAction(self.removePick)
 
 class fileManager(QMainWindow):
     """
@@ -470,7 +486,38 @@ class AlignControls(QMainWindow):
         self.moving.clear()
         self.moving.addItems(self.names)
            
-        
+
+class PickerControls(QMainWindow):
+    """
+    Pop up after point is picked
+    """
+    def __init__(self, names, parent = None):
+        super(PickerControls, self).__init__(parent)
+        self.main = QWidget()
+        self.names = names
+        self.baseline = QComboBox()
+        self.target = QComboBox()
+        self.reg = QPushButton("Run Registration")
+        self.setCentralWidget(self.main)
+        self.layout = QGridLayout()
+        self.layout.addWidget(QLabel('Baseline'), 0, 0)
+        self.layout.addWidget(QLabel('Target'), 1, 0)
+        self.layout.addWidget(self.baseline, 0, 1)
+        self.layout.addWidget(self.target, 1, 1)
+        self.layout.addWidget(self.reg, 2, 0, 1, -1)
+        self.main.setLayout(self.layout)
+        self.setWindowTitle("Registration Manager")
+        self.getNames()
+    
+    def getNames(self):
+        """
+        """
+        self.baseline.clear()
+        self.baseline.addItems(self.names)
+        self.target.clear()
+        self.target.addItems(self.names)
+
+     
 class RegistrationControls(QMainWindow):
     """
     Pop up for controls to align the 
@@ -490,13 +537,15 @@ class RegistrationControls(QMainWindow):
         self.baseline = QComboBox()
         self.target = QComboBox()
         self.reg = QPushButton("Run Registration")
+        self.tick = QCheckBox("Generate Output File for Comparison?")
         self.setCentralWidget(self.main)
         self.layout = QGridLayout()
         self.layout.addWidget(QLabel('Baseline'), 0, 0)
         self.layout.addWidget(QLabel('Target'), 1, 0)
         self.layout.addWidget(self.baseline, 0, 1)
         self.layout.addWidget(self.target, 1, 1)
-        self.layout.addWidget(self.reg, 2, 0, 1, -1)
+        self.layout.addWidget(self.tick, 2,1)
+        self.layout.addWidget(self.reg, 3, 0, 1, -1)
         self.main.setLayout(self.layout)
         self.setWindowTitle("Registration Manager")
         self.getNames()
