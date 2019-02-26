@@ -36,6 +36,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
 #        self.rens[0].SetBackground(1.0,1.0,1.0)
         #self.rens[0].SetActiveCamera(self.cams[0])
 #        self.axes.append(vtk.vtkCubeAxesActor())
+        self.markers = []
         
     def renderActors(self, actors, viewport=0, zoom=1.0):
         r"""
@@ -275,36 +276,20 @@ class vtkRenWin(vtk.vtkRenderWindow):
         #print(loc)
         
         x, y = loc
-        #print(x,y)
-        #renWin = vtkRenWin()
         renderer = self.rens[0]
-        #self._RenderWindow.AddRenderer(renderer)
-        #act = vtk.vtkActor(actor)
         picker = vtk.vtkCellPicker()
-        #picker.PickFromListOn()
-        #picker.AddPickList(act)
         picker.SetTolerance(0.01)
         picker.Pick(x, y, 0, renderer)
-        #points = picker.GetCellId()
-        #sid = picker.GetSubId()
         points = picker.GetPickedPositions()
-        #pcoords = picker.GetSelectionPoint()
-        #print(points)
         numPoints = points.GetNumberOfPoints()
         #print(numPoints)
         if numPoints<1: return
-        #for i in range(numPoints):
-            #pnt = points.GetPoint(i)
-            #print(pnt)
-            #self.marker(pnt[0], pnt[1], pnt[2], i)
         pnt = points.GetPoint(0)
-        #print(pnt)
-        #self.marker(*pcoords)
-        self.marker(pnt[0], pnt[1], pnt[2])
+        self.mark(pnt[0], pnt[1], pnt[2])
         return pnt
         
 
-    def marker(self, x,y,z):
+    def mark(self, x,y,z):
         """
         mark the picked point with a sphere
         """
@@ -317,11 +302,20 @@ class vtkRenWin(vtk.vtkRenderWindow):
         mapper = vtk.vtkPolyDataMapper()
         mapper.SetInputConnection(sphere.GetOutputPort())
 
-        marker = vtk.vtkActor()
-        marker.SetMapper(mapper)
-        self.rens[0].AddActor(marker)
-        marker.GetProperty().SetColor( (1,0,0) )
+        self.marker = vtk.vtkActor()
+        self.marker.SetMapper(mapper)
+        self.rens[0].AddActor(self.marker)
+        self.marker.GetProperty().SetColor( (1,0,0) )
+        self.markers.append(self.marker)
         self.Render()
+
+    def delMarker(self):
+        """
+        removes the sphere marker from the renderer
+        """
+        for i in self.markers:
+            self.rens[0].RemoveActor(i)
+        self.markers = []
 
 
 class qtVtkWindow(QVTKRenderWindowInteractor):
@@ -346,7 +340,7 @@ class visMixin(object):
     def genIm(self, size=[512, 512], views=[[0, -1, 0]], 
               background=[1.0, 1.0, 1.0], projection=True,
               shading=True, mag=10, out='im', fh='test.tiff', 
-              zoom=1.0, az = 0, crop=False):
+              zoom=1.0, az = 0, el=0,crop=False):
         r"""
         Creates a temporary off screen vtkRenWin which is then either returned
         as a numpy array or saved as a .png file
@@ -392,12 +386,14 @@ class visMixin(object):
         win.SetSize(size[0], size[1])
         win.Modified()
         win.OffScreenRenderingOn()
+        
         for i, view in enumerate(views):
 #            win.addAxes([self.actor,], color=[0.0, 0.0, 0.0], viewport=i)
             win.setView(view, i)
 #            win.setProjection(projection, viewport=i)
             win.renderActors([self.actor,], zoom=zoom)
         win.rens[0].GetActiveCamera().Azimuth(az)
+        win.rens[0].GetActiveCamera().Elevation(el)
         win.Render()
         if out == 'im':
             im = win.getImage()
@@ -440,7 +436,7 @@ class visMixin(object):
         win.setView()
         win.renderActors([self.actor,])
         win.Render()
-        win.rens[0].GetActiveCamera().Azimuth(180)
+        win.rens[0].GetActiveCamera().Azimuth(0)
         win.rens[0].GetActiveCamera().SetParallelProjection(True)
         win.Render()
         return win
