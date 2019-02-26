@@ -7,6 +7,8 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as clr
+import matplotlib.colorbar as clb
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
 from .output import getPDF
@@ -15,7 +17,7 @@ from .output import getPDF
 
 
 class analyseMixin(object):
-    r"""
+    """
     Analysis methods to act upon a single AmpObject and generate a mpl 
     figure 
 
@@ -52,7 +54,7 @@ class analyseMixin(object):
         ind = np.where(self.faceEdges[:,1] == -99999)
         # Define max Z from lowest point on brim
         #maxZ = (self.vert[self.edges[ind, :], 2]).min()
-        maxZ = (self.vert[:, 2]).max() - (self.vert[:, 2]).min()
+        maxZ = (self.vert[:, axis]).max() - (self.vert[:, axis]).min()
         fig = plt.figure()
         fig.set_size_inches(6, 4.5)
 
@@ -97,6 +99,7 @@ class analyseMixin(object):
         plt.tight_layout()
         plt.show()
         return fig, (ax1, ax2, ax3, ax4)
+        
         
     def create_slices(self, slices, axis=2):
         """
@@ -245,22 +248,108 @@ class analyseMixin(object):
         end of stump
         Takes position of mid-patella (x,y,z) coordinates as input 
         """
-        zval = pos[2]
-        maxZ = (self.vert[:, 2]).max() - (self.vert[:, 2]).min()
+        print(pos)
+        maxZ = []
+        for i in [0,1,2]:
+            maxZ.append((self.vert[:, i]).max() - (self.vert[:, i]).min())
+        #slice in longest axis of scan
+        self.axis = maxZ.index(max(maxZ))
+        maxZ = max(maxZ)
+        zval = pos[self.axis]
         # Get 6 equally spaced pts between mid-patella and stump end
         slices = np.linspace(zval, maxZ, 6)
         # uses create_slices
-        polys = self.create_slices(slices, 2)
+        polys = self.create_slices((0,-120), axis=1)
         # calc perimeter of slices
         perimeter = np.zeros([len(polys)])
         for i,poly in enumerate(polys):
             nverts = np.arange(len(poly)-1)
             dists = []
             for x in nverts:
-                dist = np.linalg.norm(poly[x,0]-poly[x+1,0])
+                xc = (poly[x][0] - poly[x+1][0])**2
+                yc = (poly[x][1] - poly[x+1][1])**2
+                zc = (poly[x][2] - poly[x+1][2])**2
+                dist = np.sqrt(xc+yc+zc)
                 dists.append(dist)
-            perimeter[i] = sum(dists)
+            perimeter[i] = sum(dists) / 10
         # distance between slice and mid-patella
-        lngth = slices - zval
-        print(lngth, perimeter)
-        getPDF(lngth, perimeter)
+        lngth = (slices - zval) / 10
+        #print(lngth, perimeter)
+        #generate png files of anterior and lateral views
+        self.genIm(out='fh',fh='lat.png', el=180)
+        self.genIm(mag=1,out='fh',fh='ant.png',az=-90,el =180)
+        #calculations at %length intervals of 10%
+        L = maxZ - zval
+        pL = np.linspace(0,1.2,13)
+        slices2 = []
+        for i in pL:
+            slices2.append(maxZ-(i*L))
+        polys2 = self.create_slices(slices2,self.axis)
+        PolyArea = np.zeros([len(polys2)])
+        MLWidth = np.zeros([len(polys2)])
+        APWidth = np.zeros([len(polys2)])
+        for i, poly in enumerate(polys2):
+            # Compute area of slice
+            area = 0.5*np.abs(np.dot(poly[:,0], np.roll(poly[:,1], 1)) -
+                              np.dot(poly[:,1], np.roll(poly[:,0], 1)))
+            PolyArea[i] = area/100
+            APW = poly[:,0].max() - poly[:,0].min()
+            APWidth[i] = APW/10
+            MLW = poly[:,1].max() - poly[:,1].min()
+            MLWidth[i] = MLW/10
+        print(PolyArea, MLWidth, APWidth)
+        fig = plt.figure()
+        fig.set_size_inches(6, 4.5)
+        ax = fig.add_subplot(221)
+        ax.plot(pL*100, PolyArea)
+        ax.set_xlabel("% length")
+        ax.set_ylabel("Area")
+        ax2 = fig.add_subplot(222)
+        ax2.plot(pL*100, MLWidth, 'ro',label='ML Width')
+        ax2.plot(pL*100, APWidth, 'b.',label='AP Width')
+        ax2.set_xlabel("% length")
+        ax2.legend()
+        fig.savefig("figure.png")
+        getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth)
+        #divided by 10 to convert to cms, find proper fix!
+
+
+    def CMapOut(self, colors):
+        titles = ['Anterior', 'Medial', 'Proximal', 'Lateral']
+        fig,axes = plt.subplots(ncols=5)
+        cmap = clr.ListedColormap(colors, name='Amp')
+        norm = clr.Normalize(vmin=-10,vmax=10)
+        cb1 = clb.ColorbarBase(axes[-1], cmap=cmap,norm=norm)
+        cb1.set_label('Shape deviation / mm')
+        for i, ax in enumerate(axes[:-1]):
+            im = self.genIm(size=[3200, 8000],crop=True, az = i*90)
+            ax.imshow(im)
+            ax.set_title(titles[i])
+            ax.set_axis_off()
+        #plt.colorbar(CMap)
+        fig.set_size_inches([12.5, 4])
+        plt.savefig("Limb Views.png", dpi=600)
+
+
+    def plotResults(self, name=None, xrange=None, color=None, alpha=None):
+        r"""
+        Function to generate a mpl figure. Includes a rendering of the 
+        AmpObject, a histogram of the registration values 
+        
+        Returns
+        -------
+        fig: mplfigure
+            A matplot figure of the standard analysis
+        
+        """
+        fig, ax = plt.subplots(1)
+        n, bins, _ = ax.hist(self.values, 50, density=True, range=xrange,
+                             color=color, alpha=alpha)
+        mean = self.values.mean()
+        stdev = self.values.std()
+        ax.set_title(r'Distribution of shape variance, '
+                     '$\mu=%.2f$, $\sigma=%.2f$' % (mean, stdev))
+        ax.set_xlim(None)
+        if name is not None:
+            plt.savefig(name, dpi = 300)
+        return ax, n, bins
