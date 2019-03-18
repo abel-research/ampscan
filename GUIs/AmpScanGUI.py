@@ -88,9 +88,13 @@ class AmpScanGUI(QMainWindow):
             return
         moving = str(self.alCont.moving.currentText())
         self.files[moving].save(fname[0])
-        if self.pnt is not None:
+        try:
+            self.pnt
             f = open(fname[0]+'.txt','w+')
             f.write('Picked Coordinates = {}'.format(self.pnt))
+        except AttributeError:
+            print('A point has not been selected')
+            
         
     
     def display(self):
