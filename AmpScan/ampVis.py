@@ -37,6 +37,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
         #self.rens[0].SetActiveCamera(self.cams[0])
 #        self.axes.append(vtk.vtkCubeAxesActor())
         self.markers = []
+        self.labels = []
         
     def renderActors(self, actors, viewport=0, zoom=1.0):
         r"""
@@ -270,10 +271,13 @@ class vtkRenWin(vtk.vtkRenderWindow):
 
     def Pick_point(self, loc):
         """
-        This is used to select a point on the rendered mesh and returns the
-        coordinates
+        This receives coordinates in the GUI where user has picked, converts it
+        to mesh coordinates using vtkCellPicker, and places a sphere at picked
+        location as a visual aid. Also places a label at the point in the 
+        render window.
+        TO-DO: Add functionality so user can type the label in, rather than
+        have it read 'Mid Patella' every time
         """
-        #print(loc)
         
         x, y = loc
         renderer = self.rens[0]
@@ -282,10 +286,37 @@ class vtkRenWin(vtk.vtkRenderWindow):
         picker.Pick(x, y, 0, renderer)
         points = picker.GetPickedPositions()
         numPoints = points.GetNumberOfPoints()
-        #print(numPoints)
+        #if no points selected, exits function
         if numPoints<1: return
+        # Calls function to create a sphere at selected point
         pnt = points.GetPoint(0)
         self.mark(pnt[0], pnt[1], pnt[2])
+        # Creating label at selected point
+        label = vtk.vtkStringArray()
+        label.SetName('label')
+        label.InsertNextValue("   Mid Patella")
+        lPoints = vtk.vtkPolyData()
+        lPoints.SetPoints(points)
+        lPoints.GetPointData().AddArray(label)
+        
+        hier = vtk.vtkPointSetToLabelHierarchy()
+        hier.SetInputData(lPoints)
+        hier.SetLabelArrayName('label')
+        hier.GetTextProperty().SetColor(0,0,0)
+        hier.GetTextProperty().SetFontSize(30)
+        
+        lMapper = vtk.vtkLabelPlacementMapper()
+        lMapper.SetInputConnection(hier.GetOutputPort())
+        lMapper.SetBackgroundColor(0.3,0.3,0.3)
+        lMapper.SetBackgroundOpacity(0.8)
+        lMapper.SetMargin(10)
+        
+        lActor = vtk.vtkActor2D()
+        lActor.SetMapper(lMapper)
+        self.labels.append(lActor) # keep track of all label actors
+        
+        self.rens[0].AddActor(lActor)
+        self.Render()
         return pnt
         
 
@@ -306,16 +337,19 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.marker.SetMapper(mapper)
         self.rens[0].AddActor(self.marker)
         self.marker.GetProperty().SetColor( (1,0,0) )
-        self.markers.append(self.marker)
+        self.markers.append(self.marker) #keep track of all marker actors
         self.Render()
 
     def delMarker(self):
         """
-        removes the sphere marker from the renderer
+        removes the sphere marker and label from the renderer
         """
         for i in self.markers:
             self.rens[0].RemoveActor(i)
+        for i in self.labels:
+            self.rens[0].RemoveActor(i)
         self.markers = []
+        self.labels = []
 
 
 class qtVtkWindow(QVTKRenderWindowInteractor):
