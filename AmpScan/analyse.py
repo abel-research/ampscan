@@ -12,6 +12,7 @@ import matplotlib.colorbar as clb
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
 from .output import getPDF
+from math import floor
 #from .cython_ext import planeEdgeIntersect_cy, logEuPath_cy
 
 
@@ -51,19 +52,17 @@ class analyseMixin(object):
 
         """
         # Find the brim edges 
-        ind = np.where(self.faceEdges[:,1] == -99999)
+        ind = np.where(self.faceEdges[:,1] == -99999)[0]
         # Define max Z from lowest point on brim
-        #maxZ = (self.vert[self.edges[ind, :], 2]).min()
-        maxZ = (self.vert[:, axis]).max() - (self.vert[:, axis]).min()
+        maxZ = self.vert[self.edges[ind, :], 2].min()
         fig = plt.figure()
         fig.set_size_inches(6, 4.5)
 
         ax1 = fig.add_subplot(221, projection='3d')
         ax2 = fig.add_subplot(222)
         #Z position of slices 
-        slices = np.arange((self.vert[:,2]).min() + slWidth,
+        slices = np.arange(self.vert[:,2].min() + slWidth,
                            maxZ, slWidth)
-        #slices = np.arange(slWidth, maxZ, slWidth)
         polys = self.create_slices(slices, axis)
         PolyArea = np.zeros([len(polys)])
         for i, poly in enumerate(polys):
@@ -100,7 +99,6 @@ class analyseMixin(object):
         plt.show()
         return fig, (ax1, ax2, ax3, ax4)
         
-        
     def create_slices(self, slices, axis=2):
         """
         Generate polygons from planar slices through the AmpObject 
@@ -127,43 +125,74 @@ class analyseMixin(object):
             # Select edges with one vertex above and one below the slice plane 
             validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
             validfE = self.faceEdges[validEdgeInd, :].astype(int)
-            g = defaultdict(set)
-            faceOrder = np.zeros(len(validEdgeInd), dtype=int)
-            # Run eularian path algorithm to order faces
-            for v, w in validfE:
-                g[v].add(w)
-                g[w].add(v)
-            v = validfE[0,0]
-            j=0
-            while True:
-                try:
-                    w = g[v].pop()
-                except KeyError:
-                    break
-                g[w].remove(v)
-                faceOrder[j] = v
-                j+=1
-                v = w
+            faceOrder = analyseMixin.logEuPath(validfE)
+#            g = defaultdict(set)
+#            faceOrder = np.zeros(len(validEdgeInd), dtype=int)
+#            # Run eularian path algorithm to order faces
+#            for v, w in validfE:
+#                g[v].add(w)
+#                g[w].add(v)
+#            v = validfE[0,0]
+#            j=0
+#            while True:
+#                try:
+#                    w = g[v].pop()
+#                except KeyError:
+#                    break
+#                g[w].remove(v)
+#                faceOrder[j] = v
+#                j+=1
+#                v = w
             # Get array of three edges attached to each face
             validEdges = self.edgesFace[faceOrder, :]
             # Remove the edge that is not intersected by the plane
             edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
             # Remove the duplicate edge from order 
             e = edges.flatten()
-            odx = np.argsort(e)
-            inds = np.arange(1, len(e), 2)
-            row = np.unravel_index(odx, e.shape)[0]
-            mask = np.ones(len(e), dtype=bool)
-            mask[row[inds]] = False
-            sortE = e[mask]
+#            odx = np.argsort(e)
+#            inds = np.arange(1, len(e), 2)
+#            row = np.unravel_index(odx, e.shape)[0]
+#            mask = np.ones(len(e), dtype=bool)
+#            mask[row[inds]] = False
+#            sortE = e[mask]
+            sortE = []
+            for ed in e:
+                if ed not in sortE:
+                    sortE.append(ed)
+            sortE.append(sortE[0])
             # Add first edge to end of array
-            sortE = np.append(sortE, sortE[0])
+#            sortE = np.append(sortE, sortE[0])
+            sortE = np.asarray(sortE)
             polyEdge = self.edges[sortE]
             EdgePoints = np.c_[self.vert[polyEdge[:,0], :], 
                                self.vert[polyEdge[:,1], :]]
             #Create poly from 
-            polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
+            polys.append(analyseMixin.planeEdgeIntersect_cy(EdgePoints, plane, axis))
         return polys
+    
+    @staticmethod
+    def logEuPath(arr):
+        vmax = arr.shape[0]
+        rows = list(range(vmax))
+        order = np.zeros([vmax], dtype=int)
+        i = 0
+        val = arr[i, 0]
+        nmax = vmax-1
+        for n in range(nmax):
+            del rows[i]
+            order[n] = val
+            i=0
+            xmax = vmax - n + 1
+            for x in rows: 
+                if arr[x, 0] == val:
+                    val = arr[x, 1]
+                    break
+                if arr[x, 1] == val:
+                    val = arr[x, 0]
+                    break
+                i+=1
+        order[n+1] = val
+        return order
     
 #    def create_slices_cy(self, slices, axis='Z'):
 #        """
@@ -208,7 +237,20 @@ class analyseMixin(object):
 ##            polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
 #            polys.append(planeEdgeIntersect_cy(EdgePoints, plane, 2))
 #        return polys
-
+    @staticmethod
+    def planeEdgeIntersect_cy(arr, plane, axisInd):
+        emax = arr.shape[0]
+        intersectPoints = np.zeros((emax, 3), dtype=np.float32)
+        intersectPoints[:, axisInd] = plane
+        for i in range(emax):
+            for j in range(2):
+                e1 = arr[i, j]
+                e2 = arr[i, axisInd]
+                e3 = arr[i, j+3]
+                e4 = arr[i, axisInd+3]
+                intersectPoints[i, j] = e1 + (plane - e2) * (e3 - e1) / (e4 - e2)
+        return intersectPoints
+    
     @staticmethod
     def planeEdgeintersect(edges, plane, axis=2):
         r"""
@@ -241,12 +283,19 @@ class analyseMixin(object):
                                      (edges[:, axis+3] - edges[:, axis]))
         return intersectPoints
 
+
     
     def MeasurementsOut(self, pos):
         """
-        Calculates perimeter of mesh at intervals from mid-patella to the
+        Calculates perimeter of limb/cast at intervals from mid-patella to the
         end of stump
-        Takes position of mid-patella (x,y,z) coordinates as input 
+        Takes position of mid-patella (x,y,z) coordinates as input
+        Also creates images of limb views and graphs of CSA/Widths, which are
+        used in the PDF.
+        Calls the function responsible for adding the information to the PDF
+        template.
+        TODO: Split this into functions for each part i.e. Volume measure, CSA,
+        widths 
         """
         print(pos)
         maxZ = []
@@ -257,9 +306,9 @@ class analyseMixin(object):
         maxZ = max(maxZ)
         zval = pos[self.axis]
         # Get 6 equally spaced pts between mid-patella and stump end
-        slices = np.linspace(zval, maxZ, 6)
+        slices = np.linspace(zval, (self.vert[:,self.axis]).min()+0.1, 6)
         # uses create_slices
-        polys = self.create_slices((0,-120), axis=1)
+        polys = self.create_slices(slices, axis=self.axis)
         # calc perimeter of slices
         perimeter = np.zeros([len(polys)])
         for i,poly in enumerate(polys):
@@ -276,14 +325,14 @@ class analyseMixin(object):
         lngth = (slices - zval) / 10
         #print(lngth, perimeter)
         #generate png files of anterior and lateral views
-        self.genIm(out='fh',fh='lat.png', el=180)
-        self.genIm(mag=1,out='fh',fh='ant.png',az=-90,el =180)
+        self.genIm(out='fh',fh='lat.png',az=-90)
+        self.genIm(mag=1,out='fh',fh='ant.png')
         #calculations at %length intervals of 10%
-        L = maxZ - zval
+        L = maxZ - ((self.vert[:,self.axis]).max()-zval)-10
         pL = np.linspace(0,1.2,13)
         slices2 = []
         for i in pL:
-            slices2.append(maxZ-(i*L))
+            slices2.append((self.vert[:,self.axis]).min()+10+(i*L))
         polys2 = self.create_slices(slices2,self.axis)
         PolyArea = np.zeros([len(polys2)])
         MLWidth = np.zeros([len(polys2)])
@@ -299,22 +348,27 @@ class analyseMixin(object):
             MLWidth[i] = MLW/10
         print(PolyArea, MLWidth, APWidth)
         fig = plt.figure()
-        fig.set_size_inches(6, 4.5)
+        fig.set_size_inches(7.5, 4.5)
         ax = fig.add_subplot(221)
         ax.plot(pL*100, PolyArea)
         ax.set_xlabel("% length")
-        ax.set_ylabel("Area")
+        ax.set_ylabel("Area (cm^2)")
         ax2 = fig.add_subplot(222)
-        ax2.plot(pL*100, MLWidth, 'ro',label='ML Width')
-        ax2.plot(pL*100, APWidth, 'b.',label='AP Width')
+        ax2.plot(pL*100, MLWidth, 'ro',label='Medial-Lateral')
+        ax2.plot(pL*100, APWidth, 'b.',label='Anterior-Posterior')
         ax2.set_xlabel("% length")
+        ax2.set_ylabel("width (cm)")
         ax2.legend()
         fig.savefig("figure.png")
-        getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth)
-        #divided by 10 to convert to cms, find proper fix!
+        getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth) #PDF Creation function (in output.py)
+        #divided by 10 to convert to cms, assumes stl files are in mm
+        #TO-DO: Some sort of metric conversion function?
 
 
     def CMapOut(self, colors):
+        """
+        Colour Map with 4 views (copied Josh's code)
+        """
         titles = ['Anterior', 'Medial', 'Proximal', 'Lateral']
         fig,axes = plt.subplots(ncols=5)
         cmap = clr.ListedColormap(colors, name='Amp')
@@ -331,25 +385,90 @@ class analyseMixin(object):
         plt.savefig("Limb Views.png", dpi=600)
 
 
-    def plotResults(self, name=None, xrange=None, color=None, alpha=None):
-        r"""
-        Function to generate a mpl figure. Includes a rendering of the 
-        AmpObject, a histogram of the registration values 
-        
-        Returns
-        -------
-        fig: mplfigure
-            A matplot figure of the standard analysis
-        
+    def volumeMeasure(self, zval, axis=2, slWidth=0.1):
         """
-        fig, ax = plt.subplots(1)
-        n, bins, _ = ax.hist(self.values, 50, density=True, range=xrange,
-                             color=color, alpha=alpha)
-        mean = self.values.mean()
-        stdev = self.values.std()
-        ax.set_title(r'Distribution of shape variance, '
-                     '$\mu=%.2f$, $\sigma=%.2f$' % (mean, stdev))
-        ax.set_xlim(None)
-        if name is not None:
-            plt.savefig(name, dpi = 300)
-        return ax, n, bins
+        volume estimation using slices
+        """
+        ind = [0,1,2]
+        ind.remove(axis)
+        slices = np.arange((self.vert[:,axis]).min()+slWidth, zval, slWidth)
+        polys = self.create_slices(slices, axis)
+        PArea = np.zeros(len(polys))
+        for i, poly in enumerate(polys):
+            # Compute area of slice
+            area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
+                              np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
+            PArea[i] = area/100
+        return sum(PArea*slWidth/10)+(PArea[-1]*(zval-slices[-1]))
+        
+    
+    def CSAMeasure(self,zval, axis=2, interval = 0.05):
+        """
+        Measure CSA at 5% increments (0-95%) from selected point to stump
+        """
+        ind = [0,1,2]
+        ind.remove(axis)
+        percents = np.arange(0.0,0.955,interval)
+        distump = (zval-(self.vert[:,axis]).min())
+        slices = []
+        [slices.append(zval - (distump*i)) for i in percents]
+        PArea = np.zeros(len(slices))
+        for i,j in enumerate(slices):
+            try:
+                polys = self.create_slices([j], axis)
+                poly = polys[0]
+                area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
+                                  np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
+                PArea[i] = area/100
+            except IndexError:
+                PArea[i] = None
+        return PArea, distump
+    
+    def widthsMeasure(self,zval,axis=2,interval=0.05):
+        """
+        Measure Coronal and Sagittal widths at intervals along limb (0-95%)
+        """
+        percents = np.arange(0.0,0.955,interval)
+        distump = (zval-(self.vert[:,axis]).min())
+        slices = []
+        [slices.append(zval - (distump*i)) for i in percents]
+        MLWidth = np.zeros([len(slices)])
+        APWidth = np.zeros([len(slices)])
+        for i,j in enumerate(slices):
+            try:
+                polys = self.create_slices([j], axis)
+                poly = polys[0]
+                APW = poly[:,0].max() - poly[:,0].min()
+                APWidth[i] = APW
+                MLW = poly[:,1].max() - poly[:,1].min()
+                MLWidth[i] = MLW
+            except IndexError:
+                MLWidth[i] = None
+                APWidth[i] = None
+        return APWidth, MLWidth
+    
+    def perimeterMeasure(self,zval,axis=2,interval=0.05):
+        """
+        Measure Coronal and Sagittal widths at intervals along limb (0-95%)
+        """
+        percents = np.arange(0.0,0.955,interval)
+        distump = (zval-(self.vert[:,axis]).min())
+        slices = []
+        [slices.append(zval - (distump*i)) for i in percents]
+        perimeter = np.zeros([len(slices)])
+        for i,j in enumerate(slices):
+            try:
+                polys = self.create_slices([j], axis)
+                poly = polys[0]
+                nverts = np.arange(len(poly)-1)
+                dists = []
+                for x in nverts:
+                    xc = (poly[x][0] - poly[x+1][0])**2
+                    yc = (poly[x][1] - poly[x+1][1])**2
+                    zc = (poly[x][2] - poly[x+1][2])**2
+                    dist = np.sqrt(xc+yc+zc)
+                    dists.append(dist)
+                perimeter[i] = sum(dists) / 10
+            except IndexError:
+                perimeter[i] = None
+        return perimeter, distump
