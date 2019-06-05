@@ -89,13 +89,11 @@ class AmpScanGUI(QMainWindow):
         moving = str(self.alCont.moving.currentText())
         self.files[moving].save(fname[0])
         try:
-            self.pnt
             f = open(fname[0]+'.txt','w+')
-            f.write('Picked Coordinates = {}'.format(self.pnt))
+            f.write('{}'.format(self.pnt))
         except AttributeError:
             print('A point has not been selected')
-            
-        
+
     
     def display(self):
         render = []
@@ -128,23 +126,32 @@ class AmpScanGUI(QMainWindow):
     
     def Point_Pick(self):
         """
-        Pick a point on the mesh.
+        Waits for a point click to occur before calling further functions
+        TODO: Create 'Picker controls'? Similar to Alignment controls, but where
+        user can enter the name of the point they select - this can allow
+        multiple landmark locations to be stored and marked?
         """
         self.vtkWidget.iren.AddObserver('RightButtonPressEvent', self.pick_loc)
         self.renWin.Render()
     
     def pick_loc(self, event, x):
         """
-        calcs the location of click
+        calcs the location of click in GUI (x,y)
+        calls function in ampVis.py which converts from GUI coordinates to
+        mesh coordinates and marks the point
         """
         #print(event, x)
         self.vtkWidget.iren.RemoveObservers('RightButtonPressEvent')
         loc = event.GetEventPosition()
         self.pnt = vtkRenWin.Pick_point(self.renWin, loc)
-        #[name, _, color, opacity, display] = self.fileManager.getRow(0)
-        #self.files[name].MeasurementsOut(pnt)
+        #vtkRenWin.mark(self.renWin,self.pnt[0],self.pnt[1],self.pnt[2])
+        print(self.pnt)
     
     def removePick(self):
+        """
+        delete all marked points and labels
+        TODO: be able to delete individual points?
+        """
         self.pnt = None
         vtkRenWin.delMarker(self.renWin)
         
@@ -322,6 +329,14 @@ class AmpScanGUI(QMainWindow):
         self.renWin.renderActors(self.AmpObj.actors, ['socket', 'antS'])
         self.renWin.setScalarBar(self.AmpObj.actors['antS'])
         
+    def measure(self):
+        #if no point selected condition move to analyse.py
+        if self.pnt is None:
+            print("Please select a reference point first.")
+        else:
+            [name, _, color, opacity, display] = self.fileManager.getRow(0)
+            self.files[name].MeasurementsOut(self.pnt)
+    
     def createActions(self):
         """
         Numpy style docstring.
@@ -349,6 +364,8 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.Point_Pick)
         self.removePick = QAction(QIcon('open.png'), 'Clear all picked points', self,
                                 triggered = self.removePick)
+        self.Measure = QAction(QIcon('open.png'), 'Generate Measurements', self,
+                                triggered = self.measure)
 
     def createMenus(self):
         """
@@ -373,6 +390,8 @@ class AmpScanGUI(QMainWindow):
         self.PointMenu = self.menuBar().addMenu("&Pick Point")
         self.PointMenu.addAction(self.pick)
         self.PointMenu.addAction(self.removePick)
+        self.measureMenu = self.menuBar().addMenu("Measure")
+        self.measureMenu.addAction(self.Measure)
 
 class fileManager(QMainWindow):
     """
@@ -383,7 +402,7 @@ class fileManager(QMainWindow):
     Perhaps an example implementation:
 
     >>> from AmpScan.AmpScanGUI import AmpScanGUI
-
+*
     """
 
     def __init__(self, parent = None):
@@ -491,27 +510,6 @@ class AlignControls(QMainWindow):
         self.moving.addItems(self.names)
            
 
-class PickerControls(QMainWindow):
-    """
-    Pop up after point is picked
-    """
-    def __init__(self, names, parent = None):
-        super(PickerControls, self).__init__(parent)
-        self.main = QWidget()
-        self.names = names
-        self.baseline = QComboBox()
-        self.target = QComboBox()
-        self.reg = QPushButton("Run Registration")
-        self.setCentralWidget(self.main)
-        self.layout = QGridLayout()
-        self.layout.addWidget(QLabel('Baseline'), 0, 0)
-        self.layout.addWidget(QLabel('Target'), 1, 0)
-        self.layout.addWidget(self.baseline, 0, 1)
-        self.layout.addWidget(self.target, 1, 1)
-        self.layout.addWidget(self.reg, 2, 0, 1, -1)
-        self.main.setLayout(self.layout)
-        self.setWindowTitle("Registration Manager")
-        self.getNames()
     
     def getNames(self):
         """
