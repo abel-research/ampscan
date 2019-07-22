@@ -1,8 +1,8 @@
 import unittest
 import os
 import sys
-import tests.core_tests
-import tests.basic_tests
+import core_tests
+import basic_tests
 
 
 def suite():
@@ -12,8 +12,8 @@ def suite():
     """
     s = unittest.TestSuite()
     # Add the tests to the suite
-    s.addTest(tests.core_tests.suite())
-    s.addTest(tests.basic_tests.suite())
+    s.addTest(core_tests.suite())
+    s.addTest(basic_tests.suite())
     return s
 
 
