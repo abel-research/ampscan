@@ -316,7 +316,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         """
 
         # Check that trans is array like
-        if isinstance(trans, (list, np.ndarray)):
+        if isinstance(trans, (list, np.ndarray, tuple)):
             # Check that trans has exactly 3 dimensions
             if len(trans) == 3:
                 self.vert[:] += trans
