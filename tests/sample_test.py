@@ -31,7 +31,7 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
 
     def test_rotate(self):
-        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_BIN.stl"
+        stlPath = "sample_stl_sphere_BIN.stl"
         from AmpScan.core import AmpObject
         Amp = AmpObject(stlPath)
         s = str(type(Amp))
@@ -42,7 +42,7 @@ class TestBasicFunction(unittest.TestCase):
 
     def test_trim(self):
         # a new test for the trim module
-        stlPath = os.path.abspath(os.getcwd()) + "\\tests\\sample_stl_sphere_BIN.stl"
+        stlPath = "sample_stl_sphere_BIN.stl"
         from AmpScan.core import AmpObject
         Amp = AmpObject(stlPath)
         #with self.assertRaises(TypeError):
