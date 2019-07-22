@@ -2,7 +2,9 @@ import unittest
 import os
 import sys
 
+
 class TestBasicFunction(unittest.TestCase):
+    ACCURACY = 3  # The number of decimal places to value accuracy for
 
     def SetUp(self):
         modPath = os.path.abspath(os.getcwd())
@@ -47,6 +49,31 @@ class TestBasicFunction(unittest.TestCase):
         Amp = AmpObject(stlPath)
         #with self.assertRaises(TypeError):
             #Amp.planarTrim([], plane=[])
+
+    def test_translate(self):
+        from AmpScan.core import AmpObject
+        stlPath = self.get_path("sample_stl_sphere_BIN.stl")
+        amp = AmpObject(stlPath)
+
+        # Check that everything has been translated by 1
+        start = amp.vert.mean(axis=0)[:]
+        amp.translate([1, -1, 0])
+        end = amp.vert.mean(axis=0)[:]
+        self.assertAlmostEqual(start[0], end[0]-1, places=TestBasicFunction.ACCURACY)
+        self.assertAlmostEqual(start[1], end[1]+1, places=TestBasicFunction.ACCURACY)
+        self.assertAlmostEqual(start[2], end[2], places=TestBasicFunction.ACCURACY)
+
+        # Check that translating raises TypeError when translating with an invalid type
+        with self.assertRaises(Exception):
+            amp.translate("")
+
+        # Check that translating raises ValueError when translating with 2 dimensions
+        with self.assertRaises(ValueError):
+            amp.translate([0, 0])
+
+        # Check that translating raises ValueError when translating with 4 dimensions
+        with self.assertRaises(ValueError):
+            amp.translate([0, 0, 0, 0])
 
     def get_path(self, filename):
         """

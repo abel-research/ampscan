@@ -314,7 +314,16 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             Translation in [x, y, z]
 
         """
-        self.vert[:] += trans
+
+        # Check that trans is array like
+        if isinstance(trans, (list, np.ndarray)):
+            # Check that trans has exactly 3 dimensions
+            if len(trans) == 3:
+                self.vert[:] += trans
+            else:
+                raise ValueError("Translation has incorrect dimensions. Expected 3 but found: " + str(len(trans)))
+        else:
+            raise TypeError("Translation is not array_like: " + trans)
 
     def centre(self):
         r"""
