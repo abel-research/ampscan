@@ -51,11 +51,13 @@ class TestBasicFunction(unittest.TestCase):
             #Amp.planarTrim([], plane=[])
 
     def test_translate(self):
+        # Test translating method of AmpObject
+
         from AmpScan.core import AmpObject
         stlPath = self.get_path("sample_stl_sphere_BIN.stl")
         amp = AmpObject(stlPath)
 
-        # Check that everything has been translated by 1
+        # Check that everything has been translated correctly to a certain accuracy
         start = amp.vert.mean(axis=0)[:]
         amp.translate([1, -1, 0])
         end = amp.vert.mean(axis=0)[:]
@@ -74,6 +76,21 @@ class TestBasicFunction(unittest.TestCase):
         # Check that translating raises ValueError when translating with 4 dimensions
         with self.assertRaises(ValueError):
             amp.translate([0, 0, 0, 0])
+
+    def test_centre(self):
+        # Test the centre method of AmpObject
+        from AmpScan.core import AmpObject
+        stlPath = self.get_path("sample_stl_sphere_BIN.stl")
+        amp = AmpObject(stlPath)
+
+        # Translate the mesh
+        amp.translate([1, 0, 0])
+        # Recenter the mesh
+        amp.centre()
+        centre = amp.vert.mean(axis=0)
+
+        # Check that the mesh is centred correctly (to at least the number of decimal places of ACCURACY)
+        self.assertTrue(all(centre[i] < (10**-TestBasicFunction.ACCURACY) for i in range(3)))
 
     def get_path(self, filename):
         """
