@@ -8,8 +8,7 @@ import os
 class TestTrim(unittest.TestCase):
 
     def setUp(self):
-        """
-        Runs before each unit test
+        """Runs before each unit test
         Sets up the AmpObject object using "sample_stl_sphere_BIN.stl"
         """
         from AmpScan.core import AmpObject
@@ -17,16 +16,13 @@ class TestTrim(unittest.TestCase):
         self.amp = AmpObject(stl_path)
 
     def test_trim(self):
-        """
-        a new test for the trim module
-        """
+        """Tests the trim method of AmpObject"""
         with self.assertRaises(TypeError):
             self.amp.planarTrim([], plane=[])
 
     @staticmethod
     def get_path(filename):
-        """
-        Returns the absolute path to the testing files
+        """Returns the absolute path to the testing files
 
         :param filename: Name of the file in tests folder
         :return: The absolute path to the file

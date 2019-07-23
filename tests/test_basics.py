@@ -14,9 +14,7 @@ class TestBasicFunction(unittest.TestCase):
         sys.path.insert(0, modPath)
 
     def test_python_imports(self):
-        """
-        Test imports
-        """
+        """Test imports"""
         import numpy, scipy, matplotlib, vtk, AmpScan.core
         s = str(type(numpy))
         self.assertEqual(s, "<class 'module'>")
@@ -31,8 +29,6 @@ class TestBasicFunction(unittest.TestCase):
 
     @unittest.expectedFailure
     def test_failure(self):
-        """
-        Test expected failure functionality of test suite
-        """
+        """Test expected failure functionality of test suite"""
         s = str(type("string"))
         self.assertEqual(s, "<class 'module'>")

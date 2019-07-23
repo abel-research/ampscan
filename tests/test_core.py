@@ -1,5 +1,5 @@
 """
-Testing suite for the core functionality
+Testing suite for the core module
 """
 
 import unittest
@@ -21,9 +21,7 @@ class TestCore(unittest.TestCase):
         self.amp = AmpObject(stl_path)
 
     def test_centre(self):
-        """
-        Test the centre method of AmpObject
-        """
+        """Test the centre method of AmpObject"""
 
         # Translate the mesh
         self.amp.translate([1, 0, 0])
@@ -35,9 +33,7 @@ class TestCore(unittest.TestCase):
         self.assertTrue(all(centre[i] < (10**-TestCore.ACCURACY) for i in range(3)))
 
     def test_rotate_ang(self):
-        """
-        Tests the rotateAng method of AmpObject
-        """
+        """Tests the rotateAng method of AmpObject"""
 
         # Test rotation on random node
         n = randrange(len(self.amp.vert))
@@ -59,9 +55,7 @@ class TestCore(unittest.TestCase):
             self.amp.rotateAng(dict())
 
     def test_rotate(self):
-        """
-        Tests the rotate method of AmpObject
-        """
+        """Tests the rotate method of AmpObject"""
         # A test rotation and translation using list
         m = [[1, 0, 0], [0, np.sqrt(3)/2, 1/2], [0, -1/2, np.sqrt(3)/2]]
         self.amp.rotate(m)
@@ -83,9 +77,7 @@ class TestCore(unittest.TestCase):
             self.amp.rotate([[], [], []])
 
     def test_translate(self):
-        """
-        Test translating method of AmpObject
-        """
+        """Test translating method of AmpObject"""
 
         # Check that everything has been translated correctly to a certain accuracy
         start = self.amp.vert.mean(axis=0).copy()
@@ -108,9 +100,7 @@ class TestCore(unittest.TestCase):
             self.amp.translate([0, 0, 0, 0])
 
     def test_rigid_transform(self):
-        """
-        Test the rigid transform method of AmpObject
-        """
+        """Test the rigid transform method of AmpObject"""
 
         # Test if no transform is applied, vertices aren't affected
         before_vert = self.amp.vert.copy()
