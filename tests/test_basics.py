@@ -17,7 +17,7 @@ class TestBasicFunction(unittest.TestCase):
         """
         Test that the suite is running correctly
         """
-        self.assertTrue(True)
+        self.assertTrue(False)
 
     def test_python_imports(self):
         """
