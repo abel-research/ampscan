@@ -17,6 +17,15 @@ class TestTrim(unittest.TestCase):
 
     def test_trim(self):
         """Tests the trim method of AmpObject"""
+
+        # Testing that the method runs
+        self.amp.planarTrim(0.6, plane=2)
+
+        # Testing invalid data types raise TypeErrors
+        with self.assertRaises(TypeError):
+            self.amp.planarTrim(0.6, plane=[])
+        with self.assertRaises(TypeError):
+            self.amp.planarTrim(0.6, plane=0.9)
         with self.assertRaises(TypeError):
             self.amp.planarTrim([], plane=[])
 

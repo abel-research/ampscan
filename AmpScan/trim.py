@@ -31,7 +31,7 @@ class trimMixin(object):
         >>> amp.planarTrim(100, 2)
 
         """
-        if isinstance(height, Number):
+        if isinstance(height, Number) and isinstance(plane, int):
             # planar values for each vert on face 
             fv = self.vert[self.faces, plane]
             # Number points on each face are above cut plane
