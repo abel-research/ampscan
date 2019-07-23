@@ -16,6 +16,7 @@ def suite():
 class TestBasicFunction(unittest.TestCase):
 
     def test_setup(self):
+        """Tests that the path can be obtained"""
         modPath = os.path.abspath(os.getcwd())
         sys.path.insert(0, modPath)
 

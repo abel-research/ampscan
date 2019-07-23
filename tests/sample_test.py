@@ -1,6 +1,4 @@
 import unittest
-import os
-import sys
 import core_tests
 import basic_tests
 

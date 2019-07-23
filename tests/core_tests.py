@@ -4,6 +4,7 @@ Testing suite for the core functionality
 
 import unittest
 import os
+import numpy as np
 
 
 def suite():
@@ -14,11 +15,12 @@ def suite():
 
 
 class TestCore(unittest.TestCase):
-    ACCURACY = 5  # The number of decimal places to value accuracy for
+    ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
 
     def setUp(self):
         """
-        Set up the AmpObject object from "sample_stl_sphere_BIN.stl"
+        Runs before each unit test
+        Sets up the AmpObject object using "sample_stl_sphere_BIN.stl"
         """
         from AmpScan.core import AmpObject
         stl_path = self.get_path("sample_stl_sphere_BIN.stl")
@@ -42,11 +44,22 @@ class TestCore(unittest.TestCase):
         """
         Tests the rotate method of AmpObject
         """
-        s = str(type(self.amp))
-        self.assertEqual(s, "<class 'AmpScan.core.AmpObject'>", "Not expected Object")
+
+        # Test rotation on first node
+        rot = [np.pi/2, -np.pi/4, np.pi/3]
+        before_vert_pos = self.amp.vert[0][:]
+        self.amp.rotateAng(rot)
+        after_vert_pos = self.amp.vert[0][:]
+        np.dot(before_vert_pos, rot)
+        self.assertAlmostEqual(before_vert_pos, after_vert_pos, TestCore.ACCURACY)
+
+        # Check single floats cause TypeError
         with self.assertRaises(TypeError):
             self.amp.rotateAng(7)
-            self.amp.rotateAng({})
+
+        # Check dictionaries cause TypeError
+        with self.assertRaises(TypeError):
+            self.amp.rotateAng(dict())
 
     def test_translate(self):
         """
