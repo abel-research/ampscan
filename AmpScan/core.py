@@ -350,6 +350,11 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
         """
+
+        # Check that ang is valid
+        if ang not in ('rad', 'deg'):
+            raise ValueError("Ang expected 'rad' or 'deg' but {} was found".format(ang))
+
         if isinstance(rot, (tuple, list, np.ndarray)):
             R = self.rotMatrix(rot, ang)
             self.rotate(R, norms)
@@ -423,7 +428,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         rot: array_like
             Rotation around [x, y, z]
         ang: str, default 'rad'
-            Specift if the Euler angles are in degrees or radians 
+            Specify if the Euler angles are in degrees or radians
         
         Returns
         -------
@@ -431,8 +436,20 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             The calculated 3x3 rotation matrix 
     
         """
+
+        # Check that rot is valid
+        if not isinstance(rot, (tuple, list, np.ndarray)):
+            raise TypeError("Expecting array-like rotation, but found: "+type(rot))
+        elif len(rot) != 3:
+            raise ValueError("Expecting 3 arguments but found: {}".format(len(rot)))
+
+        # Check that ang is valid
+        if ang not in ('rad', 'deg'):
+            raise ValueError("Ang expected 'rad' or 'deg' but {} was found".format(ang))
+
         if ang == 'deg':
             rot = np.deg2rad(rot)
+
         [angx, angy, angz] = rot
         Rx = np.array([[1, 0, 0],
                        [0, np.cos(angx), -np.sin(angx)],
@@ -456,8 +473,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             The axis in which to flip the mesh
 
         """
-        self.vert[:, axis] *= -1.0
-        # Switch face order to normals face same direction
-        self.faces[:, [1, 2]] = self.faces[:, [2, 1]]
-        self.calcNorm()
-        self.calcVNorm()
+        if isinstance(axis, int):
+            if 0 <= axis < 3:  # Check axis is between 0-2
+                self.vert[:, axis] *= -1.0
+                # Switch face order to normals face same direction
+                self.faces[:, [1, 2]] = self.faces[:, [2, 1]]
+                self.calcNorm()
+                self.calcVNorm()
+            else:
+                raise ValueError("Expected axis to be within range 0-2 but found: {}".format(axis))
+        else:
+            raise TypeError("Expected axis to be int, but found: {}".format(type(axis)))

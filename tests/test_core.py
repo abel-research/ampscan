@@ -54,6 +54,12 @@ class TestCore(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.amp.rotateAng(dict())
 
+        # Tests that incorrect number of elements causes ValueError
+        with self.assertRaises(ValueError):
+            self.amp.rotateAng(rot, "test")
+        with self.assertRaises(ValueError):
+            self.amp.rotateAng(rot, [])
+
     def test_rotate(self):
         """Tests the rotate method of AmpObject"""
         # A test rotation and translation using list
@@ -120,6 +126,45 @@ class TestCore(unittest.TestCase):
         # Check that rotating raises TypeError when translating with an invalid type
         with self.assertRaises(TypeError):
             self.amp.rigidTransform(R=7)
+
+    def test_rot_matrix(self):
+        """Tests the rotMatrix method in AmpObject"""
+
+        # Tests that a transformation by 0 in all axis is 0 matrix
+        all(self.amp.rotMatrix([0, 0, 0])[y][x] == 0
+            for x in range(3)
+            for y in range(3))
+
+        expected = [[1, 0, 0], [0, np.sqrt(3)/2, 1/2], [0, -1/2, np.sqrt(3)/2]]
+        all(self.amp.rotMatrix([np.pi/6, 0, 0])[y][x] == expected[y][x]
+            for x in range(3)
+            for y in range(3))
+
+        # Tests that string passed into rot causes TypeError
+        with self.assertRaises(TypeError):
+            self.amp.rotMatrix(" ")
+        with self.assertRaises(TypeError):
+            self.amp.rotMatrix(dict())
+
+        # Tests that incorrect number of elements causes ValueError
+        with self.assertRaises(ValueError):
+            self.amp.rotMatrix([0, 1])
+        with self.assertRaises(ValueError):
+            self.amp.rotMatrix([0, 1, 3, 0])
+
+    def test_flip(self):
+        """Tests the flip method in AmpObject"""
+        # Check invalid axis types cause TypeError
+        with self.assertRaises(TypeError):
+            self.amp.flip(" ")
+        with self.assertRaises(TypeError):
+            self.amp.flip(dict())
+
+        # Check invalid axis values cause ValueError
+        with self.assertRaises(ValueError):
+            self.amp.flip(-1)
+        with self.assertRaises(ValueError):
+            self.amp.flip(3)
 
 
     @staticmethod
