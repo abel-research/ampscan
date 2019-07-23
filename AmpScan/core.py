@@ -368,6 +368,18 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         norms: boolean, default True
             
         """
+        if isinstance(R, (list, tuple)):
+            # Make R a np array if its a list or tuple
+            R = np.array(R, np.float)
+        elif not isinstance(R, np.ndarray):
+            # If
+            raise TypeError("Expected R to be array-like but found: " + str(type(R)))
+        if len(R) != 3 or len(R[0]) != 3:
+            # Incorrect dimensions
+            if isinstance(R, np.ndarray):
+                raise ValueError("Expected 3x3 array, but found: {}".format(R.shape))
+            else:
+                raise ValueError("Expected 3x3 array, but found: 3x"+str(len(R)))
         self.vert[:, :] = np.dot(self.vert, R.T)
         if norms is True:
             self.norm[:, :] = np.dot(self.norm, R.T)
