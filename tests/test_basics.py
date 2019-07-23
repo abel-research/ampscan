@@ -13,12 +13,6 @@ class TestBasicFunction(unittest.TestCase):
         modPath = os.path.abspath(os.getcwd())
         sys.path.insert(0, modPath)
 
-    def test_running(self):
-        """
-        Test that the suite is running correctly
-        """
-        self.assertTrue(False)
-
     def test_python_imports(self):
         """
         Test imports
