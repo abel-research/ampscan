@@ -1,2 +1,2 @@
 tests:
-    script: python -m -v unittest discover tests
+    script: python -m unittest discover tests -v
