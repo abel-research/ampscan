@@ -1,2 +1,2 @@
-sample_job:
-    script: python tests/sample_test.py
+tests:
+    script: python -m unittest -v

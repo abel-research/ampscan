@@ -8,13 +8,6 @@ import numpy as np
 from random import randrange
 
 
-def suite():
-    """
-    Build testing suite from unittests in module
-    """
-    return unittest.TestLoader().loadTestsFromTestCase(TestCore)
-
-
 class TestCore(unittest.TestCase):
     ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
 

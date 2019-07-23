@@ -5,13 +5,6 @@ import unittest
 import os
 
 
-def suite():
-    """
-    Build testing suite from unittests in module
-    """
-    return unittest.TestLoader().loadTestsFromTestCase(TestTrim)
-
-
 class TestTrim(unittest.TestCase):
 
     def setUp(self):

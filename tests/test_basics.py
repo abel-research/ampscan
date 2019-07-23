@@ -6,13 +6,6 @@ import os
 import sys
 
 
-def suite():
-    """
-    Build testing suite from unittests in module
-    """
-    return unittest.TestLoader().loadTestsFromTestCase(TestBasicFunction)
-
-
 class TestBasicFunction(unittest.TestCase):
 
     def test_setup(self):
@@ -24,7 +17,6 @@ class TestBasicFunction(unittest.TestCase):
         """
         Test that the suite is running correctly
         """
-        print("Running sample_test.py")
         self.assertTrue(True)
 
     def test_python_imports(self):
