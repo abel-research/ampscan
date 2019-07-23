@@ -30,7 +30,8 @@ class TestTrim(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.amp.planarTrim([], plane=[])
 
-    def get_path(self, filename):
+    @staticmethod
+    def get_path(filename):
         """
         Returns the absolute path to the testing files
 

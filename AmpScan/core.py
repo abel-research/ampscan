@@ -389,9 +389,15 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             
         """
         if R is not None:
-            self.rotate(R, True)
+            if isinstance(R, (tuple, list, np.ndarray)):
+                self.rotate(R, True)
+            else:
+                raise TypeError("Expecting array-like rotation, but found: "+type(R))
         if T is not None:
-            self.translate(T)
+            if isinstance(T, (tuple, list, np.ndarray)):
+                self.translate(T)
+            else:
+                raise TypeError("Expecting array-like translation, but found: "+type(T))
         
 
     @staticmethod
