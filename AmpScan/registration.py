@@ -6,7 +6,7 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 import numpy as np
 import copy
 from scipy import spatial
-from .core import AmpObject
+from AmpScan.core import AmpObject
 import matplotlib.pyplot as plt
 
 class registration(object):
@@ -36,9 +36,13 @@ class registration(object):
     
     Examples
     --------
+    >>> import os
+    >>> import AmpScan
+    >>> basefh = os.getcwd()+"\\tests\\stl_file.stl"
+    >>> targfh = os.getcwd()+"\\tests\\stl_file_2.stl"
     >>> baseline = AmpScan.AmpObject(basefh)
     >>> target = AmpScan.AmpObject(targfh)
-    >>> reg = AmpScan.registration(steps=10, neigh=10, smooth=1).reg
+    >>> reg = AmpScan.registration(baseline, target, steps=10, neigh=10, smooth=1).reg
 		
     """ 
     def __init__(self, baseline, target, method='point2plane', *args, **kwargs):

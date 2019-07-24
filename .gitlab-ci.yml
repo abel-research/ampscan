@@ -2,3 +2,5 @@ unittests:
     script: python -m unittest discover tests -v
 core doctests:
     script: python -m doctest -v AmpScan/core.py
+registration doctests:
+    script: python -m doctest -v AmpScan/registration.py
