@@ -1,4 +1,4 @@
 doctests and unitests:
-    image: python:3.6
-    script: pip install pytest
+    script: conda install pytest
+            y
             pytest --doctest-modules -v --ignore=GUIs
