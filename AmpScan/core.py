@@ -37,7 +37,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     Examples
     -------
     >>> import AmpScan
-    >>> filename = "../tests/stl_file.stl"
+    >>> import os
+    >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
     >>> amp = AmpObject(filename)
 
     """
@@ -150,7 +151,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> filename = "../tests/stl_file.stl"
+        >>> import os
+        >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
         >>> amp = AmpObject(filename, unify=False)
         >>> amp.vert.shape
         (44832, 3)
@@ -347,7 +349,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> filename = "../tests/stl_file.stl"
+        >>> import os
+        >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
         >>> amp = AmpObject(filename)
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
