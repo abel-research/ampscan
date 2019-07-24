@@ -280,7 +280,7 @@ class align(object):
             
         Examples
         --------
-        >>> import AmpScan, os
+        >>> import os, AmpScan
         >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
         >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
         >>> static = AmpScan.AmpObject(staticfh)

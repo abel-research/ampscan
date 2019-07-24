@@ -6,11 +6,17 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
+import os
 import struct
 from AmpScan.trim import trimMixin
 from AmpScan.smooth import smoothMixin
 from AmpScan.analyse import analyseMixin
 from AmpScan.ampVis import visMixin
+
+
+# The file path used in doc examples
+filename = os.getcwd()+"\\tests\\stl_file.stl"
+
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     r"""
@@ -36,9 +42,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     
     Examples
     -------
-    >>> import AmpScan
-    >>> import os
-    >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
     >>> amp = AmpObject(filename)
 
     """
@@ -151,8 +154,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> import os
-        >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
         >>> amp = AmpObject(filename, unify=False)
         >>> amp.vert.shape
         (44832, 3)
@@ -349,8 +350,6 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> import os
-        >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
         >>> amp = AmpObject(filename)
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')

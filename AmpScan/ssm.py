@@ -19,20 +19,20 @@ class pca(object):
     
     Examples
     --------
+    >>> import os
     >>> p = pca()
-    >>> p.importFolder('/path/')
-    >>> p.baseline('dir/baselinefh.stl')
-    >>> p.register(save = '/regpath/')
+    >>> p.importFolder(os.getcwd()+"\\tests\\pca_tests")
+    >>> p.setBaseline(os.getcwd()+"\\tests\\pca_tests\\sample_stl_sphere_BIN.stl")
+    >>> p.register(save=os.getcwd()+"\\tests\\pca_tests\\")
     >>> p.pca()
-    >>> sfs = [0, 0.1, -0.5 ... 0]
+    >>> sfs = [1, 2]
     >>> newS = p.newShape(sfs)
     
     """
-    
+
     def __init__(self):
         self.shapes = []
-        
-        
+
     def setBaseline(self, baseline):
         r"""
         Function to set the baseline mesh used for registration of the 
@@ -45,8 +45,7 @@ class pca(object):
             
         """
         self.baseline = AmpObject(baseline, 'limb')
-        
-        
+
     def importFolder(self, path, unify=True):
         r"""
         Function to import multiple stl files from folder into the pca object 
@@ -64,7 +63,7 @@ class pca(object):
         self.shapes = [AmpObject(os.path.join(path, f), 'limb', unify=unify) for f in self.fnames]
         for s in self.shapes:
             s.lp_smooth(3, brim=True)
-        
+
     def sliceFiles(self, height):
         r"""
         Function to run a planar trim on all the training data for the PCA 
@@ -78,7 +77,7 @@ class pca(object):
         """
         for s in self.shapes:
             s.planarTrim(height)
-        
+
     def register(self, scale=None, save=None, baseline=True):
         r"""
         Register all the AmpObject training data to the baseline AmpObject 
@@ -105,8 +104,7 @@ class pca(object):
         self.X = np.array([r.vert.flatten() for r in self.registered]).T
         if baseline is True:
             self.X = np.c_[self.X, self.baseline.vert.flatten()]
-        
-        
+
     def pca(self):
         r"""
         Function to run mean centered pca using a singular value decomposition 
@@ -118,8 +116,8 @@ class pca(object):
         (self.pca_U, self.pca_S, self.pca_V) = np.linalg.svd(X_meanC, full_matrices=False)
         self.pc_weights = np.dot(np.diag(self.pca_S), self.pca_V)
         self.pc_stdevs = np.std(self.pc_weights, axis=1)
-    
-    def newShape(self, sfs, scale = 'eigs'):
+
+    def newShape(self, sfs, scale='eigs'):
         r"""
         Function to calculate a new shape based upon the eigenvalues 
         or stdevs
@@ -134,11 +132,14 @@ class pca(object):
             to standard deviations about the mean
 
         """
-        try: len(sfs) == len(self.pc_stdevs)
-        except: ValueError('sfs must be of the same length as the number of '
-                           'principal components')
+        sfs = np.array(sfs)
+        if not sfs.shape == self.pc_stdevs.shape:
+            raise ValueError('sfs must be of the same length as the number of '
+                             'principal components (expected {} but found {})'.format(self.pc_stdevs.shape, sfs.shape))
         if scale == 'eigs':
             sf = (self.pca_U * sfs).sum(axis=1)
         elif scale == 'std':
             sf = (self.pca_U * self.pc_stdevs * sfs).sum(axis=1)
+        else:
+            raise ValueError("Invalid scale (expected 'eigs' or 'std' but found{}".format(scale))
         return self.pca_mean + sf

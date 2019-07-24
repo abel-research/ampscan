@@ -6,6 +6,8 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 
 import numpy as np
 from numbers import Number
+import os
+
 
 class trimMixin(object):
     r"""
@@ -27,7 +29,10 @@ class trimMixin(object):
         
         Examples
         --------
-        >>> amp = AmpObject(fh)
+
+        >>> from AmpScan import AmpObject
+        >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
+        >>> amp = AmpObject(filename)
         >>> amp.planarTrim(100, 2)
 
         """
