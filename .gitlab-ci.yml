@@ -1,3 +1,4 @@
 doctests and unitests:
+    image: python:3.6
     script: pip install pytest
             pytest --doctest-modules -v --ignore=GUIs
