@@ -13,6 +13,11 @@ from scipy.optimize import minimize
 from AmpScan.core import AmpObject
 from AmpScan.ampVis import vtkRenWin
 
+# For doc examples
+import os
+staticfh = os.getcwd() + "\\tests\\stl_file.stl"
+movingfh = os.getcwd() + "\\tests\\stl_file_2.stl"
+
 
 class align(object):
     r"""
@@ -41,12 +46,9 @@ class align(object):
 
     Examples
     --------
-    >>> import AmpScan, os
-    >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
-    >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
-    >>> static = AmpScan.AmpObject(staticfh)
-    >>> moving = AmpScan.AmpObject(movingfh)
-    >>> al = AmpScan.align(moving, static).m
+    >>> static = AmpObject(staticfh)
+    >>> moving = AmpObject(movingfh)
+    >>> al = align(moving, static).m
 
     """    
 
@@ -179,12 +181,9 @@ class align(object):
 
         Examples
         --------
-        >>> import AmpScan, os
-        >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
-        >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
-        >>> static = AmpScan.AmpObject(staticfh)
-        >>> moving = AmpScan.AmpObject(movingfh)
-        >>> al = AmpScan.align(moving, static, method='linPoint2Plane').m
+        >>> static = AmpObject(staticfh)
+        >>> moving = AmpObject(movingfh)
+        >>> al = align(moving, static, method='linPoint2Plane').m
         
         """
         cn = np.c_[np.cross(mv, sn), sn]
@@ -235,12 +234,9 @@ class align(object):
 
         Examples
         --------
-        >>> import AmpScan, os
-        >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
-        >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
-        >>> static = AmpScan.AmpObject(staticfh)
-        >>> moving = AmpScan.AmpObject(movingfh)
-        >>> al = AmpScan.align(moving, static, method='linPoint2Point').m
+        >>> static = AmpObject(staticfh)
+        >>> moving = AmpObject(movingfh)
+        >>> al = align(moving, static, method='linPoint2Point').m
 
         """
         mCent = mv - mv.mean(axis=0)
@@ -280,12 +276,9 @@ class align(object):
             
         Examples
         --------
-        >>> import os, AmpScan
-        >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
-        >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
-        >>> static = AmpScan.AmpObject(staticfh)
-        >>> moving = AmpScan.AmpObject(movingfh)
-        >>> al = AmpScan.align(moving, static, method='optPoint2Point', opt='SLSQP').m
+        >>> static = AmpObject(staticfh)
+        >>> moving = AmpObject(movingfh)
+        >>> al = align(moving, static, method='optPoint2Point', opt='SLSQP').m
             
         """
         X = np.zeros(6)
