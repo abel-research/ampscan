@@ -10,8 +10,8 @@ import vtk
 import math
 from scipy import spatial
 from scipy.optimize import minimize
-from .core import AmpObject
-from .ampVis import vtkRenWin
+from AmpScan.core import AmpObject
+from AmpScan.ampVis import vtkRenWin
 
 
 class align(object):
@@ -41,6 +41,9 @@ class align(object):
 
     Examples
     --------
+    >>> import AmpScan, os
+    >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
+    >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
     >>> static = AmpScan.AmpObject(staticfh)
     >>> moving = AmpScan.AmpObject(movingfh)
     >>> al = AmpScan.align(moving, static).m
@@ -176,6 +179,9 @@ class align(object):
 
         Examples
         --------
+        >>> import AmpScan, os
+        >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
+        >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
         >>> static = AmpScan.AmpObject(staticfh)
         >>> moving = AmpScan.AmpObject(movingfh)
         >>> al = AmpScan.align(moving, static, method='linPoint2Plane').m
@@ -229,6 +235,9 @@ class align(object):
 
         Examples
         --------
+        >>> import AmpScan, os
+        >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
+        >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
         >>> static = AmpScan.AmpObject(staticfh)
         >>> moving = AmpScan.AmpObject(movingfh)
         >>> al = AmpScan.align(moving, static, method='linPoint2Point').m
@@ -271,6 +280,9 @@ class align(object):
             
         Examples
         --------
+        >>> import AmpScan, os
+        >>> staticfh = os.getcwd()+"\\tests\\stl_file.stl"
+        >>> movingfh = os.getcwd()+"\\tests\\stl_file_2.stl"
         >>> static = AmpScan.AmpObject(staticfh)
         >>> moving = AmpScan.AmpObject(movingfh)
         >>> al = AmpScan.align(moving, static, method='optPoint2Point', opt='SLSQP').m
