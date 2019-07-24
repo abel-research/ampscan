@@ -7,10 +7,10 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 
 import numpy as np
 import struct
-from .trim import trimMixin
-from .smooth import smoothMixin
-from .analyse import analyseMixin
-from .ampVis import visMixin
+from AmpScan.trim import trimMixin
+from AmpScan.smooth import smoothMixin
+from AmpScan.analyse import analyseMixin
+from AmpScan.ampVis import visMixin
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     r"""
@@ -36,8 +36,9 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     
     Examples
     -------
-    >>> fh = 'test.stl'
-    >>> amp = AmpScan.AmpObject(fh)
+    >>> import AmpScan
+    >>> filename = "../tests/stl_file.stl"
+    >>> amp = AmpObject(filename)
 
     """
 
@@ -149,13 +150,13 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> fh = 'test.stl'
-        >>> amp = AmpObject(fh, unify=False)
+        >>> filename = "../tests/stl_file.stl"
+        >>> amp = AmpObject(filename, unify=False)
         >>> amp.vert.shape
-        (600, 3)
+        (44832, 3)
         >>> amp.unifyVert()
         >>> amp.vert.shape
-        (125, 3)
+        (7530, 3)
 
         """
         # Requires numpy 1.13
@@ -346,7 +347,8 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> amp = AmpObject('test.stl')
+        >>> filename = "../tests/stl_file.stl"
+        >>> amp = AmpObject(filename)
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
         """

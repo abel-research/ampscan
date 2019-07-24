@@ -1,2 +1,4 @@
-tests:
+unittests:
     script: python -m unittest discover tests -v
+doctests:
+    script: python -m doctest -v AmpScan/core.py

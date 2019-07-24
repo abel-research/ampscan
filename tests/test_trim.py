@@ -31,10 +31,17 @@ class TestTrim(unittest.TestCase):
 
     @staticmethod
     def get_path(filename):
-        """Returns the absolute path to the testing files
+        """Returns the absolute path to a test file
 
-        :param filename: Name of the file in tests folder
-        :return: The absolute path to the file
+        Parameters
+        ----------
+        filename : string
+            Name of file in tests to get path to
+
+        Returns
+        -------
+        stl_path : string
+            The path to the file
         """
 
         # Check if the parent directory is tests (this is for Pycharm unittests)

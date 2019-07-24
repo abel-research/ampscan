@@ -12,9 +12,8 @@ class TestCore(unittest.TestCase):
     ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
 
     def setUp(self):
-        """
-        Runs before each unit test
-        Sets up the AmpObject object using "sample_stl_sphere_BIN.stl"
+        """Runs before each unit test.
+        Sets up the AmpObject object using "sample_stl_sphere_BIN.stl".
         """
         from AmpScan.core import AmpObject
         stl_path = self.get_path("sample_stl_sphere_BIN.stl")
@@ -166,14 +165,19 @@ class TestCore(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.amp.flip(3)
 
-
     @staticmethod
     def get_path(filename):
-        """
-        Returns the absolute path to the testing files
+        """Returns the absolute path to a test file
 
-        :param filename: Name of the file in tests folder
-        :return: The absolute path to the file
+        Parameters
+        ----------
+        filename : string
+            Name of file in tests to get path to
+
+        Returns
+        -------
+        stl_path : string
+            The path to the file
         """
 
         # Check if the parent directory is tests (this is for Pycharm unittests)
