@@ -8,6 +8,9 @@ import numpy as np
 from numbers import Number
 import os
 
+# Used by doc tests
+filename = os.getcwd() + "\\tests\\stl_file.stl"
+
 
 class trimMixin(object):
     r"""
@@ -31,7 +34,6 @@ class trimMixin(object):
         --------
 
         >>> from AmpScan import AmpObject
-        >>> filename = os.getcwd()+"\\tests\\stl_file.stl"
         >>> amp = AmpObject(filename)
         >>> amp.planarTrim(100, 2)
 
