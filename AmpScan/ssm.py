@@ -132,8 +132,9 @@ class pca(object):
             to standard deviations about the mean
 
         """
-        sfs = np.array(sfs)
-        if not sfs.shape == self.pc_stdevs.shape:
+        if isinstance(sfs, (list, tuple, np.ndarray)):
+            raise TypeError('sfs is invalid type (expected array-like, found: {}'.format(type(sfs)))
+        if len(sfs) != len(self.pc_stdevs.shape):
             raise ValueError('sfs must be of the same length as the number of '
                              'principal components (expected {} but found {})'.format(self.pc_stdevs.shape, sfs.shape))
         if scale == 'eigs':
