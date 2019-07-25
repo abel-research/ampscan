@@ -9,6 +9,11 @@ from scipy import spatial
 from AmpScan.core import AmpObject
 import matplotlib.pyplot as plt
 
+# For the doc examples
+import os
+basefh = os.getcwd()+"\\tests\\stl_file.stl"
+targfh = os.getcwd()+"\\tests\\stl_file_2.stl"
+
 class registration(object):
     r"""
     Registration methods between two AmpObject meshes. This function morphs the baseline 
@@ -36,13 +41,10 @@ class registration(object):
     
     Examples
     --------
-    >>> import os
-    >>> import AmpScan
-    >>> basefh = os.getcwd()+"\\tests\\stl_file.stl"
-    >>> targfh = os.getcwd()+"\\tests\\stl_file_2.stl"
-    >>> baseline = AmpScan.AmpObject(basefh)
-    >>> target = AmpScan.AmpObject(targfh)
-    >>> reg = AmpScan.registration(baseline, target, steps=10, neigh=10, smooth=1).reg
+    >>> from AmpScan.core import AmpObject
+    >>> baseline = AmpObject(basefh)
+    >>> target = AmpObject(targfh)
+    >>> reg = registration(baseline, target, steps=10, neigh=10, smooth=1).reg
 		
     """ 
     def __init__(self, baseline, target, method='point2plane', *args, **kwargs):
