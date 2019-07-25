@@ -22,8 +22,8 @@ class pca(object):
     >>> import os
     >>> p = pca()
     >>> p.importFolder(os.getcwd()+"\\tests\\pca_tests")
-    >>> p.setBaseline(os.getcwd()+"\\tests\\pca_tests\\sample_stl_sphere_BIN.stl")
-    >>> p.register(save=os.getcwd()+"\\tests\\pca_tests\\")
+    >>> p.setBaseline(os.getcwd()+stl_file_3.stl)
+    >stl_file_3.stlcwd()+"\\tests\\pca_tests\\")
     >>> p.pca()
     >>> sfs = [1, 2]
     >>> newS = p.newShape(sfs)

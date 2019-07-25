@@ -3,19 +3,17 @@ Testing suite for the core module
 """
 
 import unittest
-import os
-import numpy as np
-from random import randrange
+from util import get_path
 
 
-class TestCore(unittest.TestCase):
+class TestRegistration(unittest.TestCase):
     ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
 
     def setUp(self):
         """Runs before each unit test.
-        Sets up the AmpObject object using "sample_stl_sphere_BIN.stl".
+        Sets up the AmpObject object using "stl_file.stl".
         """
         from AmpScan.core import AmpObject
-        stl_path = self.get_path("sample_stl_sphere_BIN.stl")
+        stl_path = get_path("stl_file.stl")
         self.amp = AmpObject(stl_path)
 
