@@ -22,8 +22,8 @@ class pca(object):
     >>> import os
     >>> p = pca()
     >>> p.importFolder(os.getcwd()+"\\tests\\pca_tests")
-    >>> p.setBaseline(os.getcwd()+stl_file_3.stl)
-    >stl_file_3.stlcwd()+"\\tests\\pca_tests\\")
+    >>> p.setBaseline(os.getcwd()+"\\tests\\stl_file_3.stl")
+    >>> p.register(save=os.getcwd()+"\\tests\\pca_tests\\")
     >>> p.pca()
     >>> sfs = [1, 2]
     >>> newS = p.newShape(sfs)
@@ -132,11 +132,11 @@ class pca(object):
             to standard deviations about the mean
 
         """
-        if isinstance(sfs, (list, tuple, np.ndarray)):
+        if not isinstance(sfs, (list, tuple, np.ndarray)):
             raise TypeError('sfs is invalid type (expected array-like, found: {}'.format(type(sfs)))
-        if len(sfs) != len(self.pc_stdevs.shape):
+        if len(sfs) != len(self.pc_stdevs):
             raise ValueError('sfs must be of the same length as the number of '
-                             'principal components (expected {} but found {})'.format(self.pc_stdevs.shape, sfs.shape))
+                             'principal components (expected {} but found {})'.format(len(self.pc_stdevs), len(sfs)))
         if scale == 'eigs':
             sf = (self.pca_U * sfs).sum(axis=1)
         elif scale == 'std':
