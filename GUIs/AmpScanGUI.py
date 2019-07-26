@@ -107,16 +107,19 @@ class AmpScanGUI(QMainWindow):
         Numpy style docstring.
 
         """
-        self.alCont = AlignControls(self.filesDrop, self)
-        self.alCont.show()
-        self.alCont.centre.clicked.connect(self.centreMesh)
-        self.alCont.icp.clicked.connect(self.runICP)
-        self.alCont.xrotButton.buttonClicked[QAbstractButton].connect(self.rotatex)
-        self.alCont.yrotButton.buttonClicked[QAbstractButton].connect(self.rotatey)
-        self.alCont.zrotButton.buttonClicked[QAbstractButton].connect(self.rotatez)
-        self.alCont.xtraButton.buttonClicked[QAbstractButton].connect(self.transx)
-        self.alCont.ytraButton.buttonClicked[QAbstractButton].connect(self.transy)
-        self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
+        if self.objectsReady(1):
+            self.alCont = AlignControls(self.filesDrop, self)
+            self.alCont.show()
+            self.alCont.centre.clicked.connect(self.centreMesh)
+            self.alCont.icp.clicked.connect(self.runICP)
+            self.alCont.xrotButton.buttonClicked[QAbstractButton].connect(self.rotatex)
+            self.alCont.yrotButton.buttonClicked[QAbstractButton].connect(self.rotatey)
+            self.alCont.zrotButton.buttonClicked[QAbstractButton].connect(self.rotatez)
+            self.alCont.xtraButton.buttonClicked[QAbstractButton].connect(self.transx)
+            self.alCont.ytraButton.buttonClicked[QAbstractButton].connect(self.transy)
+            self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
+        else:
+            show_message("Must be at least 1 object loaded to run align")
         
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
@@ -178,29 +181,31 @@ class AmpScanGUI(QMainWindow):
         self.renWin.Render()
     
     def runICP(self):
-        
-        static = str(self.alCont.static.currentText())
-        moving = str(self.alCont.moving.currentText())
-        al = align(self.files[moving], self.files[static], 
-                   maxiter=10, method='linPoint2Plane').m
-        al.tform = vtk.vtkTransform()
-        al.tform.PostMultiply()
-        al.addActor()
-        al.actor.SetUserTransform(al.tform)
-        alName = moving + '_al'
-        self.files[alName] = al
-        self.filesDrop.append(alName)
-        self.fileManager.addRow(alName, self.files[alName])
-        self.fileManager.setTable(static, [1,0,0], 0.5, 2)
-        self.fileManager.setTable(moving, [1,1,1], 1, 0)
-        self.fileManager.setTable(alName, [0,0,1], 0.5, 2)
-        if hasattr(self, 'alCont'):
-            self.alCont.getNames()
-        if hasattr(self, 'regCont'):
-            self.regCont.getNames()
+        if self.objectsReady(1):
+            static = str(self.alCont.static.currentText())
+            moving = str(self.alCont.moving.currentText())
+            al = align(self.files[moving], self.files[static],
+                       maxiter=10, method='linPoint2Plane').m
+            al.tform = vtk.vtkTransform()
+            al.tform.PostMultiply()
+            al.addActor()
+            al.actor.SetUserTransform(al.tform)
+            alName = moving + '_al'
+            self.files[alName] = al
+            self.filesDrop.append(alName)
+            self.fileManager.addRow(alName, self.files[alName])
+            self.fileManager.setTable(static, [1,0,0], 0.5, 2)
+            self.fileManager.setTable(moving, [1,1,1], 1, 0)
+            self.fileManager.setTable(alName, [0,0,1], 0.5, 2)
+            if hasattr(self, 'alCont'):
+                self.alCont.getNames()
+            if hasattr(self, 'regCont'):
+                self.regCont.getNames()
+        else:
+            show_message("Must be at least 2 objects loaded to run ICP")
 
     def runRegistration(self):
-        if len(self.files) >= 2:
+        if self.objectsReady(2):
             # Needs to be at least 2 files to run registration
             c1 = [31.0, 73.0, 125.0]
             c3 = [170.0, 75.0, 65.0]
@@ -260,13 +265,15 @@ class AmpScanGUI(QMainWindow):
         """
         FEname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="FE results (*.npy)")
-        self.renWin.setnumViewports(1)
-        self.FE = AmpObject([FEname[0],], stype='FE')
-        self.AmpObj.lp_smooth()
-        self.AmpObj.addActor(CMap=self.AmpObj.CMap02P, bands=5)
-        self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
-        self.renWin.renderActors(self.FE.actor, shading=True)
-        self.renWin.setScalarBar(self.FE.actor)
+        if FEname[0] != "":  # Check that there was a file selected
+            print(FEname)
+            self.renWin.setnumViewports(1)
+            self.FE = AmpObject([FEname[0],], stype='FE') # TODO check this is correct - AmpObject expects dicts or strings
+            self.AmpObj.lp_smooth()
+            self.AmpObj.addActor(CMap=self.AmpObj.CMap02P, bands=5)
+            self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
+            self.renWin.renderActors(self.FE.actor, shading=True)
+            self.renWin.setScalarBar(self.FE.actor)
         
     def choosePress(self):
         """
@@ -275,8 +282,12 @@ class AmpScanGUI(QMainWindow):
         """
         vName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor vertices (*.csv)")
+        if vName[0] == "":  # If no file selected, exit
+            return
         pName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor pressures (*.csv)")
+        if pName[0] == "":  # If no file selected, exit
+            return
         self.renWin.setnumViewports(1)
         self.pSense = pressSense()
         self.pSense.calcFaces(d=5)
@@ -333,6 +344,10 @@ class AmpScanGUI(QMainWindow):
         self.analyseMenu.addAction(self.analyse)
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
+
+    def objectsReady(self, num):
+        return len(self.files) >= num
+
         
 class fileManager(QMainWindow):
     """
