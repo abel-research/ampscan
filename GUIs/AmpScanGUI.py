@@ -10,9 +10,9 @@ from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
                              QMainWindow, QMessageBox, QComboBox, QButtonGroup,
-                             QOpenGLWidget, QFileDialog,QLabel,QPushButton,
+                             QOpenGLWidget, QFileDialog, QLabel, QPushButton,
                              QSlider, QWidget, QTableWidget, QTableWidgetItem,
-                             QAbstractButton)
+                             QAbstractButton, QErrorMessage)
 
         
 class AmpScanGUI(QMainWindow):
@@ -200,31 +200,35 @@ class AmpScanGUI(QMainWindow):
             self.regCont.getNames()
 
     def runRegistration(self):
-        c1 = [31.0, 73.0, 125.0]
-        c3 = [170.0, 75.0, 65.0]
-        c2 = [212.0, 221.0, 225.0]
-        CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
-        CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
-        CMap = np.c_[CMap1[:, :-1], CMap2]
-        self.CMapN2P = np.transpose(CMap)/255.0
-        self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
-        baseline = str(self.regCont.baseline.currentText())
-        target = str(self.regCont.target.currentText())
-        self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
-        self.fileManager.setTable(target, [0,0,1], 0.5, 0)
-        reg = registration(self.files[baseline], self.files[target], steps = 5,
-                           smooth=1).reg
-        reg.addActor(CMap = self.CMap02P)
-        regName = target + '_reg'
-        self.files[regName] = reg
-        self.filesDrop.append(regName)
-        self.fileManager.addRow(regName, self.files[regName])
-        if hasattr(self, 'alCont'):
-            self.alCont.getNames()
-        if hasattr(self, 'regCont'):
-            self.regCont.getNames()
-        
-        print('Run the Registration code between %s and %s' % (baseline, target))
+        if len(self.files) >= 2:
+            # Needs to be at least 2 files to run registration
+            c1 = [31.0, 73.0, 125.0]
+            c3 = [170.0, 75.0, 65.0]
+            c2 = [212.0, 221.0, 225.0]
+            CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+            CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
+            CMap = np.c_[CMap1[:, :-1], CMap2]
+            self.CMapN2P = np.transpose(CMap)/255.0
+            self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
+            baseline = str(self.regCont.baseline.currentText())
+            target = str(self.regCont.target.currentText())
+            self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
+            self.fileManager.setTable(target, [0,0,1], 0.5, 0)
+            reg = registration(self.files[baseline], self.files[target], steps = 5,
+                               smooth=1).reg
+            reg.addActor(CMap = self.CMap02P)
+            regName = target + '_reg'
+            self.files[regName] = reg
+            self.filesDrop.append(regName)
+            self.fileManager.addRow(regName, self.files[regName])
+            if hasattr(self, 'alCont'):
+                self.alCont.getNames()
+            if hasattr(self, 'regCont'):
+                self.regCont.getNames()
+
+            print('Run the Registration code between %s and %s' % (baseline, target))
+        else:
+            show_message("Must be at least 2 objects loaded to run registration")
         
     def register(self):
         """
@@ -484,6 +488,37 @@ class RegistrationControls(QMainWindow):
         self.baseline.addItems(self.names)
         self.target.clear()
         self.target.addItems(self.names)
+
+
+def show_message(message, message_type="err", title="An Error Occured..."):
+    """
+    Parameters
+    ----------
+    message : string
+        The message to be displayed
+    message_type : string
+        The type of message e.g. "err" or "info"
+    title : string
+        The title of the dialog window
+
+    Examples
+    --------
+    >>> show_message("test")
+    >>> show_message("test2", "info", "test")
+
+    """
+    dialog = QMessageBox()
+    dialog.setText(message)
+    dialog.setWindowTitle(title)
+    icons = {
+        "err": QMessageBox.Critical,
+        "info": QMessageBox.Information
+    }
+    dialog.setIcon(icons[message_type])
+    dialog.setStandardButtons(QMessageBox.Ok)
+
+    # Makes sure doesn't close until user closes it
+    dialog.exec_()
 
 
 if __name__ == "__main__":
