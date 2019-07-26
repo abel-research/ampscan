@@ -323,7 +323,7 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.register)
         self.analyse = QAction(QIcon('open.png'), 'Analyse', self,
                                 triggered=self.analyse)
-        self.openObjectManager = QAction(QIcon('open.png'), 'Open Object Manager', self,
+        self.openObjectManager = QAction(QIcon('open.png'), 'Show Object Manager', self,
                                 triggered=self.openAmpObjectManager)
 
     def createMenus(self):
@@ -381,6 +381,10 @@ class fileManager(QMainWindow):
         self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(['Name', 'Type', 'Colour', 'Opacity', 'Display'])
         self.n = self.table.rowCount()
+        # Set the minimum table size to when it is fully expanded
+        self.table.setMinimumWidth(self.table.frameWidth()*2
+                                   + self.table.horizontalHeader().length()
+                                   + self.table.verticalHeader().width())
         
     def addRow(self, name, amp):
         self.table.insertRow(self.n)
