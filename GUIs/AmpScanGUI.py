@@ -323,6 +323,8 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.register)
         self.analyse = QAction(QIcon('open.png'), 'Analyse', self,
                                 triggered=self.analyse)
+        self.openObjectManager = QAction(QIcon('open.png'), 'Open Object Manager', self,
+                                triggered=self.openAmpObjectManager)
 
     def createMenus(self):
         """
@@ -344,6 +346,11 @@ class AmpScanGUI(QMainWindow):
         self.analyseMenu.addAction(self.analyse)
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
+        self.viewMenu = self.menuBar().addMenu("&View")
+        self.viewMenu.addAction(self.openObjectManager)
+
+    def openAmpObjectManager(self):
+        self.fileManager.show()
 
     def objectsReady(self, num):
         return len(self.files) >= num
