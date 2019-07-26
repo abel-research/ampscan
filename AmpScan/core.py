@@ -6,11 +6,17 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
+import os
 import struct
-from .trim import trimMixin
-from .smooth import smoothMixin
-from .analyse import analyseMixin
-from .ampVis import visMixin
+from AmpScan.trim import trimMixin
+from AmpScan.smooth import smoothMixin
+from AmpScan.analyse import analyseMixin
+from AmpScan.ampVis import visMixin
+
+
+# The file path used in doc examples
+filename = os.getcwd()+"\\tests\\stl_file.stl"
+
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     r"""
@@ -36,8 +42,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
     
     Examples
     -------
-    >>> fh = 'test.stl'
-    >>> amp = AmpScan.AmpObject(fh)
+    >>> amp = AmpObject(filename)
 
     """
 
@@ -149,13 +154,12 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> fh = 'test.stl'
-        >>> amp = AmpObject(fh, unify=False)
+        >>> amp = AmpObject(filename, unify=False)
         >>> amp.vert.shape
-        (600, 3)
+        (44832, 3)
         >>> amp.unifyVert()
         >>> amp.vert.shape
-        (125, 3)
+        (7530, 3)
 
         """
         # Requires numpy 1.13
@@ -314,7 +318,16 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             Translation in [x, y, z]
 
         """
-        self.vert[:] += trans
+
+        # Check that trans is array like
+        if isinstance(trans, (list, np.ndarray, tuple)):
+            # Check that trans has exactly 3 dimensions
+            if len(trans) == 3:
+                self.vert[:] += trans
+            else:
+                raise ValueError("Translation has incorrect dimensions. Expected 3 but found: " + str(len(trans)))
+        else:
+            raise TypeError("Translation is not array_like: " + trans)
 
     def centre(self):
         r"""
@@ -337,10 +350,15 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         
         Examples
         --------
-        >>> amp = AmpObject('test.stl')
+        >>> amp = AmpObject(filename)
         >>> ang = [np.pi/2, -np.pi/4, np.pi/3]
         >>> amp.rotateAng(ang, ang='rad')
         """
+
+        # Check that ang is valid
+        if ang not in ('rad', 'deg'):
+            raise ValueError("Ang expected 'rad' or 'deg' but {} was found".format(ang))
+
         if isinstance(rot, (tuple, list, np.ndarray)):
             R = self.rotMatrix(rot, ang)
             self.rotate(R, norms)
@@ -359,6 +377,18 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         norms: boolean, default True
             
         """
+        if isinstance(R, (list, tuple)):
+            # Make R a np array if its a list or tuple
+            R = np.array(R, np.float)
+        elif not isinstance(R, np.ndarray):
+            # If
+            raise TypeError("Expected R to be array-like but found: " + str(type(R)))
+        if len(R) != 3 or len(R[0]) != 3:
+            # Incorrect dimensions
+            if isinstance(R, np.ndarray):
+                raise ValueError("Expected 3x3 array, but found: {}".format(R.shape))
+            else:
+                raise ValueError("Expected 3x3 array, but found: 3x"+str(len(R)))
         self.vert[:, :] = np.dot(self.vert, R.T)
         if norms is True:
             self.norm[:, :] = np.dot(self.norm, R.T)
@@ -380,9 +410,15 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             
         """
         if R is not None:
-            self.rotate(R, True)
+            if isinstance(R, (tuple, list, np.ndarray)):
+                self.rotate(R, True)
+            else:
+                raise TypeError("Expecting array-like rotation, but found: "+type(R))
         if T is not None:
-            self.translate(T)
+            if isinstance(T, (tuple, list, np.ndarray)):
+                self.translate(T)
+            else:
+                raise TypeError("Expecting array-like translation, but found: "+type(T))
         
 
     @staticmethod
@@ -396,7 +432,7 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
         rot: array_like
             Rotation around [x, y, z]
         ang: str, default 'rad'
-            Specift if the Euler angles are in degrees or radians 
+            Specify if the Euler angles are in degrees or radians
         
         Returns
         -------
@@ -404,8 +440,20 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             The calculated 3x3 rotation matrix 
     
         """
+
+        # Check that rot is valid
+        if not isinstance(rot, (tuple, list, np.ndarray)):
+            raise TypeError("Expecting array-like rotation, but found: "+type(rot))
+        elif len(rot) != 3:
+            raise ValueError("Expecting 3 arguments but found: {}".format(len(rot)))
+
+        # Check that ang is valid
+        if ang not in ('rad', 'deg'):
+            raise ValueError("Ang expected 'rad' or 'deg' but {} was found".format(ang))
+
         if ang == 'deg':
             rot = np.deg2rad(rot)
+
         [angx, angy, angz] = rot
         Rx = np.array([[1, 0, 0],
                        [0, np.cos(angx), -np.sin(angx)],
@@ -429,8 +477,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             The axis in which to flip the mesh
 
         """
-        self.vert[:, axis] *= -1.0
-        # Switch face order to normals face same direction
-        self.faces[:, [1, 2]] = self.faces[:, [2, 1]]
-        self.calcNorm()
-        self.calcVNorm()
+        if isinstance(axis, int):
+            if 0 <= axis < 3:  # Check axis is between 0-2
+                self.vert[:, axis] *= -1.0
+                # Switch face order to normals face same direction
+                self.faces[:, [1, 2]] = self.faces[:, [2, 1]]
+                self.calcNorm()
+                self.calcVNorm()
+            else:
+                raise ValueError("Expected axis to be within range 0-2 but found: {}".format(axis))
+        else:
+            raise TypeError("Expected axis to be int, but found: {}".format(type(axis)))

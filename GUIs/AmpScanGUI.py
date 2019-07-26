@@ -10,9 +10,9 @@ from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
                              QMainWindow, QMessageBox, QComboBox, QButtonGroup,
-                             QOpenGLWidget, QFileDialog,QLabel,QPushButton,
+                             QOpenGLWidget, QFileDialog, QLabel, QPushButton,
                              QSlider, QWidget, QTableWidget, QTableWidgetItem,
-                             QAbstractButton)
+                             QAbstractButton, QErrorMessage)
 
         
 class AmpScanGUI(QMainWindow):
@@ -107,16 +107,19 @@ class AmpScanGUI(QMainWindow):
         Numpy style docstring.
 
         """
-        self.alCont = AlignControls(self.filesDrop, self)
-        self.alCont.show()
-        self.alCont.centre.clicked.connect(self.centreMesh)
-        self.alCont.icp.clicked.connect(self.runICP)
-        self.alCont.xrotButton.buttonClicked[QAbstractButton].connect(self.rotatex)
-        self.alCont.yrotButton.buttonClicked[QAbstractButton].connect(self.rotatey)
-        self.alCont.zrotButton.buttonClicked[QAbstractButton].connect(self.rotatez)
-        self.alCont.xtraButton.buttonClicked[QAbstractButton].connect(self.transx)
-        self.alCont.ytraButton.buttonClicked[QAbstractButton].connect(self.transy)
-        self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
+        if self.objectsReady(1):
+            self.alCont = AlignControls(self.filesDrop, self)
+            self.alCont.show()
+            self.alCont.centre.clicked.connect(self.centreMesh)
+            self.alCont.icp.clicked.connect(self.runICP)
+            self.alCont.xrotButton.buttonClicked[QAbstractButton].connect(self.rotatex)
+            self.alCont.yrotButton.buttonClicked[QAbstractButton].connect(self.rotatey)
+            self.alCont.zrotButton.buttonClicked[QAbstractButton].connect(self.rotatez)
+            self.alCont.xtraButton.buttonClicked[QAbstractButton].connect(self.transx)
+            self.alCont.ytraButton.buttonClicked[QAbstractButton].connect(self.transy)
+            self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
+        else:
+            show_message("Must be at least 1 object loaded to run align")
         
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
@@ -178,53 +181,59 @@ class AmpScanGUI(QMainWindow):
         self.renWin.Render()
     
     def runICP(self):
-        
-        static = str(self.alCont.static.currentText())
-        moving = str(self.alCont.moving.currentText())
-        al = align(self.files[moving], self.files[static], 
-                   maxiter=10, method='linPoint2Plane').m
-        al.tform = vtk.vtkTransform()
-        al.tform.PostMultiply()
-        al.addActor()
-        al.actor.SetUserTransform(al.tform)
-        alName = moving + '_al'
-        self.files[alName] = al
-        self.filesDrop.append(alName)
-        self.fileManager.addRow(alName, self.files[alName])
-        self.fileManager.setTable(static, [1,0,0], 0.5, 2)
-        self.fileManager.setTable(moving, [1,1,1], 1, 0)
-        self.fileManager.setTable(alName, [0,0,1], 0.5, 2)
-        if hasattr(self, 'alCont'):
-            self.alCont.getNames()
-        if hasattr(self, 'regCont'):
-            self.regCont.getNames()
+        if self.objectsReady(1):
+            static = str(self.alCont.static.currentText())
+            moving = str(self.alCont.moving.currentText())
+            al = align(self.files[moving], self.files[static],
+                       maxiter=10, method='linPoint2Plane').m
+            al.tform = vtk.vtkTransform()
+            al.tform.PostMultiply()
+            al.addActor()
+            al.actor.SetUserTransform(al.tform)
+            alName = moving + '_al'
+            self.files[alName] = al
+            self.filesDrop.append(alName)
+            self.fileManager.addRow(alName, self.files[alName])
+            self.fileManager.setTable(static, [1,0,0], 0.5, 2)
+            self.fileManager.setTable(moving, [1,1,1], 1, 0)
+            self.fileManager.setTable(alName, [0,0,1], 0.5, 2)
+            if hasattr(self, 'alCont'):
+                self.alCont.getNames()
+            if hasattr(self, 'regCont'):
+                self.regCont.getNames()
+        else:
+            show_message("Must be at least 2 objects loaded to run ICP")
 
     def runRegistration(self):
-        c1 = [31.0, 73.0, 125.0]
-        c3 = [170.0, 75.0, 65.0]
-        c2 = [212.0, 221.0, 225.0]
-        CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
-        CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
-        CMap = np.c_[CMap1[:, :-1], CMap2]
-        self.CMapN2P = np.transpose(CMap)/255.0
-        self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
-        baseline = str(self.regCont.baseline.currentText())
-        target = str(self.regCont.target.currentText())
-        self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
-        self.fileManager.setTable(target, [0,0,1], 0.5, 0)
-        reg = registration(self.files[baseline], self.files[target], steps = 5,
-                           smooth=1).reg
-        reg.addActor(CMap = self.CMap02P)
-        regName = target + '_reg'
-        self.files[regName] = reg
-        self.filesDrop.append(regName)
-        self.fileManager.addRow(regName, self.files[regName])
-        if hasattr(self, 'alCont'):
-            self.alCont.getNames()
-        if hasattr(self, 'regCont'):
-            self.regCont.getNames()
-        
-        print('Run the Registration code between %s and %s' % (baseline, target))
+        if self.objectsReady(2):
+            # Needs to be at least 2 files to run registration
+            c1 = [31.0, 73.0, 125.0]
+            c3 = [170.0, 75.0, 65.0]
+            c2 = [212.0, 221.0, 225.0]
+            CMap1 = np.c_[[np.linspace(st, en) for (st, en) in zip(c1, c2)]]
+            CMap2 = np.c_[[np.linspace(st, en) for (st, en) in zip(c2, c3)]]
+            CMap = np.c_[CMap1[:, :-1], CMap2]
+            self.CMapN2P = np.transpose(CMap)/255.0
+            self.CMap02P = np.flip(np.transpose(CMap1)/255.0, axis=0)
+            baseline = str(self.regCont.baseline.currentText())
+            target = str(self.regCont.target.currentText())
+            self.fileManager.setTable(baseline, [1,0,0], 0.5, 0)
+            self.fileManager.setTable(target, [0,0,1], 0.5, 0)
+            reg = registration(self.files[baseline], self.files[target], steps = 5,
+                               smooth=1).reg
+            reg.addActor(CMap = self.CMap02P)
+            regName = target + '_reg'
+            self.files[regName] = reg
+            self.filesDrop.append(regName)
+            self.fileManager.addRow(regName, self.files[regName])
+            if hasattr(self, 'alCont'):
+                self.alCont.getNames()
+            if hasattr(self, 'regCont'):
+                self.regCont.getNames()
+
+            print('Run the Registration code between %s and %s' % (baseline, target))
+        else:
+            show_message("Must be at least 2 objects loaded to run registration")
         
     def register(self):
         """
@@ -256,13 +265,15 @@ class AmpScanGUI(QMainWindow):
         """
         FEname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="FE results (*.npy)")
-        self.renWin.setnumViewports(1)
-        self.FE = AmpObject([FEname[0],], stype='FE')
-        self.AmpObj.lp_smooth()
-        self.AmpObj.addActor(CMap=self.AmpObj.CMap02P, bands=5)
-        self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
-        self.renWin.renderActors(self.FE.actor, shading=True)
-        self.renWin.setScalarBar(self.FE.actor)
+        if FEname[0] != "":  # Check that there was a file selected
+            print(FEname)
+            self.renWin.setnumViewports(1)
+            self.FE = AmpObject([FEname[0],], stype='FE') # TODO check this is correct - AmpObject expects dicts or strings
+            self.AmpObj.lp_smooth()
+            self.AmpObj.addActor(CMap=self.AmpObj.CMap02P, bands=5)
+            self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
+            self.renWin.renderActors(self.FE.actor, shading=True)
+            self.renWin.setScalarBar(self.FE.actor)
         
     def choosePress(self):
         """
@@ -271,8 +282,12 @@ class AmpScanGUI(QMainWindow):
         """
         vName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor vertices (*.csv)")
+        if vName[0] == "":  # If no file selected, exit
+            return
         pName = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Sensor pressures (*.csv)")
+        if pName[0] == "":  # If no file selected, exit
+            return
         self.renWin.setnumViewports(1)
         self.pSense = pressSense()
         self.pSense.calcFaces(d=5)
@@ -308,6 +323,8 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.register)
         self.analyse = QAction(QIcon('open.png'), 'Analyse', self,
                                 triggered=self.analyse)
+        self.openObjectManager = QAction(QIcon('open.png'), 'Show Object Manager', self,
+                                triggered=self.openAmpObjectManager)
 
     def createMenus(self):
         """
@@ -329,6 +346,15 @@ class AmpScanGUI(QMainWindow):
         self.analyseMenu.addAction(self.analyse)
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
+        self.viewMenu = self.menuBar().addMenu("&View")
+        self.viewMenu.addAction(self.openObjectManager)
+
+    def openAmpObjectManager(self):
+        self.fileManager.show()
+
+    def objectsReady(self, num):
+        return len(self.files) >= num
+
         
 class fileManager(QMainWindow):
     """
@@ -355,6 +381,10 @@ class fileManager(QMainWindow):
         self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(['Name', 'Type', 'Colour', 'Opacity', 'Display'])
         self.n = self.table.rowCount()
+        # Set the minimum table size to when it is fully expanded
+        self.table.setMinimumWidth(self.table.frameWidth()*2
+                                   + self.table.horizontalHeader().length()
+                                   + self.table.verticalHeader().width())
         
     def addRow(self, name, amp):
         self.table.insertRow(self.n)
@@ -484,6 +514,37 @@ class RegistrationControls(QMainWindow):
         self.baseline.addItems(self.names)
         self.target.clear()
         self.target.addItems(self.names)
+
+
+def show_message(message, message_type="err", title="An Error Occured..."):
+    """
+    Parameters
+    ----------
+    message : string
+        The message to be displayed
+    message_type : string
+        The type of message e.g. "err" or "info"
+    title : string
+        The title of the dialog window
+
+    Examples
+    --------
+    >>> show_message("test")
+    >>> show_message("test2", "info", "test")
+
+    """
+    dialog = QMessageBox()
+    dialog.setText(message)
+    dialog.setWindowTitle(title)
+    icons = {
+        "err": QMessageBox.Critical,
+        "info": QMessageBox.Information
+    }
+    dialog.setIcon(icons[message_type])
+    dialog.setStandardButtons(QMessageBox.Ok)
+
+    # Makes sure doesn't close until user closes it
+    dialog.exec_()
 
 
 if __name__ == "__main__":

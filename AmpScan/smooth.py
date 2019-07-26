@@ -52,7 +52,7 @@ class smoothMixin(object):
     def smoothValues(self, n=1):
         """
         Function to apply a simple laplacian smooth to the values array. 
-        Identical to the vertex smoothing expect it applies the smoothing 
+        Identical to the vertex smoothing except it applies the smoothing
         to the values
 
         Parameters
