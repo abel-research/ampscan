@@ -4,7 +4,7 @@ import vtk
 from AmpScan import AmpObject
 from AmpScan.registration import registration
 from AmpScan.align import align
-from AmpScan.ampVis import qtVtkWindow
+from AmpScan.ampVis import qtVtkWindow, vtkRenWin
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
@@ -12,7 +12,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
                              QMainWindow, QMessageBox, QComboBox, QButtonGroup,
                              QOpenGLWidget, QFileDialog, QLabel, QPushButton,
                              QSlider, QWidget, QTableWidget, QTableWidgetItem,
-                             QAbstractButton, QErrorMessage)
+                             QAbstractButton, QCheckBox, QErrorMessage)
 
         
 class AmpScanGUI(QMainWindow):
@@ -88,6 +88,12 @@ class AmpScanGUI(QMainWindow):
             return
         moving = str(self.alCont.moving.currentText())
         self.files[moving].save(fname[0])
+        try:
+            f = open(fname[0]+'.txt','w+')
+            f.write('{}'.format(self.pnt))
+        except AttributeError:
+            print('A point has not been selected')
+
     
     def display(self):
         render = []
@@ -120,6 +126,37 @@ class AmpScanGUI(QMainWindow):
             self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
         else:
             show_message("Must be at least 1 object loaded to run align")
+    
+    def Point_Pick(self):
+        """
+        Waits for a point click to occur before calling further functions
+        TODO: Create 'Picker controls'? Similar to Alignment controls, but where
+        user can enter the name of the point they select - this can allow
+        multiple landmark locations to be stored and marked?
+        """
+        self.vtkWidget.iren.AddObserver('RightButtonPressEvent', self.pick_loc)
+        self.renWin.Render()
+    
+    def pick_loc(self, event, x):
+        """
+        calcs the location of click in GUI (x,y)
+        calls function in ampVis.py which converts from GUI coordinates to
+        mesh coordinates and marks the point
+        """
+        #print(event, x)
+        self.vtkWidget.iren.RemoveObservers('RightButtonPressEvent')
+        loc = event.GetEventPosition()
+        self.pnt = vtkRenWin.Pick_point(self.renWin, loc)
+        #vtkRenWin.mark(self.renWin,self.pnt[0],self.pnt[1],self.pnt[2])
+        print(self.pnt)
+    
+    def removePick(self):
+        """
+        delete all marked points and labels
+        TODO: be able to delete individual points?
+        """
+        self.pnt = None
+        vtkRenWin.delMarker(self.renWin)
         
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
@@ -206,7 +243,6 @@ class AmpScanGUI(QMainWindow):
 
     def runRegistration(self):
         if self.objectsReady(2):
-            # Needs to be at least 2 files to run registration
             c1 = [31.0, 73.0, 125.0]
             c3 = [170.0, 75.0, 65.0]
             c2 = [212.0, 221.0, 225.0]
@@ -221,7 +257,8 @@ class AmpScanGUI(QMainWindow):
             self.fileManager.setTable(target, [0,0,1], 0.5, 0)
             reg = registration(self.files[baseline], self.files[target], steps = 5,
                                smooth=1).reg
-            reg.addActor(CMap = self.CMap02P)
+            #reg.addActor(CMap = self.CMap02P)
+            reg.addActor(CMap = self.CMapN2P)
             regName = target + '_reg'
             self.files[regName] = reg
             self.filesDrop.append(regName)
@@ -230,7 +267,12 @@ class AmpScanGUI(QMainWindow):
                 self.alCont.getNames()
             if hasattr(self, 'regCont'):
                 self.regCont.getNames()
-
+            #im = []
+            if self.regCont.tick.isChecked() is True:
+                reg.actor.setScalarRange([-10,10])
+                reg.actor.setShading(False)
+                reg.CMapOut(colors=self.CMapN2P)
+                reg.plotResults(name="distributionofshapevariance.png")
             print('Run the Registration code between %s and %s' % (baseline, target))
         else:
             show_message("Must be at least 2 objects loaded to run registration")
@@ -300,6 +342,14 @@ class AmpScanGUI(QMainWindow):
         self.renWin.renderActors(self.AmpObj.actors, ['socket', 'antS'])
         self.renWin.setScalarBar(self.AmpObj.actors['antS'])
         
+    def measure(self):
+        #if no point selected condition move to analyse.py
+        if self.pnt is None:
+            print("Please select a reference point first.")
+        else:
+            [name, _, color, opacity, display] = self.fileManager.getRow(0)
+            self.files[name].MeasurementsOut(self.pnt)
+    
     def createActions(self):
         """
         Numpy style docstring.
@@ -323,6 +373,12 @@ class AmpScanGUI(QMainWindow):
                                 triggered=self.register)
         self.analyse = QAction(QIcon('open.png'), 'Analyse', self,
                                 triggered=self.analyse)
+        self.pick = QAction(QIcon('open.png'), 'Pick', self,
+                                triggered=self.Point_Pick)
+        self.removePick = QAction(QIcon('open.png'), 'Clear all picked points', self,
+                                triggered = self.removePick)
+        self.Measure = QAction(QIcon('open.png'), 'Generate Measurements', self,
+                                triggered = self.measure)
         self.openObjectManager = QAction(QIcon('open.png'), 'Show Object Manager', self,
                                 triggered=self.openAmpObjectManager)
 
@@ -346,6 +402,11 @@ class AmpScanGUI(QMainWindow):
         self.analyseMenu.addAction(self.analyse)
         self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
         self.kineticMenu.addAction(self.openPress)
+        self.PointMenu = self.menuBar().addMenu("&Pick Point")
+        self.PointMenu.addAction(self.pick)
+        self.PointMenu.addAction(self.removePick)
+        self.measureMenu = self.menuBar().addMenu("Measure")
+        self.measureMenu.addAction(self.Measure)
         self.viewMenu = self.menuBar().addMenu("&View")
         self.viewMenu.addAction(self.openObjectManager)
 
@@ -355,7 +416,7 @@ class AmpScanGUI(QMainWindow):
     def objectsReady(self, num):
         return len(self.files) >= num
 
-        
+
 class fileManager(QMainWindow):
     """
     Controls to manage the displayed 
@@ -365,7 +426,7 @@ class fileManager(QMainWindow):
     Perhaps an example implementation:
 
     >>> from AmpScan.AmpScanGUI import AmpScanGUI
-
+*
     """
 
     def __init__(self, parent = None):
@@ -476,7 +537,17 @@ class AlignControls(QMainWindow):
         self.moving.clear()
         self.moving.addItems(self.names)
            
-        
+
+    
+    def getNames(self):
+        """
+        """
+        self.baseline.clear()
+        self.baseline.addItems(self.names)
+        self.target.clear()
+        self.target.addItems(self.names)
+
+     
 class RegistrationControls(QMainWindow):
     """
     Pop up for controls to align the 
@@ -496,13 +567,15 @@ class RegistrationControls(QMainWindow):
         self.baseline = QComboBox()
         self.target = QComboBox()
         self.reg = QPushButton("Run Registration")
+        self.tick = QCheckBox("Generate Output File for Comparison?")
         self.setCentralWidget(self.main)
         self.layout = QGridLayout()
         self.layout.addWidget(QLabel('Baseline'), 0, 0)
         self.layout.addWidget(QLabel('Target'), 1, 0)
         self.layout.addWidget(self.baseline, 0, 1)
         self.layout.addWidget(self.target, 1, 1)
-        self.layout.addWidget(self.reg, 2, 0, 1, -1)
+        self.layout.addWidget(self.tick, 2,1)
+        self.layout.addWidget(self.reg, 3, 0, 1, -1)
         self.main.setLayout(self.layout)
         self.setWindowTitle("Registration Manager")
         self.getNames()

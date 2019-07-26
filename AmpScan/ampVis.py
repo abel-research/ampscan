@@ -36,6 +36,8 @@ class vtkRenWin(vtk.vtkRenderWindow):
 #        self.rens[0].SetBackground(1.0,1.0,1.0)
         #self.rens[0].SetActiveCamera(self.cams[0])
 #        self.axes.append(vtk.vtkCubeAxesActor())
+        self.markers = []
+        self.labels = []
         
     def renderActors(self, actors, viewport=0, zoom=1.0):
         r"""
@@ -267,6 +269,88 @@ class vtkRenWin(vtk.vtkRenderWindow):
         writer.SetInputConnection(w2if.GetOutputPort())
         writer.Write()
 
+    def Pick_point(self, loc):
+        """
+        This receives coordinates in the GUI where user has picked, converts it
+        to mesh coordinates using vtkCellPicker, and places a sphere at picked
+        location as a visual aid. Also places a label at the point in the 
+        render window.
+        TO-DO: Add functionality so user can type the label in, rather than
+        have it read 'Mid Patella' every time
+        """
+        
+        x, y = loc
+        renderer = self.rens[0]
+        picker = vtk.vtkCellPicker()
+        picker.SetTolerance(0.01)
+        picker.Pick(x, y, 0, renderer)
+        points = picker.GetPickedPositions()
+        numPoints = points.GetNumberOfPoints()
+        #if no points selected, exits function
+        if numPoints<1: return
+        # Calls function to create a sphere at selected point
+        pnt = points.GetPoint(0)
+        self.mark(pnt[0], pnt[1], pnt[2])
+        # Creating label at selected point
+        label = vtk.vtkStringArray()
+        label.SetName('label')
+        label.InsertNextValue("   Mid Patella")
+        lPoints = vtk.vtkPolyData()
+        lPoints.SetPoints(points)
+        lPoints.GetPointData().AddArray(label)
+        
+        hier = vtk.vtkPointSetToLabelHierarchy()
+        hier.SetInputData(lPoints)
+        hier.SetLabelArrayName('label')
+        hier.GetTextProperty().SetColor(0,0,0)
+        hier.GetTextProperty().SetFontSize(30)
+        
+        lMapper = vtk.vtkLabelPlacementMapper()
+        lMapper.SetInputConnection(hier.GetOutputPort())
+        lMapper.SetBackgroundColor(0.3,0.3,0.3)
+        lMapper.SetBackgroundOpacity(0.8)
+        lMapper.SetMargin(10)
+        
+        lActor = vtk.vtkActor2D()
+        lActor.SetMapper(lMapper)
+        self.labels.append(lActor) # keep track of all label actors
+        
+        self.rens[0].AddActor(lActor)
+        self.Render()
+        return pnt
+        
+
+    def mark(self, x,y,z):
+        """
+        mark the picked point with a sphere
+        """
+        sphere = vtk.vtkSphereSource()
+        sphere.SetRadius(3)
+        res = 20
+        sphere.SetThetaResolution(res)
+        sphere.SetPhiResolution(res)
+        sphere.SetCenter(x,y,z)
+        mapper = vtk.vtkPolyDataMapper()
+        mapper.SetInputConnection(sphere.GetOutputPort())
+
+        self.marker = vtk.vtkActor()
+        self.marker.SetMapper(mapper)
+        self.rens[0].AddActor(self.marker)
+        self.marker.GetProperty().SetColor( (1,0,0) )
+        self.markers.append(self.marker) #keep track of all marker actors
+        self.Render()
+
+    def delMarker(self):
+        """
+        removes the sphere marker and label from the renderer
+        """
+        for i in self.markers:
+            self.rens[0].RemoveActor(i)
+        for i in self.labels:
+            self.rens[0].RemoveActor(i)
+        self.markers = []
+        self.labels = []
+
 
 class qtVtkWindow(QVTKRenderWindowInteractor):
     r"""
@@ -280,6 +364,7 @@ class qtVtkWindow(QVTKRenderWindowInteractor):
         self.iren = self._RenderWindow.GetInteractor()
         self.iren.Initialize()        
 
+
 class visMixin(object):
     r"""
     Set of visualisation methods that are contained within the AmpActor
@@ -289,7 +374,7 @@ class visMixin(object):
     def genIm(self, size=[512, 512], views=[[0, -1, 0]], 
               background=[1.0, 1.0, 1.0], projection=True,
               shading=True, mag=10, out='im', fh='test.tiff', 
-              zoom=1.0, az = 0, crop=False, cam=None):
+              zoom=1.0, az = 0, el=0,crop=False, cam=None):
         r"""
         Creates a temporary off screen vtkRenWin which is then either returned
         as a numpy array or saved as a .png file
@@ -335,6 +420,7 @@ class visMixin(object):
         win.setProjection(projection)
         win.SetSize(size[0], size[1])
         win.Modified()
+        win.OffScreenRenderingOn()
         
         for i, view in enumerate(views):
 #            win.addAxes([self.actor,], color=[0.0, 0.0, 0.0], viewport=i)
@@ -386,7 +472,7 @@ class visMixin(object):
         win.setView()
         win.renderActors([self.actor,])
         win.Render()
-        win.rens[0].GetActiveCamera().Azimuth(180)
+        win.rens[0].GetActiveCamera().Azimuth(0)
         win.rens[0].GetActiveCamera().SetParallelProjection(True)
         win.Render()
         return win
@@ -605,6 +691,3 @@ class ampActor(vtk.vtkActor):
             self.GetProperty().LightingOn()
         if shading is False:
             self.GetProperty().LightingOff()
-
-        
-        

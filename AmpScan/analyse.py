@@ -7,19 +7,23 @@ Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
 
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as clr
+import matplotlib.colorbar as clb
 from mpl_toolkits.mplot3d import Axes3D
 from collections import defaultdict
+from .output import getPDF
+from math import floor
 #from .cython_ext import planeEdgeIntersect_cy, logEuPath_cy
 
 
 
 class analyseMixin(object):
-    r"""
+    """
     Analysis methods to act upon a single AmpObject and generate a mpl 
     figure 
 
     """
-
+           
     def plot_slices(self, axis=2, slWidth=10):
         r"""
         Generate a mpl figure with information about the AmpObject
@@ -279,3 +283,192 @@ class analyseMixin(object):
                                      (edges[:, axis+3] - edges[:, axis]))
         return intersectPoints
 
+
+    
+    def MeasurementsOut(self, pos):
+        """
+        Calculates perimeter of limb/cast at intervals from mid-patella to the
+        end of stump
+        Takes position of mid-patella (x,y,z) coordinates as input
+        Also creates images of limb views and graphs of CSA/Widths, which are
+        used in the PDF.
+        Calls the function responsible for adding the information to the PDF
+        template.
+        TODO: Split this into functions for each part i.e. Volume measure, CSA,
+        widths 
+        """
+        print(pos)
+        maxZ = []
+        for i in [0,1,2]:
+            maxZ.append((self.vert[:, i]).max() - (self.vert[:, i]).min())
+        #slice in longest axis of scan
+        self.axis = maxZ.index(max(maxZ))
+        maxZ = max(maxZ)
+        zval = pos[self.axis]
+        # Get 6 equally spaced pts between mid-patella and stump end
+        slices = np.linspace(zval, (self.vert[:,self.axis]).min()+0.1, 6)
+        # uses create_slices
+        polys = self.create_slices(slices, axis=self.axis)
+        # calc perimeter of slices
+        perimeter = np.zeros([len(polys)])
+        for i,poly in enumerate(polys):
+            nverts = np.arange(len(poly)-1)
+            dists = []
+            for x in nverts:
+                xc = (poly[x][0] - poly[x+1][0])**2
+                yc = (poly[x][1] - poly[x+1][1])**2
+                zc = (poly[x][2] - poly[x+1][2])**2
+                dist = np.sqrt(xc+yc+zc)
+                dists.append(dist)
+            perimeter[i] = sum(dists) / 10
+        # distance between slice and mid-patella
+        lngth = (slices - zval) / 10
+        #print(lngth, perimeter)
+        #generate png files of anterior and lateral views
+        self.genIm(out='fh',fh='lat.png',az=-90)
+        self.genIm(mag=1,out='fh',fh='ant.png')
+        #calculations at %length intervals of 10%
+        L = maxZ - ((self.vert[:,self.axis]).max()-zval)-10
+        pL = np.linspace(0,1.2,13)
+        slices2 = []
+        for i in pL:
+            slices2.append((self.vert[:,self.axis]).min()+10+(i*L))
+        polys2 = self.create_slices(slices2,self.axis)
+        PolyArea = np.zeros([len(polys2)])
+        MLWidth = np.zeros([len(polys2)])
+        APWidth = np.zeros([len(polys2)])
+        for i, poly in enumerate(polys2):
+            # Compute area of slice
+            area = 0.5*np.abs(np.dot(poly[:,0], np.roll(poly[:,1], 1)) -
+                              np.dot(poly[:,1], np.roll(poly[:,0], 1)))
+            PolyArea[i] = area/100
+            APW = poly[:,0].max() - poly[:,0].min()
+            APWidth[i] = APW/10
+            MLW = poly[:,1].max() - poly[:,1].min()
+            MLWidth[i] = MLW/10
+        print(PolyArea, MLWidth, APWidth)
+        fig = plt.figure()
+        fig.set_size_inches(7.5, 4.5)
+        ax = fig.add_subplot(221)
+        ax.plot(pL*100, PolyArea)
+        ax.set_xlabel("% length")
+        ax.set_ylabel("Area (cm^2)")
+        ax2 = fig.add_subplot(222)
+        ax2.plot(pL*100, MLWidth, 'ro',label='Medial-Lateral')
+        ax2.plot(pL*100, APWidth, 'b.',label='Anterior-Posterior')
+        ax2.set_xlabel("% length")
+        ax2.set_ylabel("width (cm)")
+        ax2.legend()
+        fig.savefig("figure.png")
+        getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth) #PDF Creation function (in output.py)
+        #divided by 10 to convert to cms, assumes stl files are in mm
+        #TO-DO: Some sort of metric conversion function?
+
+
+    def CMapOut(self, colors):
+        """
+        Colour Map with 4 views (copied Josh's code)
+        """
+        titles = ['Anterior', 'Medial', 'Proximal', 'Lateral']
+        fig,axes = plt.subplots(ncols=5)
+        cmap = clr.ListedColormap(colors, name='Amp')
+        norm = clr.Normalize(vmin=-10,vmax=10)
+        cb1 = clb.ColorbarBase(axes[-1], cmap=cmap,norm=norm)
+        cb1.set_label('Shape deviation / mm')
+        for i, ax in enumerate(axes[:-1]):
+            im = self.genIm(size=[3200, 8000],crop=True, az = i*90)
+            ax.imshow(im)
+            ax.set_title(titles[i])
+            ax.set_axis_off()
+        #plt.colorbar(CMap)
+        fig.set_size_inches([12.5, 4])
+        plt.savefig("Limb Views.png", dpi=600)
+
+
+    def volumeMeasure(self, zval, axis=2, slWidth=0.1):
+        """
+        volume estimation using slices
+        """
+        ind = [0,1,2]
+        ind.remove(axis)
+        slices = np.arange((self.vert[:,axis]).min()+slWidth, zval, slWidth)
+        polys = self.create_slices(slices, axis)
+        PArea = np.zeros(len(polys))
+        for i, poly in enumerate(polys):
+            # Compute area of slice
+            area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
+                              np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
+            PArea[i] = area/100
+        return sum(PArea*slWidth/10)+(PArea[-1]*(zval-slices[-1]))
+        
+    
+    def CSAMeasure(self,zval, axis=2, interval = 0.05):
+        """
+        Measure CSA at 5% increments (0-95%) from selected point to stump
+        """
+        ind = [0,1,2]
+        ind.remove(axis)
+        percents = np.arange(0.0,0.955,interval)
+        distump = (zval-(self.vert[:,axis]).min())
+        slices = []
+        [slices.append(zval - (distump*i)) for i in percents]
+        PArea = np.zeros(len(slices))
+        for i,j in enumerate(slices):
+            try:
+                polys = self.create_slices([j], axis)
+                poly = polys[0]
+                area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
+                                  np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
+                PArea[i] = area/100
+            except IndexError:
+                PArea[i] = None
+        return PArea, distump
+    
+    def widthsMeasure(self,zval,axis=2,interval=0.05):
+        """
+        Measure Coronal and Sagittal widths at intervals along limb (0-95%)
+        """
+        percents = np.arange(0.0,0.955,interval)
+        distump = (zval-(self.vert[:,axis]).min())
+        slices = []
+        [slices.append(zval - (distump*i)) for i in percents]
+        MLWidth = np.zeros([len(slices)])
+        APWidth = np.zeros([len(slices)])
+        for i,j in enumerate(slices):
+            try:
+                polys = self.create_slices([j], axis)
+                poly = polys[0]
+                APW = poly[:,0].max() - poly[:,0].min()
+                APWidth[i] = APW
+                MLW = poly[:,1].max() - poly[:,1].min()
+                MLWidth[i] = MLW
+            except IndexError:
+                MLWidth[i] = None
+                APWidth[i] = None
+        return APWidth, MLWidth
+    
+    def perimeterMeasure(self,zval,axis=2,interval=0.05):
+        """
+        Measure Coronal and Sagittal widths at intervals along limb (0-95%)
+        """
+        percents = np.arange(0.0,0.955,interval)
+        distump = (zval-(self.vert[:,axis]).min())
+        slices = []
+        [slices.append(zval - (distump*i)) for i in percents]
+        perimeter = np.zeros([len(slices)])
+        for i,j in enumerate(slices):
+            try:
+                polys = self.create_slices([j], axis)
+                poly = polys[0]
+                nverts = np.arange(len(poly)-1)
+                dists = []
+                for x in nverts:
+                    xc = (poly[x][0] - poly[x+1][0])**2
+                    yc = (poly[x][1] - poly[x+1][1])**2
+                    zc = (poly[x][2] - poly[x+1][2])**2
+                    dist = np.sqrt(xc+yc+zc)
+                    dists.append(dist)
+                perimeter[i] = sum(dists) / 10
+            except IndexError:
+                perimeter[i] = None
+        return perimeter, distump
