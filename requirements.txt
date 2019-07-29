@@ -5,3 +5,4 @@ sphinxcontrib-napoleon
 vtk
 PyQt5
 PyPDF2
+reportlab
