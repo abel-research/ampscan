@@ -1,7 +1,5 @@
-language: python
-rvm:
-  - 3.6
+language: python3.6
 install:
   - pip install -r requirements.txt
   - pip install .
-script: pytest --doctest-modules -v --ignore=GUIs
+script: pytest --doctest-modules -v --ignore=GUIs --ignore=docs
