@@ -15,8 +15,8 @@ from AmpScan.ampVis import vtkRenWin
 
 # For doc examples
 import os
-staticfh = os.getcwd() + "\\tests\\stl_file.stl"
-movingfh = os.getcwd() + "\\tests\\stl_file_2.stl"
+staticfh = os.path.join(os.getcwd(), "tests", "stl_file.stl")
+movingfh = os.path.join(os.getcwd(), "tests", "stl_file_2.stl")
 
 
 class align(object):

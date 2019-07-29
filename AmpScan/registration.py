@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 
 # For the doc examples
 import os
-basefh = os.getcwd()+"\\tests\\stl_file.stl"
-targfh = os.getcwd()+"\\tests\\stl_file_2.stl"
+basefh = os.path.join(os.getcwd(), "tests", "stl_file.stl")
+targfh = os.path.join(os.getcwd(), "tests", "stl_file_2.stl")
 
 class registration(object):
     r"""
