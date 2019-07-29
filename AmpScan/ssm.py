@@ -12,6 +12,8 @@ from .registration import registration
 import os
 
 
+
+
 class pca(object):
     r"""
     Principal Component Analysis methods for a training data set of AmpObjects
@@ -19,11 +21,10 @@ class pca(object):
     
     Examples
     --------
-    >>> import os
     >>> p = pca()
-    >>> p.importFolder(os.getcwd()+"\\tests\\pca_tests")
-    >>> p.setBaseline(os.getcwd()+"\\tests\\stl_file_3.stl")
-    >>> p.register(save=os.getcwd()+"\\tests\\pca_tests\\")
+    >>> p.importFolder(os.path.join(os.getcwd(), "tests", "pca_tests"))
+    >>> p.setBaseline(os.path.join(os.getcwd(), "tests", "stl_file_3.stl"))
+    >>> p.register(save=os.path.join(os.getcwd(), "tests", "pca_tests"))
     >>> p.pca()
     >>> sfs = [1, 2]
     >>> newS = p.newShape(sfs)

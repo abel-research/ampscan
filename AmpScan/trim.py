@@ -9,7 +9,7 @@ from numbers import Number
 import os
 
 # Used by doc tests
-filename = os.getcwd() + "\\tests\\stl_file.stl"
+filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
 
 class trimMixin(object):

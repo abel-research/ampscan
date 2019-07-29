@@ -15,7 +15,7 @@ from AmpScan.ampVis import visMixin
 
 
 # The file path used in doc examples
-filename = os.getcwd()+"\\tests\\stl_file.stl"
+filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
 
 class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
