@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Package for defining the core AmpObject
-Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
+Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 
 """
 

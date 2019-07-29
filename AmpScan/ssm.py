@@ -2,7 +2,7 @@
 """
 Package for using AmpScan to run statistical shape modeling using mean-centered principal component analysis 
 on a group of scans 
-Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
+Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 """
 
 import os
