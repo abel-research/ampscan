@@ -39,7 +39,6 @@ setuptools==40.0.0
 sphinx==1.7.5
 sphinx_rtd_theme==0.4.1
 widgetsnbextension==3.4.0
-freetype
 matplotlib==2.2.2
 numpy==1.15.0
 numpy-base==1.15.0
