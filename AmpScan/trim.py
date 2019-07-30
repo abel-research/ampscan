@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Package for dealing with trimming the AmpObject mesh
-Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
+Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np

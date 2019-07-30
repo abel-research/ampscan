@@ -41,4 +41,5 @@ instance/
 
 .pytest_cache/
 .coverage
+.vscode
 htmlcov/

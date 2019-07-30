@@ -2,7 +2,7 @@
 """
 Package for dealing with analysis methods of the ampObject and generating 
 reports 
-Copyright: Joshua Steer 2018, Joshua.Steer@soton.ac.uk
+Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
