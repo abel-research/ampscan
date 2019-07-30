@@ -8,3 +8,4 @@ vtk==8.1.0
 PyQt5==5.13.0
 PyPDF2==1.26.0
 reportlab==3.5.23
+nbsphinx
