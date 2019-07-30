@@ -46,7 +46,6 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'nbsphinx',
-    'jupyter_sphinx.embed_widgets',
 ]
 
 napoleon_numpy_docstring=True
