@@ -60,6 +60,10 @@
 #    - pockets==0.6.2
 #    - sphinxcontrib-napoleon==0.6.1
 
+# Required
+version: 2
+sphinx:
+  configuration: docs/conf.py
 python:
   version: 3.6
   install:
