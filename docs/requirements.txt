@@ -1,5 +1,5 @@
 sphinx==1.7.5
-sphinx_rtd_theme==0.4.1
+sphinx_rtd_theme==0.4.3
 numpy==1.16.4
 matplotlib==2.2.2
 scipy==1.2.1
@@ -8,6 +8,3 @@ vtk==8.1.0
 PyQt5==5.13.0
 PyPDF2==1.26.0
 reportlab==3.5.23
-nbsphinx
-jupyter_sphinx
-jupyter_sphinx.embed_widgets
