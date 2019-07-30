@@ -24,7 +24,6 @@ dependencies:
   - nb_anacondacloud=1.4.0=py35_0
   - nb_conda=2.2.1=py35_0
   - nb_conda_kernels=2.1.1=py35_1
-  - nbconvert=5.3.1=py_1
   - nbformat=4.4.0=py_1
   - nbpresent=3.0.2=py35_1
   - nbsphinx=0.3.4=py_0
