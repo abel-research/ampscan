@@ -304,6 +304,7 @@ class AmpScanGUI(QMainWindow):
                 reg.actor.setShading(False)
                 reg.CMapOut(colors=self.CMapN2P)
                 reg.plotResults(name="distributionofshapevariance.png")
+            self.display()  # Reset which objects are displayed
             print('Run the Registration code between %s and %s' % (baseline, target))
         else:
             show_message("Must be at least 2 objects loaded to run registration")
