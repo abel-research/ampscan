@@ -2,7 +2,6 @@ from PyPDF2 import PdfFileReader, PdfFileWriter, PdfFileMerger
 from reportlab.pdfgen import canvas
 import io
 import os
-import webbrowser
 
 
 def getPDF(lngths, perimeters, CSA, APW, MLW):
@@ -55,9 +54,6 @@ def getPDF(lngths, perimeters, CSA, APW, MLW):
     output_file_path = os.path.join(get_downloads_folder(), "AmpScanReport.pdf")
     outputStream = open(output_file_path, "wb")
     output.write(outputStream)
-
-    # Open Report in webbrowser
-    webbrowser.get().open(output_file_path)  # .get() gets the default browser
 
     outputStream.close()
 

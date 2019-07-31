@@ -283,7 +283,6 @@ class analyseMixin(object):
                                      (edges[:, axis+3] - edges[:, axis]))
         return intersectPoints
 
-
     
     def MeasurementsOut(self, pos):
         """
@@ -295,7 +294,11 @@ class analyseMixin(object):
         Calls the function responsible for adding the information to the PDF
         template.
         TODO: Split this into functions for each part i.e. Volume measure, CSA,
-        widths 
+        widths
+
+        Returns
+        -------
+        The path to the output file
         """
         print(pos)
         maxZ = []
@@ -360,7 +363,7 @@ class analyseMixin(object):
         ax2.set_ylabel("width (cm)")
         ax2.legend()
         fig.savefig("figure.png")
-        getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth) #PDF Creation function (in output.py)
+        return getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth) #PDF Creation function (in output.py)
         #divided by 10 to convert to cms, assumes stl files are in mm
         #TO-DO: Some sort of metric conversion function?
 

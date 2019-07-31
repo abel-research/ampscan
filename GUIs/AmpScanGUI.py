@@ -1,4 +1,6 @@
 import sys
+import webbrowser
+
 import numpy as np
 import vtk
 from AmpScan import AmpObject
@@ -349,7 +351,10 @@ class AmpScanGUI(QMainWindow):
             print("Please select a reference point first.")
         else:
             [name, _, color, opacity, display] = self.fileManager.getRow(0)
-            self.files[name].MeasurementsOut(self.pnt)
+            output_file_path = self.files[name].MeasurementsOut(self.pnt)
+
+            # Open Report in webbrowser
+            webbrowser.get().open(output_file_path)  # .get() gets the default browser
     
     def createActions(self):
         """
