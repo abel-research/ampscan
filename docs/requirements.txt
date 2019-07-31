@@ -10,4 +10,4 @@ PyPDF2==1.26.0
 reportlab==3.5.23
 nbsphinx
 jupyter_sphinx
-git+https://github.com/JoshuaSteer/ampscan
+git+https://github.com/abel-research/ampscan
