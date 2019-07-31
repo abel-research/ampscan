@@ -346,9 +346,11 @@ class AmpScanGUI(QMainWindow):
         self.renWin.setScalarBar(self.AmpObj.actors['antS'])
         
     def measure(self):
-        #if no point selected condition move to analyse.py
-        if self.pnt is None:
-            print("Please select a reference point first.")
+        # If no point selected condition move to analyse.py
+        if not self.objectsReady(1):
+            show_message("Please import an object first")
+        elif self.pnt is None:
+            show_message("Please select a reference point first using pick")
         else:
             [name, _, color, opacity, display] = self.fileManager.getRow(0)
             output_file_path = self.files[name].MeasurementsOut(self.pnt)
@@ -419,8 +421,11 @@ class AmpScanGUI(QMainWindow):
     def openAmpObjectManager(self):
         self.fileManager.show()
 
-    def objectsReady(self, num):
-        return len(self.files) >= num
+    def objectsReady(self, n):
+        """Check there are at least n objects loaded
+
+        """
+        return len(self.files) >= n
 
 
 class fileManager(QMainWindow):
@@ -614,6 +619,8 @@ def show_message(message, message_type="err", title="An Error Occured..."):
 
     # Makes sure doesn't close until user closes it
     dialog.exec_()
+
+    return dialog
 
 
 if __name__ == "__main__":

@@ -283,7 +283,6 @@ class analyseMixin(object):
                                      (edges[:, axis+3] - edges[:, axis]))
         return intersectPoints
 
-    
     def MeasurementsOut(self, pos):
         """
         Calculates perimeter of limb/cast at intervals from mid-patella to the
@@ -300,7 +299,7 @@ class analyseMixin(object):
         -------
         The path to the output file
         """
-        print(pos)
+        # print(pos)
         maxZ = []
         for i in [0,1,2]:
             maxZ.append((self.vert[:, i]).max() - (self.vert[:, i]).min())
@@ -349,7 +348,7 @@ class analyseMixin(object):
             APWidth[i] = APW/10
             MLW = poly[:,1].max() - poly[:,1].min()
             MLWidth[i] = MLW/10
-        print(PolyArea, MLWidth, APWidth)
+        # print(PolyArea, MLWidth, APWidth)
         fig = plt.figure()
         fig.set_size_inches(7.5, 4.5)
         ax = fig.add_subplot(221)
@@ -363,9 +362,9 @@ class analyseMixin(object):
         ax2.set_ylabel("width (cm)")
         ax2.legend()
         fig.savefig("figure.png")
-        return getPDF(lngth, perimeter, PolyArea, APWidth,MLWidth) #PDF Creation function (in output.py)
-        #divided by 10 to convert to cms, assumes stl files are in mm
-        #TO-DO: Some sort of metric conversion function?
+        return getPDF(lngth, perimeter, PolyArea, APWidth, MLWidth)  # PDF Creation function (in output.py)
+        # Divided by 10 to convert to cms, assumes stl files are in mm
+        # TODO: Some sort of metric conversion function?
 
 
     def CMapOut(self, colors):

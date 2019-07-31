@@ -1,4 +1,4 @@
-from PyPDF2 import PdfFileReader, PdfFileWriter, PdfFileMerger
+from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.pdfgen import canvas
 import io
 import os
