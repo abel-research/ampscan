@@ -54,6 +54,7 @@ class AmpScanGUI(QMainWindow):
         self.fileManager.show()
         self.fileManager.table.itemChanged.connect(self.display)
         self.pnt = None
+        self.AmpObj = None
         
     def chooseOpenFile(self):
         """
@@ -317,11 +318,14 @@ class AmpScanGUI(QMainWindow):
 
         """
         #self.RegObj.plot_slices()
-        self.AmpObj.vert[:, 0] *= 2
-        self.AmpObj.actor.points.Modified()
-        #self.renWin.renderActors([self.AmpObj.actor,])
-        #self.AmpObj.vert[0,0] = 1
-        #self.AmpObj._v = numpy_support.numpy_to_vtk(self.AmpObj.vert)
+        if self.AmpObj != None:  # Check object is loaded
+            self.AmpObj.vert[:, 0] *= 2
+            self.AmpObj.actor.points.Modified()
+            #self.renWin.renderActors([self.AmpObj.actor,])
+            #self.AmpObj.vert[0,0] = 1
+            #self.AmpObj._v = numpy_support.numpy_to_vtk(self.AmpObj.vert)
+        else:
+            show_message("Please load object first")
 
     def chooseFE(self):
         """
