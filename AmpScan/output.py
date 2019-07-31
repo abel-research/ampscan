@@ -4,12 +4,17 @@ import io
 import os
 import webbrowser
 
-def getPDF(lngths, perimeters, CSA,APW,MLW):
+
+def getPDF(lngths, perimeters, CSA, APW, MLW):
     """
     creates a PDF file containing information about the limb in correct
     locations on the page
     then merges the PDF file with the existing template to create the output
     file
+
+    Returns
+    -------
+    The file path to the PDF
     """
     packet = io.BytesIO()
     c = canvas.Canvas(packet)
@@ -55,6 +60,8 @@ def getPDF(lngths, perimeters, CSA,APW,MLW):
     webbrowser.get().open(output_file_path)  # .get() gets the default browser
 
     outputStream.close()
+
+    return output_file_path
 
 
 def get_downloads_folder():
