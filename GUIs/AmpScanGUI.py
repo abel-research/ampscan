@@ -97,19 +97,39 @@ class AmpScanGUI(QMainWindow):
         except AttributeError:
             print('A point has not been selected')
 
-    
     def display(self):
         render = []
         for r in range(self.fileManager.n):
             [name, _, color, opacity, display] = self.fileManager.getRow(r)
+            # Make the object visible
             if display == 2:
-                render.append(self.files[name].actor)
-            color = color[1:-1].split(',')
-            color = [float(c) for c in color]
-            self.files[name].actor.setColor(color)
-            self.files[name].actor.setOpacity(float(opacity))
+                # TODO fix duplicate names
+                if name in self.files.keys():
+                    render.append(self.files[name].actor)
+                else:
+                    show_message("Invalid name: {}".format(name))
+                    # Temp workaround name change crash
+                    # TODO make names actually change
+                    continue
+
+            # Change the color
+            try:
+                color = color[1:-1].split(',')
+                color = [float(c) for c in color]
+                if len(color) != 3:
+                    raise ValueError
+                self.files[name].actor.setColor(color)
+            except ValueError:
+                show_message("Invalid colour: {}".format(color))
+                continue
+
+            # Change opacity
+            try:
+                self.files[name].actor.setOpacity(float(opacity))
+            except ValueError:
+                show_message("Invalid opacity: {}".format(opacity))
+
             self.renWin.renderActors(render)
-        
         
     def align(self):
         """
@@ -151,7 +171,7 @@ class AmpScanGUI(QMainWindow):
         loc = event.GetEventPosition()
         self.pnt = vtkRenWin.Pick_point(self.renWin, loc)
         #vtkRenWin.mark(self.renWin,self.pnt[0],self.pnt[1],self.pnt[2])
-        print(self.pnt)
+        # print(self.pnt)
     
     def removePick(self):
         """
