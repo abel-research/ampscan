@@ -51,6 +51,7 @@ class AmpScanGUI(QMainWindow):
         self.fileManager = fileManager(self)
         self.fileManager.show()
         self.fileManager.table.itemChanged.connect(self.display)
+        self.pnt = None
         
     def chooseOpenFile(self):
         """
@@ -536,16 +537,6 @@ class AlignControls(QMainWindow):
         self.static.addItems(self.names)
         self.moving.clear()
         self.moving.addItems(self.names)
-           
-
-    
-    def getNames(self):
-        """
-        """
-        self.baseline.clear()
-        self.baseline.addItems(self.names)
-        self.target.clear()
-        self.target.addItems(self.names)
 
      
 class RegistrationControls(QMainWindow):
