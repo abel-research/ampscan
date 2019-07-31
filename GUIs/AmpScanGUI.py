@@ -170,7 +170,14 @@ class AmpScanGUI(QMainWindow):
         #print(event, x)
         self.vtkWidget.iren.RemoveObservers('RightButtonPressEvent')
         loc = event.GetEventPosition()
-        self.pnt = vtkRenWin.Pick_point(self.renWin, loc)
+
+        # Currently this only allow one pick points, but in the future, more reference points may be needed
+        if self.pnt is None:  # Check no points are already picked
+            self.pnt = vtkRenWin.Pick_point(self.renWin, loc)
+        else:
+            show_message("A point is already set as the reference.\n"
+                         "Clear the picked points to change reference",
+                         message_type="info")
         #vtkRenWin.mark(self.renWin,self.pnt[0],self.pnt[1],self.pnt[2])
         # print(self.pnt)
     
