@@ -1,6 +1,8 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter, PdfFileMerger
 from reportlab.pdfgen import canvas
 import io
+import os
+import webbrowser
 
 def getPDF(lngths, perimeters, CSA,APW,MLW):
     """
@@ -35,8 +37,8 @@ def getPDF(lngths, perimeters, CSA,APW,MLW):
     c.save()
     packet.seek(0)
     newpdf = PdfFileReader(packet)
-    template = PdfFileReader(open("Measurements3.pdf", "rb"))
-    t2 = PdfFileReader(open("Output Template.pdf", "rb"))
+    template = PdfFileReader(open(os.path.join("res", "Measurements Template.pdf"), "rb"))
+    t2 = PdfFileReader(open(os.path.join("res", "Output Template.pdf"), "rb"))
     output = PdfFileWriter()
     page = t2.getPage(0)
     page.mergePage(newpdf.getPage(1))
@@ -44,6 +46,23 @@ def getPDF(lngths, perimeters, CSA,APW,MLW):
     page2.mergePage(newpdf.getPage(0))
     output.addPage(page)
     output.addPage(page2)
-    outputStream = open("Output.pdf", "wb")
+
+    output_file_path = os.path.join(get_downloads_folder(), "AmpScanReport.pdf")
+    outputStream = open(output_file_path, "wb")
     output.write(outputStream)
-    outputStream.close
+
+    # Open Report in webbrowser
+    webbrowser.get().open(output_file_path)  # .get() gets the default browser
+
+    outputStream.close()
+
+
+def get_downloads_folder():
+    """Gets the downloads folder in a relatively platform independent way"""
+
+    # Get user dir
+    downloads_path = os.path.join(os.path.expanduser("~"), "Downloads")
+    if not os.path.exists(downloads_path):  # If downloads folder doesn't exist, create it
+        os.mkdir(downloads_path)
+
+    return downloads_path
