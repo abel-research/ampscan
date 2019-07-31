@@ -20,7 +20,7 @@ Therefore, analysis procedures can all be accessed using the lightweight Graphic
 
 AmpScan relies heavily on numpy_ and scipy_ to perform 
 mathematical operations with visualisation handled by PyQt_
-and VTK_. The package is still under development by researchers at the University of Southampton. 
+and VTK_. The package is still under development by researchers at the Amputee BioEngineering Lab (ABEL) at University of Southampton. 
 The foundations of this toolbox were developed in research funded by:
 - the UK's Engineering and Physical Sciences Research Council (EPSRC), grants EP/M508147/1 and EP/M000303/1, and
 - the UK's Royal Academy of Engineering (RAEng), grant RF/130.
@@ -72,7 +72,7 @@ Developer Install
 
 For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
-``git clone https://git.soton.ac.uk/js22g12/AmpScan.git``
+``git clone https://github.com/abel-research/ampscan``
 
 Navigate to the `AmpScan/` directory and run a pip install using:
 
