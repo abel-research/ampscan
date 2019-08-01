@@ -31,6 +31,18 @@ class TestCore(unittest.TestCase):
         # Check that the mesh is centred correctly (to at least the number of decimal places of ACCURACY)
         self.assertTrue(all(centre[i] < (10**-TestCore.ACCURACY) for i in range(3)))
 
+    def test_centre_static(self):
+        # Import second shape
+        from AmpScan.core import AmpObject
+        stl_path = get_path("stl_file_2.stl")
+        amp2 = AmpObject(stl_path)
+
+        self.amp.centre_static(amp2)
+
+        for i in range(3):
+            # This method has a large degree of error so, it's only testing to 2 dp
+            self.assertAlmostEqual(self.amp.vert.mean(axis=0)[i], amp2.vert.mean(axis=0)[i], 2)
+
     def test_rotate_ang(self):
         """Tests the rotateAng method of AmpObject"""
 
