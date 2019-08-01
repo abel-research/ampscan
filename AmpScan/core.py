@@ -335,6 +335,18 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
 
         """
         self.translate(-self.vert.mean(axis=0))
+
+    def centre_static(self, static):
+        r"""
+        Centre the AmpObj based upon the mean of all the vertices
+
+        Parameters
+        ----------
+        static : AmpObject
+            The static shape to center this object onto
+
+        """
+        self.translate(-self.vert.mean(axis=0)+static.vert.mean(axis=0))
     
     def rotateAng(self, rot, ang='rad', norms=True):
         r"""
