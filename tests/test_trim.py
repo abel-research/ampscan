@@ -28,3 +28,15 @@ class TestTrim(unittest.TestCase):
             self.amp.planarTrim(0.6, plane=0.9)
         with self.assertRaises(TypeError):
             self.amp.planarTrim([], plane=[])
+
+    def test_trim_2(self):
+        """Tests the trim method of AmpObject by checking no vertices are above trim line"""
+        # Test no points are above 10
+        h = 10
+        self.amp.planarTrim(h, plane=2)
+        self.assertLessEqual(self.amp.vert[:, 2].max(), h)
+
+        # Test no points are above 0
+        h = 0
+        self.amp.planarTrim(h, plane=2)
+        self.assertLessEqual(self.amp.vert[:, 2].max(), h)
