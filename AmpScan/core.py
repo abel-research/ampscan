@@ -331,14 +331,14 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
 
     def centre(self):
         r"""
-        Centre the AmpObj based upon the mean of all the vertices
+        Centre the AmpObject based upon the mean of all the vertices
 
         """
         self.translate(-self.vert.mean(axis=0))
 
-    def centre_static(self, static):
+    def centreStatic(self, static):
         r"""
-        Centre the AmpObj based upon the mean of all the vertices
+        Centre this AmpObject on the static AmpObject's centroid based upon the mean of all the vertices
 
         Parameters
         ----------
@@ -346,7 +346,10 @@ class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
             The static shape to center this object onto
 
         """
-        self.translate(-self.vert.mean(axis=0)+static.vert.mean(axis=0))
+        if isinstance(static, AmpObject):
+            self.translate(-self.vert.mean(axis=0)+static.vert.mean(axis=0))
+        else:
+            raise TypeError("centre_static method expects AmpObject, found: {}".format(type(static)))
     
     def rotateAng(self, rot, ang='rad', norms=True):
         r"""

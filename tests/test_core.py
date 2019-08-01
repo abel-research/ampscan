@@ -32,12 +32,18 @@ class TestCore(unittest.TestCase):
         self.assertTrue(all(centre[i] < (10**-TestCore.ACCURACY) for i in range(3)))
 
     def test_centre_static(self):
+
+        with self.assertRaises(TypeError):
+            self.amp.centreStatic(1)
+        with self.assertRaises(TypeError):
+            self.amp.centreStatic([])
+
         # Import second shape
         from AmpScan.core import AmpObject
         stl_path = get_path("stl_file_2.stl")
         amp2 = AmpObject(stl_path)
 
-        self.amp.centre_static(amp2)
+        self.amp.centreStatic(amp2)
 
         for i in range(3):
             # This method has a large degree of error so, it's only testing to 2 dp
