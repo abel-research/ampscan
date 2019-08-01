@@ -27,7 +27,7 @@ class AmpScanGUI(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from AmpScan.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.AmpScanGUI import AmpScanGUI
 
     """
 
@@ -468,8 +468,8 @@ class fileManager(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from AmpScan.AmpScanGUI import AmpScanGUI
-*
+    >>> from GUIs.AmpScanGUI import AmpScanGUI
+
     """
 
     def __init__(self, parent = None):
@@ -526,7 +526,7 @@ class AlignControls(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from AmpScan.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.AmpScanGUI import AmpScanGUI
 
     """
 
@@ -589,7 +589,7 @@ class RegistrationControls(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from AmpScan.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.AmpScanGUI import AmpScanGUI
 
     """
 
