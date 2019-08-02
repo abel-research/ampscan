@@ -26,9 +26,3 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
         s = str(type(AmpScan.core))
         self.assertEqual(s, "<class 'module'>", "Failed import: AmpScan.core")
-
-    @unittest.expectedFailure
-    def test_failure(self):
-        """Test expected failure functionality of test suite"""
-        s = str(type("string"))
-        self.assertEqual(s, "<class 'module'>")
