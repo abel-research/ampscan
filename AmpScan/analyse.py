@@ -120,7 +120,7 @@ class analyseMixin(object):
         vE = self.vert[:, axis][self.edges]
         # Find all vertices below plane 
         polys = []
-        for i, plane in enumerate(slices):
+        for plane in slices:
             ind = vE < plane
             # Select edges with one vertex above and one below the slice plane 
             validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
@@ -159,7 +159,6 @@ class analyseMixin(object):
             del rows[i]
             order[n] = val
             i=0
-            xmax = vmax - n + 1
             for x in rows: 
                 if arr[x, 0] == val:
                     val = arr[x, 1]
@@ -313,7 +312,7 @@ class analyseMixin(object):
         cb1 = clb.ColorbarBase(axes[-1], cmap=cmap,norm=norm)
         cb1.set_label('Shape deviation / mm')
         for i, ax in enumerate(axes[:-1]):
-            im = self.genIm(size=[3200, 8000],crop=True, az = i*90)
+            im = self.genIm(size=[3200, 8000],crop=True, az = i*90)[0]
             ax.imshow(im)
             ax.set_title(titles[i])
             ax.set_axis_off()
