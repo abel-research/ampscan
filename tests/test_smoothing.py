@@ -1,5 +1,5 @@
 """
-Testing suite for the registration module
+Testing suite for the smoothing module
 """
 
 import unittest

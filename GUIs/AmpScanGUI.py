@@ -303,7 +303,7 @@ class AmpScanGUI(QMainWindow):
                 reg.actor.setScalarRange([-10,10])
                 reg.actor.setShading(False)
                 reg.CMapOut(colors=self.CMapN2P)
-                reg.plotResults(name="distributionofshapevariance.png")
+                # reg.plotResults(name="distributionofshapevariance.png")
             self.display()  # Reset which objects are displayed
             print('Run the Registration code between %s and %s' % (baseline, target))
         else:
