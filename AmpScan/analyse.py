@@ -86,13 +86,13 @@ class analyseMixin(object):
         ax2.plot(slices-slices[0], PolyArea)
         # Rendering of the limb scan
         ax3 = fig.add_subplot(2,2,3)
-        Im = self.genIm()
+        Im = self.genIm()[0]
         ax3.imshow(Im, None)
         ax3.set_axis_off()
         # Rendering of the rectification map 
         ax4 = fig.add_subplot(2,2,4)
         self.addActor(CMap = self.CMapN2P)
-        Im = self.genIm()
+        Im = self.genIm()[0]
         ax4.imshow(Im, None)
         ax4.set_axis_off()
         plt.tight_layout()
