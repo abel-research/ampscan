@@ -126,35 +126,12 @@ class analyseMixin(object):
             validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
             validfE = self.faceEdges[validEdgeInd, :].astype(int)
             faceOrder = analyseMixin.logEuPath(validfE)
-#            g = defaultdict(set)
-#            faceOrder = np.zeros(len(validEdgeInd), dtype=int)
-#            # Run eularian path algorithm to order faces
-#            for v, w in validfE:
-#                g[v].add(w)
-#                g[w].add(v)
-#            v = validfE[0,0]
-#            j=0
-#            while True:
-#                try:
-#                    w = g[v].pop()
-#                except KeyError:
-#                    break
-#                g[w].remove(v)
-#                faceOrder[j] = v
-#                j+=1
-#                v = w
             # Get array of three edges attached to each face
             validEdges = self.edgesFace[faceOrder, :]
             # Remove the edge that is not intersected by the plane
             edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
             # Remove the duplicate edge from order 
             e = edges.flatten()
-#            odx = np.argsort(e)
-#            inds = np.arange(1, len(e), 2)
-#            row = np.unravel_index(odx, e.shape)[0]
-#            mask = np.ones(len(e), dtype=bool)
-#            mask[row[inds]] = False
-#            sortE = e[mask]
             sortE = []
             for ed in e:
                 if ed not in sortE:
@@ -194,49 +171,7 @@ class analyseMixin(object):
         order[n+1] = val
         return order
     
-#    def create_slices_cy(self, slices, axis='Z'):
-#        """
-#        Another method desc.
-#        
-#        Attributes
-#        ----------
-#        
-#        slices : array
-#            Probably not array
-#        axis : arg
-#            defaults to Z
-#
-#        """
-#        vE = self.vert[:,2][self.edges]
-#        # Find all vertices below plane 
-#        polys = []
-#        for i, plane in enumerate(slices):
-#            ind = vE < plane
-#            # Select edges with one vertex above and one below the slice plane 
-#            validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
-#            validfE = self.faceEdges[validEdgeInd, :].astype(int)
-#            faceOrder = logEuPath_cy(validfE)
-#            #Get array of three edges attached to each face
-#            validEdges = self.edgesFace[faceOrder, :]
-#            # Remove the edge that is not intersected by the plane
-#            edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
-#            # Remove the duplicate edge from order 
-#            e = edges.flatten()
-#            odx = np.argsort(e)
-#            inds = np.arange(1, len(e), 2)
-#            row = np.unravel_index(odx, e.shape)[0]
-#            mask = np.ones(len(e), dtype=bool)
-#            mask[row[inds]] = False
-#            sortE = e[mask]
-#            # Add first edge to end of array
-#            sortE = np.append(sortE, sortE[0])
-#            polyEdge = self.edges[sortE]
-#            EdgePoints = np.c_[self.vert[polyEdge[:,0], :], 
-#                               self.vert[polyEdge[:,1], :]]
-#            # Create poly from
-##            polys.append(analyseMixin.planeEdgeintersect(EdgePoints, plane, axis=axis))
-#            polys.append(planeEdgeIntersect_cy(EdgePoints, plane, 2))
-#        return polys
+
     @staticmethod
     def planeEdgeIntersect_cy(arr, plane, axisInd):
         emax = arr.shape[0]
