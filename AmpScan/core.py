@@ -10,7 +10,6 @@ import os
 import struct
 from AmpScan.trim import trimMixin
 from AmpScan.smooth import smoothMixin
-from AmpScan.analyse import analyseMixin
 from AmpScan.ampVis import visMixin
 
 
@@ -18,7 +17,7 @@ from AmpScan.ampVis import visMixin
 filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
 
-class AmpObject(trimMixin, smoothMixin, analyseMixin, visMixin):
+class AmpObject(trimMixin, smoothMixin, visMixin):
     r"""
     Base class for the AmpScan project.
     Stores mesh data and extra information 
