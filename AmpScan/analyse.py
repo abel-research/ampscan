@@ -221,7 +221,7 @@ def est_volume(polys):
     # Calculate volume between each slice by mutliplying the 
     # mean cross sectional area by the distance 
     vol = np.c_[csa[1:], csa[:-1]]
-    vol = np.mean(axis=1) * dist
+    vol = np.mean(vol, axis=1) * dist
     return vol.sum()
     
 
