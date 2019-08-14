@@ -96,7 +96,7 @@ def calc_perimeter(amp, pos, axis=2, interval=0.05):
     # Make an array of the percetage intervals 
     percents = np.arange(0.0,0.955,interval)
     # Caluclate distance between bottom of limb and the pos
-    min_limb = amp.vert[:,axis]).min()
+    min_limb = amp.vert[:,axis].min()
     dist_limb = pos - min_limb
     # Generate position of the slices  
     slices = []
