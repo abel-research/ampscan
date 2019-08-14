@@ -16,15 +16,16 @@ from .output import getPDF
 from math import floor
 #from .cython_ext import planeEdgeIntersect_cy, logEuPath_cy
 
-def create_slices(amp, slices, axis=2):
-    """
-    Generate polygons from planar slices through the AmpObject 
+def create_slices(amp, *args,  typ='slices', axis = 2):
+    r"""
+    Generate polygons from planar slices through the AmpObject. The slices are either defined as a 
+    list of positions in some axis
     
     Parameters
     ----------
     amp: AmpObject 
         The AmpObject to analyse 
-    slices: array_like
+    typ: str, 'slices', 'real_intervals', 'norm_intervals'
         The height of the slice planes
     axis: int, default 2
         The index of the axis to take the slices along
@@ -36,6 +37,31 @@ def create_slices(amp, slices, axis=2):
         polygon generated from the slice
 
     """
+    # Setup the slices array 
+    if typ == 'slices':
+        # Return error if no slices given provided 
+        slices = args[0]
+    elif typ == 'real_intervals':
+        lim = args[0]
+        intervals = args[1]
+        slices = np.arange(lim[0], lim[0], intervals)
+    elif typ == 'norm_intervals':
+        # Get the minimum and maximum of the limb
+        limb_min = amp.vert[:, axis].min()
+        limb_max = amp.vert[:, axis].max()
+        limb_len = limb_max - limb_min
+        lim = args[0]
+        intervals = args[1]
+        slice_min = limb_min + (limb_len * lim[0])
+        slice_max = limb_min + (limb_len * lim[1])
+        slices = np.arange(slice_min, slice_max, intervals)
+    else: 
+        return
+        # Return error that typ is an invalid value 
+    
+    # Now start to calculate the polyons on each slice
+    
+    # Get the vertices on each edges 
     vE = amp.vert[:, axis][amp.edges]
     # Find all vertices below plane 
     polys = []
@@ -66,61 +92,139 @@ def create_slices(amp, slices, axis=2):
         polys.append(planeEdgeIntersect_cy(EdgePoints, plane, axis))
     return polys
 
-def calc_perimeter(amp, pos, axis=2, interval=0.05):
+def calc_perimeter(polys):
     r"""
-    Measure Coronal and Sagittal widths at intervals along limb (0-95%) for a single 
-    AmpObject 
+    Calculate the perimeter of each polygon from the slicing of the AmpObject  
 
     Parameters
     ----------
-    amp: AmpObject
-        The AmpObject to analyse
-    pos: float
-        The point from which to begin calculating the perimeter 
-    axis: int, default 2
-        The axis along which to calculate the perimeter 
-    interval: float, default 0.05
-        Normalised intervals to calculate perimeter along length of limb 
-
-    TODO: Change this so pos is normalised 
+    polys: list
+        A list of numpy arrays, each array contains the vertices of the 
+        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
 
     Returns
     -------
     perimeter: array_like
-        Returns the perimeter of the limb in mm
-    dist_limv: float
-        The total distance 
-        
-    
+        Returns the perimeter of the limb in mm along the axis 
     """
-    # Make an array of the percetage intervals 
-    percents = np.arange(0.0,0.955,interval)
-    # Caluclate distance between bottom of limb and the pos
-    min_limb = amp.vert[:,axis].min()
-    dist_limb = pos - min_limb
-    # Generate position of the slices  
-    slices = []
-    [slices.append(pos - (dist_limb*i)) for i in percents]
-    # initialise array for slices  
-    perimeter = np.zeros([len(slices)])
-    # Calculate the slices
-    polys = create_slices(amp, slices, axis=axis)
-    for i,j in enumerate(slices):
-        try:
-            polys = amp.create_slices([j], axis)
-            poly = polys[0]
-            nverts = np.arange(len(poly)-1)
-            dists = []
-            for x in nverts:
-                xc = (poly[x][0] - poly[x+1][0])**2
-                yc = (poly[x][1] - poly[x+1][1])**2
-                zc = (poly[x][2] - poly[x+1][2])**2
-                dist = np.sqrt(xc+yc+zc)
-                dists.append(dist)
-            perimeter[i] = sum(dists) / 10
-        except IndexError:
-            perimeter[i] = np.nan
-    return perimeter, dist_limb           
+    perimeter = np.zeros(len(polys))
+    # Iterate over each polygon
+    for i, p in enumerate(polys):
+        # Get the distances in each dimension between adjacent points 
+        d = p[1:, :] - p[:-1, :]
+        # Calculate the normalised distance between points 
+        dist = np.linalg.norm(d, axis=1)
+        # Sum the distances to get the perimeter
+        perimeter[i] = dist.sum()
+    # Return the perimeter and distance of limb over which perimeter calculated
+    return perimeter
+
+
+
+def calc_widths(polys):
+    r"""
+    Calculate the coronal and sagittal widths of each polygon from the slicing of the AmpObject  
+
+    Parameters
+    ----------
+    polys: list
+        A list of numpy arrays, each array contains the vertices of the 
+        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+
+    Returns
+    -------
+    cor_width: array_like
+        Returns the coronal width in mm along the axis
+    sag_width: array_like
+        Returns the sagittal width in mm along the axis 
+    """
+    cor_width = np.zeros(len(polys))
+    sag_width = np.zeros(len(polys))
+    # Automatically check the axis of slicing by finding the axis with minimal deviation
+    # The correct axis should have 0 deviation
+    ix = np.argmin(polys[0].max(axis=0) - polys[0].min(axis=0))
+    # Remove from list the index for slicing axis 
+    ind = [0,1,2]
+    ind.remove(i)
+    for i, p in enumerate(polys):
+        # Get the widths through min - max 
+        sag_width[i], cor_width[i] = p[:, ind].max(axis=0) - p[:, ind].min(axis=0)
+    return cor_width, sag_width
+
+def calc_csa(polys):
+    r"""
+    Calculate the cross sectional area of each polygon from the slicing of the AmpObject  
+
+    Parameters
+    ----------
+    polys: list
+        A list of numpy arrays, each array contains the vertices of the 
+        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+
+    Returns
+    -------
+    csa: array_like
+        Returns the cross-sectional area of the limb in mm^2 along the axis 
+    """
+    csa = np.zeros(len(polys))
+    # Automatically check the axis of slicing by finding the axis with minimal deviation
+    # The correct axis should have 0 deviation
+    ix = np.argmin(polys[0].max(axis=0) - polys[0].min(axis=0))
+    # Remove from list the index for slicing axis 
+    ind = [0,1,2]
+    ind.remove(i)
+    # Iterate over each poly to calculcate cross sectional area 
+    for i, p in enumerate(polys):
+        csa[i] = 0.5*np.abs(
+                            np.dot(
+                                   p[:,ind[0]], 
+                                   np.roll(p[:,ind[1]], 1)
+                                  ) 
+                            -
+                            np.dot(
+                                   p[:,ind[1]], 
+                                   np.roll(p[:,ind[0]], 1)
+                                   )
+                            )
+    return csa
+
+def est_volume(polys):
+    r"""
+    Estimate the volume of the limb using bounds of the slices 
+
+    Parameters
+    ----------
+    polys: list
+        A list of numpy arrays, each array contains the vertices of the 
+        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+
+    Returns
+    -------
+    Volume: float
+        Returns the estimated volume of the limb in mm^3 along the axis 
+    """
+    # Automatically check the axis of slicing by finding the axis with minimal deviation
+    # The correct axis should have 0 deviation
+    ix = np.argmin(polys[0].max(axis=0) - polys[0].min(axis=0))
+    # Remove from list the index for slicing axis 
+    ind = [0,1,2]
+    ind.remove(i)
+    # Calculate the csa
+    csa = calc_csa(polys)
+    # Get the distance between each slice 
+    d = []
+    for p in polys: 
+        d.append(p[:, ix].mean())
+    d = np.asarray(d)
+    # Get distance between each slice 
+    dist = np.abs(d[1:]- d[:-1])
+    # Calculate volume between each slice by mutliplying the 
+    # mean cross sectional area by the distance 
+    vol = np.c_[csa[1:], csa[:-1]]
+    vol = np.mean(axis=1) * dist
+    return vol.sum()
+    
+
 
 def plot_slices(amp, axis=2, slWidth=10):
     r"""
@@ -200,6 +304,9 @@ def plot_slices(amp, axis=2, slWidth=10):
 
 
 def logEuPath(arr):
+    """
+    Calculate the eularian path for an array of edges so the vertices all connect
+    """
     vmax = arr.shape[0]
     rows = list(range(vmax))
     order = np.zeros([vmax], dtype=int)
@@ -223,6 +330,24 @@ def logEuPath(arr):
 
 
 def planeEdgeIntersect_cy(arr, plane, axisInd):
+    r"""
+    Calculate the intersection between a an array of edges and a plane
+    
+    Parameters 
+    ----------
+    edges: array_like 
+        The edge array which have been calculated to cross the plane
+    plane: float
+        The height of the plane
+    axis: int, default 2
+        The index of the axis of the slice
+    
+    Returns
+    -------
+    intersectPoints: ndarray
+        The intersection points between the edges and the plane
+    
+    """
     emax = arr.shape[0]
     intersectPoints = np.zeros((emax, 3), dtype=np.float32)
     intersectPoints[:, axisInd] = plane
@@ -370,65 +495,4 @@ def CMapOut(amp, colors):
     plt.savefig("Limb Views.png", dpi=600)
 
 
-def volumeMeasure(amp, zval, axis=2, slWidth=0.1):
-    """
-    volume estimation using slices
-    """
-    ind = [0,1,2]
-    ind.remove(axis)
-    slices = np.arange((amp.vert[:,axis]).min()+slWidth, zval, slWidth)
-    polys = amp.create_slices(slices, axis)
-    PArea = np.zeros(len(polys))
-    for i, poly in enumerate(polys):
-        # Compute area of slice
-        area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
-                            np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
-        PArea[i] = area/100
-    return sum(PArea*slWidth/10)+(PArea[-1]*(zval-slices[-1]))
-    
-
-def CSAMeasure(amp,zval, axis=2, interval = 0.05):
-    """
-    Measure CSA at 5% increments (0-95%) from selected point to stump
-    """
-    ind = [0,1,2]
-    ind.remove(axis)
-    percents = np.arange(0.0,0.955,interval)
-    distump = (zval-(amp.vert[:,axis]).min())
-    slices = []
-    [slices.append(zval - (distump*i)) for i in percents]
-    PArea = np.zeros(len(slices))
-    for i,j in enumerate(slices):
-        try:
-            polys = amp.create_slices([j], axis)
-            poly = polys[0]
-            area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
-                                np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
-            PArea[i] = area/100
-        except IndexError:
-            PArea[i] = None
-    return PArea, distump
-
-def widthsMeasure(amp,zval,axis=2,interval=0.05):
-    """
-    Measure Coronal and Sagittal widths at intervals along limb (0-95%)
-    """
-    percents = np.arange(0.0,0.955,interval)
-    distump = (zval-(amp.vert[:,axis]).min())
-    slices = []
-    [slices.append(zval - (distump*i)) for i in percents]
-    MLWidth = np.zeros([len(slices)])
-    APWidth = np.zeros([len(slices)])
-    for i,j in enumerate(slices):
-        try:
-            polys = amp.create_slices([j], axis)
-            poly = polys[0]
-            APW = poly[:,0].max() - poly[:,0].min()
-            APWidth[i] = APW
-            MLW = poly[:,1].max() - poly[:,1].min()
-            MLWidth[i] = MLW
-        except IndexError:
-            MLWidth[i] = None
-            APWidth[i] = None
-    return APWidth, MLWidth
 
