@@ -145,7 +145,7 @@ def calc_widths(polys):
     ix = np.argmin(polys[0].max(axis=0) - polys[0].min(axis=0))
     # Remove from list the index for slicing axis 
     ind = [0,1,2]
-    ind.remove(i)
+    ind.remove(ix)
     for i, p in enumerate(polys):
         # Get the widths through min - max 
         sag_width[i], cor_width[i] = p[:, ind].max(axis=0) - p[:, ind].min(axis=0)
@@ -172,7 +172,7 @@ def calc_csa(polys):
     ix = np.argmin(polys[0].max(axis=0) - polys[0].min(axis=0))
     # Remove from list the index for slicing axis 
     ind = [0,1,2]
-    ind.remove(i)
+    ind.remove(ix)
     # Iterate over each poly to calculcate cross sectional area 
     for i, p in enumerate(polys):
         csa[i] = 0.5*np.abs(
@@ -208,7 +208,7 @@ def est_volume(polys):
     ix = np.argmin(polys[0].max(axis=0) - polys[0].min(axis=0))
     # Remove from list the index for slicing axis 
     ind = [0,1,2]
-    ind.remove(i)
+    ind.remove(ix)
     # Calculate the csa
     csa = calc_csa(polys)
     # Get the distance between each slice 
