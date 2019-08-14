@@ -16,32 +16,95 @@ from .output import getPDF
 from math import floor
 #from .cython_ext import planeEdgeIntersect_cy, logEuPath_cy
 
+def create_slices(amp, slices, axis=2):
+    """
+    Generate polygons from planar slices through the AmpObject 
+    
+    Parameters
+    ----------
+    amp: AmpObject 
+        The AmpObject to analyse 
+    slices: array_like
+        The height of the slice planes
+    axis: int, default 2
+        The index of the axis to take the slices along
+    
+    Returns
+    -------
+    polys: list
+        A list of numpy arrays, each array contains the vertices of the 
+        polygon generated from the slice
 
+    """
+    vE = amp.vert[:, axis][amp.edges]
+    # Find all vertices below plane 
+    polys = []
+    for plane in slices:
+        ind = vE < plane
+        # Select edges with one vertex above and one below the slice plane 
+        validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
+        validfE = amp.faceEdges[validEdgeInd, :].astype(int)
+        faceOrder = logEuPath(validfE)
+        # Get array of three edges attached to each face
+        validEdges = amp.edgesFace[faceOrder, :]
+        # Remove the edge that is not intersected by the plane
+        edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
+        # Remove the duplicate edge from order 
+        e = edges.flatten()
+        sortE = []
+        for ed in e:
+            if ed not in sortE:
+                sortE.append(ed)
+        sortE.append(sortE[0])
+        # Add first edge to end of array
+#            sortE = np.append(sortE, sortE[0])
+        sortE = np.asarray(sortE)
+        polyEdge = amp.edges[sortE]
+        EdgePoints = np.c_[amp.vert[polyEdge[:,0], :], 
+                            amp.vert[polyEdge[:,1], :]]
+        #Create poly from 
+        polys.append(planeEdgeIntersect_cy(EdgePoints, plane, axis))
+    return polys
 
-def calc_perimeter(amp, zval, axis=2, interval=0.05):
+def calc_perimeter(amp, pos, axis=2, interval=0.05):
     r"""
-    Measure Coronal and Sagittal widths at intervals along limb (0-95%) for a singele 
+    Measure Coronal and Sagittal widths at intervals along limb (0-95%) for a single 
     AmpObject 
 
     Parameters
     ----------
     amp: AmpObject
         The AmpObject to analyse
-    zval: float
+    pos: float
+        The point from which to begin calculating the perimeter 
+    axis: int, default 2
+        The axis along which to calculate the perimeter 
+    interval: float, default 0.05
+        Normalised intervals to calculate perimeter along length of limb 
 
+    TODO: Change this so pos is normalised 
 
     Returns
     -------
     perimeter: array_like
         Returns the perimeter of the limb in mm
+    dist_limv: float
+        The total distance 
         
     
     """
+    # Make an array of the percetage intervals 
     percents = np.arange(0.0,0.955,interval)
-    distump = (zval-(amp.vert[:,axis]).min())
+    # Caluclate distance between bottom of limb and the pos
+    min_limb = amp.vert[:,axis]).min()
+    dist_limb = pos - min_limb
+    # Generate position of the slices  
     slices = []
-    [slices.append(zval - (distump*i)) for i in percents]
+    [slices.append(pos - (dist_limb*i)) for i in percents]
+    # initialise array for slices  
     perimeter = np.zeros([len(slices)])
+    # Calculate the slices
+    polys = create_slices(amp, slices, axis=axis)
     for i,j in enumerate(slices):
         try:
             polys = amp.create_slices([j], axis)
@@ -56,10 +119,10 @@ def calc_perimeter(amp, zval, axis=2, interval=0.05):
                 dists.append(dist)
             perimeter[i] = sum(dists) / 10
         except IndexError:
-            perimeter[i] = None
-    return perimeter, distump           
+            perimeter[i] = np.nan
+    return perimeter, dist_limb           
 
-def plot_slices(self, axis=2, slWidth=10):
+def plot_slices(amp, axis=2, slWidth=10):
     r"""
     Generate a mpl figure with information about the AmpObject
     
@@ -87,18 +150,18 @@ def plot_slices(self, axis=2, slWidth=10):
 
     """
     # Find the brim edges 
-    ind = np.where(self.faceEdges[:,1] == -99999)[0]
+    ind = np.where(amp.faceEdges[:,1] == -99999)[0]
     # Define max Z from lowest point on brim
-    maxZ = self.vert[self.edges[ind, :], 2].min()
+    maxZ = amp.vert[amp.edges[ind, :], 2].min()
     fig = plt.figure()
     fig.set_size_inches(6, 4.5)
 
     ax1 = fig.add_subplot(221, projection='3d')
     ax2 = fig.add_subplot(222)
     #Z position of slices 
-    slices = np.arange(self.vert[:,2].min() + slWidth,
+    slices = np.arange(amp.vert[:,2].min() + slWidth,
                         maxZ, slWidth)
-    polys = self.create_slices(slices, axis)
+    polys = create_slices(amp, slices, axis)
     PolyArea = np.zeros([len(polys)])
     for i, poly in enumerate(polys):
         ax1.plot(poly[:,0],
@@ -121,68 +184,21 @@ def plot_slices(self, axis=2, slWidth=10):
     ax2.plot(slices-slices[0], PolyArea)
     # Rendering of the limb scan
     ax3 = fig.add_subplot(2,2,3)
-    Im = self.genIm()[0]
+    Im = amp.genIm()[0]
     ax3.imshow(Im, None)
     ax3.set_axis_off()
     # Rendering of the rectification map 
     ax4 = fig.add_subplot(2,2,4)
-    self.addActor(CMap = self.CMapN2P)
-    Im = self.genIm()[0]
+    amp.addActor(CMap = amp.CMapN2P)
+    Im = amp.genIm()[0]
     ax4.imshow(Im, None)
     ax4.set_axis_off()
     plt.tight_layout()
     plt.show()
     return fig, (ax1, ax2, ax3, ax4)
     
-def create_slices(self, slices, axis=2):
-    """
-    Generate polygons from planar slices through the AmpObject 
-    
-    Parameters
-    ----------
-    slices: array_like
-        The height of the slice planes
-    axis: int, default 2
-        The index of the axis to take the slices along
-    
-    Returns
-    -------
-    polys: list
-        A list of numpy arrays, each array contains the vertices of the 
-        polygon generated from the slice
 
-    """
-    vE = self.vert[:, axis][self.edges]
-    # Find all vertices below plane 
-    polys = []
-    for plane in slices:
-        ind = vE < plane
-        # Select edges with one vertex above and one below the slice plane 
-        validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
-        validfE = self.faceEdges[validEdgeInd, :].astype(int)
-        faceOrder = analyseMixin.logEuPath(validfE)
-        # Get array of three edges attached to each face
-        validEdges = self.edgesFace[faceOrder, :]
-        # Remove the edge that is not intersected by the plane
-        edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
-        # Remove the duplicate edge from order 
-        e = edges.flatten()
-        sortE = []
-        for ed in e:
-            if ed not in sortE:
-                sortE.append(ed)
-        sortE.append(sortE[0])
-        # Add first edge to end of array
-#            sortE = np.append(sortE, sortE[0])
-        sortE = np.asarray(sortE)
-        polyEdge = self.edges[sortE]
-        EdgePoints = np.c_[self.vert[polyEdge[:,0], :], 
-                            self.vert[polyEdge[:,1], :]]
-        #Create poly from 
-        polys.append(analyseMixin.planeEdgeIntersect_cy(EdgePoints, plane, axis))
-    return polys
 
-@staticmethod
 def logEuPath(arr):
     vmax = arr.shape[0]
     rows = list(range(vmax))
@@ -206,7 +222,6 @@ def logEuPath(arr):
     return order
 
 
-@staticmethod
 def planeEdgeIntersect_cy(arr, plane, axisInd):
     emax = arr.shape[0]
     intersectPoints = np.zeros((emax, 3), dtype=np.float32)
@@ -220,7 +235,6 @@ def planeEdgeIntersect_cy(arr, plane, axisInd):
             intersectPoints[i, j] = e1 + (plane - e2) * (e3 - e1) / (e4 - e2)
     return intersectPoints
 
-@staticmethod
 def planeEdgeintersect(edges, plane, axis=2):
     r"""
     Calculate the intersection between a an array of edges and a plane
@@ -252,7 +266,7 @@ def planeEdgeintersect(edges, plane, axis=2):
                                     (edges[:, axis+3] - edges[:, axis]))
     return intersectPoints
 
-def MeasurementsOut(self, pos):
+def MeasurementsOut(amp, pos):
     """
     Calculates perimeter of limb/cast at intervals from mid-patella to the
     end of stump
@@ -271,15 +285,15 @@ def MeasurementsOut(self, pos):
     # print(pos)
     maxZ = []
     for i in [0,1,2]:
-        maxZ.append((self.vert[:, i]).max() - (self.vert[:, i]).min())
+        maxZ.append((amp.vert[:, i]).max() - (amp.vert[:, i]).min())
     #slice in longest axis of scan
-    self.axis = maxZ.index(max(maxZ))
+    amp.axis = maxZ.index(max(maxZ))
     maxZ = max(maxZ)
-    zval = pos[self.axis]
+    zval = pos[amp.axis]
     # Get 6 equally spaced pts between mid-patella and stump end
-    slices = np.linspace(zval, (self.vert[:,self.axis]).min()+0.1, 6)
+    slices = np.linspace(zval, (amp.vert[:,amp.axis]).min()+0.1, 6)
     # uses create_slices
-    polys = self.create_slices(slices, axis=self.axis)
+    polys = amp.create_slices(slices, axis=amp.axis)
     # calc perimeter of slices
     perimeter = np.zeros([len(polys)])
     for i,poly in enumerate(polys):
@@ -296,15 +310,15 @@ def MeasurementsOut(self, pos):
     lngth = (slices - zval) / 10
     #print(lngth, perimeter)
     #generate png files of anterior and lateral views
-    self.genIm(out='fh',fh='lat.png',az=-90)
-    self.genIm(mag=1,out='fh',fh='ant.png')
+    amp.genIm(out='fh',fh='lat.png',az=-90)
+    amp.genIm(mag=1,out='fh',fh='ant.png')
     #calculations at %length intervals of 10%
-    L = maxZ - ((self.vert[:,self.axis]).max()-zval)-10
+    L = maxZ - ((amp.vert[:,amp.axis]).max()-zval)-10
     pL = np.linspace(0,1.2,13)
     slices2 = []
     for i in pL:
-        slices2.append((self.vert[:,self.axis]).min()+10+(i*L))
-    polys2 = self.create_slices(slices2,self.axis)
+        slices2.append((amp.vert[:,amp.axis]).min()+10+(i*L))
+    polys2 = create_slices(slices2,amp.axis)
     PolyArea = np.zeros([len(polys2)])
     MLWidth = np.zeros([len(polys2)])
     APWidth = np.zeros([len(polys2)])
@@ -336,7 +350,7 @@ def MeasurementsOut(self, pos):
     # TODO: Some sort of metric conversion function?
 
 
-def CMapOut(self, colors):
+def CMapOut(amp, colors):
     """
     Colour Map with 4 views (copied Josh's code)
     """
@@ -347,7 +361,7 @@ def CMapOut(self, colors):
     cb1 = clb.ColorbarBase(axes[-1], cmap=cmap,norm=norm)
     cb1.set_label('Shape deviation / mm')
     for i, ax in enumerate(axes[:-1]):
-        im = self.genIm(size=[3200, 8000],crop=True, az = i*90)[0]
+        im = amp.genIm(size=[3200, 8000],crop=True, az = i*90)[0]
         ax.imshow(im)
         ax.set_title(titles[i])
         ax.set_axis_off()
@@ -356,14 +370,14 @@ def CMapOut(self, colors):
     plt.savefig("Limb Views.png", dpi=600)
 
 
-def volumeMeasure(self, zval, axis=2, slWidth=0.1):
+def volumeMeasure(amp, zval, axis=2, slWidth=0.1):
     """
     volume estimation using slices
     """
     ind = [0,1,2]
     ind.remove(axis)
-    slices = np.arange((self.vert[:,axis]).min()+slWidth, zval, slWidth)
-    polys = self.create_slices(slices, axis)
+    slices = np.arange((amp.vert[:,axis]).min()+slWidth, zval, slWidth)
+    polys = amp.create_slices(slices, axis)
     PArea = np.zeros(len(polys))
     for i, poly in enumerate(polys):
         # Compute area of slice
@@ -373,20 +387,20 @@ def volumeMeasure(self, zval, axis=2, slWidth=0.1):
     return sum(PArea*slWidth/10)+(PArea[-1]*(zval-slices[-1]))
     
 
-def CSAMeasure(self,zval, axis=2, interval = 0.05):
+def CSAMeasure(amp,zval, axis=2, interval = 0.05):
     """
     Measure CSA at 5% increments (0-95%) from selected point to stump
     """
     ind = [0,1,2]
     ind.remove(axis)
     percents = np.arange(0.0,0.955,interval)
-    distump = (zval-(self.vert[:,axis]).min())
+    distump = (zval-(amp.vert[:,axis]).min())
     slices = []
     [slices.append(zval - (distump*i)) for i in percents]
     PArea = np.zeros(len(slices))
     for i,j in enumerate(slices):
         try:
-            polys = self.create_slices([j], axis)
+            polys = amp.create_slices([j], axis)
             poly = polys[0]
             area = 0.5*np.abs(np.dot(poly[:,ind[0]], np.roll(poly[:,ind[1]], 1)) -
                                 np.dot(poly[:,ind[1]], np.roll(poly[:,ind[0]], 1)))
@@ -395,19 +409,19 @@ def CSAMeasure(self,zval, axis=2, interval = 0.05):
             PArea[i] = None
     return PArea, distump
 
-def widthsMeasure(self,zval,axis=2,interval=0.05):
+def widthsMeasure(amp,zval,axis=2,interval=0.05):
     """
     Measure Coronal and Sagittal widths at intervals along limb (0-95%)
     """
     percents = np.arange(0.0,0.955,interval)
-    distump = (zval-(self.vert[:,axis]).min())
+    distump = (zval-(amp.vert[:,axis]).min())
     slices = []
     [slices.append(zval - (distump*i)) for i in percents]
     MLWidth = np.zeros([len(slices)])
     APWidth = np.zeros([len(slices)])
     for i,j in enumerate(slices):
         try:
-            polys = self.create_slices([j], axis)
+            polys = amp.create_slices([j], axis)
             poly = polys[0]
             APW = poly[:,0].max() - poly[:,0].min()
             APWidth[i] = APW
