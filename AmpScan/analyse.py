@@ -477,5 +477,3 @@ def CMapOut(amp, colors):
     fig.set_size_inches([12.5, 4])
     plt.savefig("Limb Views.png", dpi=600)
 
-
-
