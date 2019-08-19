@@ -10,6 +10,7 @@ import math
 
 class TestRegistration(unittest.TestCase):
     ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
+    DELTA = 0.2
 
     def setUp(self):
         """Runs before each unit test.
@@ -27,5 +28,5 @@ class TestRegistration(unittest.TestCase):
         """Test that registration runs on two spheres correctly"""
         reg = registration(self.amp1, self.amp2).reg
         poly = analyse.create_slices(reg, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
-        self.assertAlmostEqual(analyse.est_volume(poly), (4/3)*math.pi*(1.2**3), TestRegistration.ACCURACY)
+        self.assertAlmostEqual(analyse.est_volume(poly), (4/3)*math.pi*(1.2**3), delta=TestRegistration.DELTA)
 
