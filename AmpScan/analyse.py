@@ -50,8 +50,8 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
     -------
     >>> amp = AmpObject(filename)
     >>> polys = create_slices(amp, [0.05, 0.95], 0.01, typ='norm_intervals', axis=2)
-    >>> polys = create_slices(amp, [-50, 0, 50], typ='slices', axis=2)
-    >>> polys = create_slices(amp, [-50, 50], 10, typ='real_intervals', axis=2)
+    >>> polys = create_slices(amp, [-150, -100, -50, 50], typ='slices', axis=2)
+    >>> polys = create_slices(amp, [-150, 0], 10, typ='real_intervals', axis=2)
     """
     # Setup the slices array 
     if typ == 'slices':
