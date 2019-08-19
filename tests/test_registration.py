@@ -23,6 +23,6 @@ class TestRegistration(unittest.TestCase):
     def test_registration_spheres(self):
         """Test that registration runs on two spheres correctly"""
         reg = registration(self.amp1, self.amp2).reg
-        poly = analyse.create_slices(reg, [0.05, 0.95], 0.01, typ='norm_intervals', axis=2))
+        poly = analyse.create_slices(reg, [0.05, 0.95], 0.01, typ='norm_intervals', axis=2)
         self.assertAlmostEqual(analyse.est_volume(poly), 1, TestRegistration.ACCURACY)
 
