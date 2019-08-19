@@ -24,7 +24,13 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
     Parameters
     ----------
     amp: AmpObject 
-        The AmpObject to analyse 
+        The AmpObject to analyse
+    slices: array_like
+        An array of the slice positions to take in the specified axis
+    limits: array_like
+        The limits of the slices, either in real world units or normalised depending on that specified in typ
+    intervals: float
+        The distance between slices, use in conjunction with 
     typ: str, 'slices', 'real_intervals', 'norm_intervals'
         The height of the slice planes
     axis: int, default 2
@@ -36,6 +42,12 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
         A list of numpy arrays, each array contains the vertices of the 
         polygon generated from the slice
 
+    Examples
+    -------
+    >>> amp = AmpObject(filename)
+    >>> polys = create_slices(amp, [0.05, 0.95], 0.01, typ='norm_intervals', axis=2)
+    >>> polys = create_slices(amp, [-50, 0, 50], typ='slices', axis=2)
+    >>> polys = create_slices(amp, [-50, 50], 10, typ='real_intervals', axis=2)
     """
     # Setup the slices array 
     if typ == 'slices':
@@ -44,7 +56,7 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
     elif typ == 'real_intervals':
         lim = args[0]
         intervals = args[1]
-        slices = np.arange(lim[0], lim[0], intervals)
+        slices = np.arange(lim[0], lim[1], intervals)
     elif typ == 'norm_intervals':
         # Get the minimum and maximum of the limb
         limb_min = amp.vert[:, axis].min()
@@ -52,9 +64,11 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
         limb_len = limb_max - limb_min
         lim = args[0]
         intervals = args[1]
+        slices = np.arange(lim[0], lim[1], intervals)
         slice_min = limb_min + (limb_len * lim[0])
         slice_max = limb_min + (limb_len * lim[1])
-        slices = np.arange(slice_min, slice_max, intervals)
+        slices = limb_min + (slices * limb_len)
+        
     else: 
         return
         # Return error that typ is an invalid value 
