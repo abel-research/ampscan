@@ -17,13 +17,15 @@ class TestRegistration(unittest.TestCase):
         """
         from AmpScan.core import AmpObject
         stl_path = get_path("stl_file_4.stl")
+        # Radius = 1
         self.amp1 = AmpObject(stl_path)
         stl_path = get_path("stl_file_5.stl")
+        # Radius = 1.2
         self.amp2 = AmpObject(stl_path)
 
     def test_registration_spheres(self):
         """Test that registration runs on two spheres correctly"""
         reg = registration(self.amp1, self.amp2).reg
-        poly = analyse.create_slices(reg, [0.01, 0.99], 0.01, typ='norm_intervals', axis=2)
+        poly = analyse.create_slices(reg, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
         self.assertAlmostEqual(analyse.est_volume(poly), (4/3)*math.pi*(1.2**3), TestRegistration.ACCURACY)
 
