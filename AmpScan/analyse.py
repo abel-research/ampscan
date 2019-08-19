@@ -50,7 +50,7 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
     -------
     >>> amp = AmpObject(filename)
     >>> polys = create_slices(amp, [0.05, 0.95], 0.01, typ='norm_intervals', axis=2)
-    >>> polys = create_slices(amp, [-150, -100, -50, 50], typ='slices', axis=2)
+    >>> polys = create_slices(amp, [-150, -100, -50, 0], typ='slices', axis=2)
     >>> polys = create_slices(amp, [-150, 0], 10, typ='real_intervals', axis=2)
     """
     # Setup the slices array 
@@ -69,8 +69,6 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
         lim = args[0]
         intervals = args[1]
         slices = np.arange(lim[0], lim[1], intervals)
-        slice_min = limb_min + (limb_len * lim[0])
-        slice_max = limb_min + (limb_len * lim[1])
         slices = limb_min + (slices * limb_len)
         
     else: 
