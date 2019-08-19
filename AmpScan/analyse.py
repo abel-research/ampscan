@@ -15,6 +15,10 @@ from collections import defaultdict
 from .output import getPDF
 from math import floor
 #from .cython_ext import planeEdgeIntersect_cy, logEuPath_cy
+import os
+
+# The file path used in doc examples
+filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
 def create_slices(amp, *args,  typ='slices', axis = 2):
     r"""

@@ -4,7 +4,7 @@ Testing suite for the registration module
 
 import unittest
 from util import get_path
-from AmpScan import registration
+from AmpScan import registration, analyse
 
 
 class TestRegistration(unittest.TestCase):
@@ -23,5 +23,6 @@ class TestRegistration(unittest.TestCase):
     def test_registration_spheres(self):
         """Test that registration runs on two spheres correctly"""
         reg = registration(self.amp1, self.amp2).reg
-        # TODO add test to check that output is correct
+        poly = analyse.create_slices(reg, [-50, 0, 50], typ='slices', axis=2)
+        self.assertAlmostEqual(analyse.est_volume(poly), 1, TestRegistration.ACCURACY)
 
