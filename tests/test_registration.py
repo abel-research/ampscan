@@ -9,7 +9,6 @@ import math
 
 
 class TestRegistration(unittest.TestCase):
-    ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
     DELTA = 0.2
 
     def setUp(self):
@@ -29,7 +28,13 @@ class TestRegistration(unittest.TestCase):
         Note that this is reliant on an accurate analyse module."""
         reg = registration(self.amp1, self.amp2).reg
         poly = analyse.create_slices(reg, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
+
+        # Check the volume is correct
         # Object is a sphere, so area is (4/3)*math.pi*(R**3)
         # In this case R = 1.2
         self.assertAlmostEqual(analyse.est_volume(poly), (4/3)*math.pi*(1.2**3), delta=TestRegistration.DELTA)
+
+        # Test the diameter is correct
+        diameter = reg.vert[:, 2].max() - reg.vert[:, 2].min()
+        self.assertAlmostEqual(diameter, 1.2*2, delta=TestRegistration.DELTA)
 
