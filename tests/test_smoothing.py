@@ -10,14 +10,14 @@ import math
 
 class TestSmoothing(unittest.TestCase):
     ACCURACY = 5  # The number of decimal places to value accuracy for - needed due to floating point inaccuracies
-    DELTA = 0
+    DELTA = 0.5
 
     def setUp(self):
         """Runs before each unit test.
         Sets up the AmpObject object using "stl_file.stl".
         """
         from AmpScan.core import AmpObject
-        stl_path = get_path("stl_file_6.stl")
+        stl_path = get_path("stl_file_5.stl")
         self.amp = AmpObject(stl_path)
 
     def test_smoothing_nans(self):
@@ -29,10 +29,10 @@ class TestSmoothing(unittest.TestCase):
     def test_smoothing_volume(self):
         """Tests that smoothing affects the volume within given acceptable range"""
         # TODO check this is actually working properly
-        poly1 = list(analyse.create_slices(self.amp, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2))
+        poly1 = analyse.create_slices(self.amp, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
         print(analyse.est_volume(poly1))
-        self.amp.smoothValues(1)
-        poly2 = list(analyse.create_slices(self.amp, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2))
+        self.amp.lp_smooth(1)
+        poly2 = analyse.create_slices(self.amp, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
         print(analyse.est_volume(poly2))
         self.assertAlmostEqual(analyse.est_volume(poly1), analyse.est_volume(poly2), delta=TestSmoothing.DELTA)
 
