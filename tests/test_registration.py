@@ -25,7 +25,8 @@ class TestRegistration(unittest.TestCase):
         self.amp2 = AmpObject(stl_path)
 
     def test_registration_spheres(self):
-        """Test that registration runs on two spheres correctly by checking volume of resultant registered AmpObject"""
+        """Test that registration runs on two spheres correctly by checking volume of resultant registered AmpObject.
+        Note that this is reliant on an accurate analyse module."""
         reg = registration(self.amp1, self.amp2).reg
         poly = analyse.create_slices(reg, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
         # Object is a sphere, so area is (4/3)*math.pi*(R**3)
