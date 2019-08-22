@@ -1,7 +1,4 @@
-AmpScan
-=======
-
-![ampscanlogo](docs/AmpScanlogo.svg)
+![ampscanlogo](docs/ampscan_header.svg)
 
 **Join chat:** [![Join the chat at https://gitter.im/ampscan](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ampscan)
 
