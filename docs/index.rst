@@ -1,10 +1,6 @@
-.. image:: AmpScanlogo.svg
-   :width: 30%
+.. image:: ampscan_header.svg
+   :width: 100%
    :align: center
-
-
-AmpScan
-=======
 
 AmpScan is an open-source Python package for analysis and visualisation of digitised surface scan data,
 specifically for applications within Prosthetics and Orthotics (P&O), with an aim to improve evidence-
@@ -32,43 +28,15 @@ For full documentation, visit the AmpScan_ website.
 .. _VTK: https://www.vtk.org/
 .. _AmpScan: https://ampscan.readthedocs.io/en/latest/
 
-Installing with Conda (Recommended)
------------------------------------
+Installing AmpScan
+-------------------
 
 AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. We recommend using 
-conda to deal with these. Before installation, ensure your environment is using Python 3. Verify that 
-you are running the latest version of pip:
-
-``python -m pip install --upgrade pip``
+conda to deal with these. Before installation, ensure your environment is using Python 3. 
 
 Install dependencies using conda:
 
 ``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
-
-Install AmpScan using pip:
-
-``pip install AmpScan``
-
-
-Installing with Pip
--------------------
-
-AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. Before 
-installing, ensure you have the latest version of pip:
-
-``python -m pip install --upgrade pip``
-
-Then install the dependencies using:
-
-``pip install numpy matplotlib scipy pyqt5 vtk==8.1.0``
-
-You can then install AmpScan from test PyPI using:
-
-``pip install AmpScan``
-
-
-Developer Install
------------------
 
 For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
@@ -77,6 +45,8 @@ For the most up to date version of AmpScan, clone directly from the gitlab repos
 Navigate to the `AmpScan/` directory and run a pip install using:
 
 ``pip install -e .``
+
+AmpScan will soon be available on pip once v0.1 is released 
 
 
 Getting Started
