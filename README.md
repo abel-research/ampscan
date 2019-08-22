@@ -10,41 +10,15 @@ AmpScan is an open-source Python package for analysis and visualisation of digit
 
 AmpScan relies heavily on [NumPy](http://www.numpy.org/) and [SciPy](https://www.scipy.org/) to perform mathematical operations with visualisation handled by [PyQt](https://riverbankcomputing.com/software/pyqt/intro) and [VTK](https://www.vtk.org/). The package is still under development by researchers at the University of Southampton. For full documentation, visit the [AmpScan website](https://ampscan.readthedocs.io/en/latest/).
 
-Installing with Conda (Recommended)
------------------------------------
+Installing AmpScan
+-------------------
 
 AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. We recommend using 
-conda to deal with these. Before installation, ensure your environment is using Python 3. Verify that 
-you are running the latest version of pip:
-
-``python -m pip install --upgrade pip``
+conda to deal with these. Before installation, ensure your environment is using Python 3. 
 
 Install dependencies using conda:
 
 ``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
-
-Install AmpScan using pip:
-
-``pip install AmpScan``
-
-Installing with Pip
--------------------
-
-AmpScan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. Before 
-installing, ensure you have the latest version of pip:
-
-``python -m pip install --upgrade pip``
-
-Then install the dependencies using:
-
-``pip install numpy matplotlib scipy pyqt5 vtk==8.1.0``
-
-You can then install AmpScan from test PyPI using:
-
-``pip install AmpScan``
-
-Developer Install
------------------
 
 For the most up to date version of AmpScan, clone directly from the gitlab repository using:
 
@@ -53,6 +27,8 @@ For the most up to date version of AmpScan, clone directly from the gitlab repos
 Navigate to the `AmpScan/` directory and run a pip install using:
 
 ``pip install -e .``
+
+AmpScan will soon be available on pip once v0.1 is released 
 
 Maintainer Notes
 ----------------
