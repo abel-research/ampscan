@@ -2,7 +2,7 @@
 
 **Join chat:** [![Join the chat at https://gitter.im/ampscan](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ampscan)
 
-**Build Status:** [![Build Status](https://travis-ci.org/abel-research/ampscan.svg?branch=master)](https://travis-ci.org/abel-research/ampscan)
+**Build status:** [![Build Status](https://travis-ci.org/abel-research/ampscan.svg?branch=master)](https://travis-ci.org/abel-research/ampscan)
 
 **License:** [![License](https://img.shields.io/github/license/abel-research/ampscan)](../master/LICENSE)
 
