@@ -6,6 +6,7 @@ import unittest
 import numpy as np
 from random import randrange
 from util import get_path
+from AmpScan import analyse
 
 
 class TestCore(unittest.TestCase):

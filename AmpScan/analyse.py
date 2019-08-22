@@ -431,7 +431,7 @@ def MeasurementsOut(amp, pos):
     maxZ = max(maxZ)
     zval = pos[axis]
     # Get 6 equally spaced pts between mid-patella and stump end
-    slices = np.linspace(zval, (amp.vert[:,amp.axis]).min()+0.1, 6)
+    slices = np.linspace(zval, (amp.vert[:, axis]).min()+0.1, 6)
     # uses create_slices
     polys = create_slices(amp, slices, axis=axis)
     # calc perimeter of slices
@@ -444,11 +444,11 @@ def MeasurementsOut(amp, pos):
     amp.genIm(mag=1,out='fh',fh='ant.png')
 
     #calculations at %length intervals of 10%
-    L = maxZ - ((amp.vert[:,amp.axis]).max()-zval)-10
+    L = maxZ - ((amp.vert[:,axis]).max()-zval)-10
     pL = np.linspace(0,1.2,13)
     slices2 = []
     for i in pL:
-        slices2.append((amp.vert[:,amp.axis]).min()+10+(i*L))
+        slices2.append((amp.vert[:,axis]).min()+10+(i*L))
     # uses create_slices
     polys = create_slices(amp, slices2, axis=axis)
 

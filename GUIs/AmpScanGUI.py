@@ -3,7 +3,7 @@ import webbrowser
 
 import numpy as np
 import vtk
-from AmpScan import AmpObject
+from AmpScan import AmpObject, analyse
 from AmpScan.registration import registration
 from AmpScan.align import align
 from AmpScan.ampVis import qtVtkWindow, vtkRenWin
@@ -16,13 +16,13 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
                              QSlider, QWidget, QTableWidget, QTableWidgetItem,
                              QAbstractButton, QCheckBox, QErrorMessage)
 
-        
+
 class AmpScanGUI(QMainWindow):
     """
     Generates an GUI for handling stl data. Window is derived from QT.
-    
+
     More detailed description...
-    
+
     Example
     -------
     Perhaps an example implementation:
@@ -55,11 +55,11 @@ class AmpScanGUI(QMainWindow):
         self.fileManager.table.itemChanged.connect(self.display)
         self.pnt = None
         self.AmpObj = None
-        
+
     def chooseOpenFile(self):
         """
         Handles importing of stls into the GUI.
-        
+
         More writing...
 
 
@@ -84,7 +84,7 @@ class AmpScanGUI(QMainWindow):
         if hasattr(self, 'regCont'):
             self.regCont.getNames()
 #        self.AmpObj.lp_smooth()
-        
+
     def chooseSaveFile(self):
         fname = QFileDialog.getSaveFileName(self, 'Save file',
                                             filter="Meshes (*.stl)")
@@ -131,7 +131,7 @@ class AmpScanGUI(QMainWindow):
                 show_message("Invalid opacity: {}".format(opacity))
 
             self.renWin.renderActors(render)
-        
+
     def align(self):
         """
         Numpy style docstring.
@@ -150,7 +150,7 @@ class AmpScanGUI(QMainWindow):
             self.alCont.ztraButton.buttonClicked[QAbstractButton].connect(self.transz)
         else:
             show_message("Must be at least 1 object loaded to run align")
-    
+
     def Point_Pick(self):
         """
         Waits for a point click to occur before calling further functions
@@ -160,7 +160,7 @@ class AmpScanGUI(QMainWindow):
         """
         self.vtkWidget.iren.AddObserver('RightButtonPressEvent', self.pick_loc)
         self.renWin.Render()
-    
+
     def pick_loc(self, event, x):
         """
         calcs the location of click in GUI (x,y)
@@ -180,7 +180,7 @@ class AmpScanGUI(QMainWindow):
                          message_type="info")
         #vtkRenWin.mark(self.renWin,self.pnt[0],self.pnt[1],self.pnt[2])
         # print(self.pnt)
-    
+
     def removePick(self):
         """
         delete all marked points and labels
@@ -188,7 +188,7 @@ class AmpScanGUI(QMainWindow):
         """
         self.pnt = None
         vtkRenWin.delMarker(self.renWin)
-        
+
     def rotatex(self, button):
         moving = str(self.alCont.moving.currentText())
         ang = float(button.text())
@@ -247,7 +247,7 @@ class AmpScanGUI(QMainWindow):
         self.files[moving].centre()
         self.files[moving].tform.Translate(t)
         self.renWin.Render()
-    
+
     def runICP(self):
         if self.objectsReady(1):
             static = str(self.alCont.static.currentText())
@@ -302,13 +302,13 @@ class AmpScanGUI(QMainWindow):
             if self.regCont.tick.isChecked() is True:
                 reg.actor.setScalarRange([-10,10])
                 reg.actor.setShading(False)
-                reg.CMapOut(colors=self.CMapN2P)
+                analyse.CMapOut(reg, colors=self.CMapN2P)
                 # reg.plotResults(name="distributionofshapevariance.png")
             self.display()  # Reset which objects are displayed
             print('Run the Registration code between %s and %s' % (baseline, target))
         else:
             show_message("Must be at least 2 objects loaded to run registration")
-        
+
     def register(self):
         """
         Numpy style docstring.
@@ -317,9 +317,9 @@ class AmpScanGUI(QMainWindow):
         self.regCont = RegistrationControls(self.filesDrop, self)
         self.regCont.show()
         self.regCont.reg.clicked.connect(self.runRegistration)
-        
 
-    
+
+
     def analyse(self):
         """
         Numpy style docstring.
@@ -351,7 +351,7 @@ class AmpScanGUI(QMainWindow):
             self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
             self.renWin.renderActors(self.FE.actor, shading=True)
             self.renWin.setScalarBar(self.FE.actor)
-        
+
     def choosePress(self):
         """
         Numpy style docstring.
@@ -376,7 +376,7 @@ class AmpScanGUI(QMainWindow):
         self.AmpObj.actors['socket'].setOpacity(1.0)
         self.renWin.renderActors(self.AmpObj.actors, ['socket', 'antS'])
         self.renWin.setScalarBar(self.AmpObj.actors['antS'])
-        
+
     def measure(self):
         # If no point selected condition move to analyse.py
         if not self.objectsReady(1):
@@ -385,7 +385,7 @@ class AmpScanGUI(QMainWindow):
             show_message("Please select a reference point first using pick")
         else:
             [name, _, color, opacity, display] = self.fileManager.getRow(0)
-            output_file_path = self.files[name].MeasurementsOut(self.pnt)
+            output_file_path = analyse.MeasurementsOut(self.files[name], self.pnt)
 
             # Open Report in webbrowser
             webbrowser.get().open(output_file_path)  # .get() gets the default browser

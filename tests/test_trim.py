@@ -16,7 +16,7 @@ class TestTrim(unittest.TestCase):
         self.amp = AmpObject(stl_path)
 
     def test_trim(self):
-        """Tests the trim method of AmpObject"""
+        """Tests the trim method of AmpObject for TypeErrors"""
 
         # Testing that the method runs
         self.amp.planarTrim(0.6, plane=2)
