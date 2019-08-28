@@ -278,7 +278,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         norms = self.norm[row, :]
         self.vNorm = np.zeros(self.vert.shape)
         for i in range(self.vert.shape[0]):
-            self.vNorm[i, :] = norms[ndx[i]:ndx[i+1], :].mean(axis=0)
+            self.vNorm[i, :] = np.nanmean(norms[ndx[i]:ndx[i+1], :], axis=0)
 
     def save(self, filename):
         r"""
