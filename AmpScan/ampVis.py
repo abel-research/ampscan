@@ -491,9 +491,15 @@ class visMixin(object):
         # Test if values array is non-zero
         if self.values.any():
             self.actor.setValues(self.values)
-            self.actor.setCMap(CMap, bands)
-            self.actor.setScalarRange(sRange)
-            self.actor.Mapper.SetLookupTable(self.actor.lut)
+            self.createCMap()
+            if self.values.min() < 0:
+                self.actor.setCMap(self.CMapN2P, bands)
+                self.actor.setScalarRange([self.values.min(), self.values.max()])
+                self.actor.Mapper.SetLookupTable(self.actor.lut)
+            else: 
+                self.actor.setCMap(self.CMap02P, bands)
+                self.actor.setScalarRange([0, self.values.max()])
+                self.actor.Mapper.SetLookupTable(self.actor.lut)
 
     def createCMap(self, cmap=None, n = 50):
         r"""

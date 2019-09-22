@@ -138,7 +138,7 @@ class registration(object):
             else:
                 self.reg.vert = self.b.vert + self.disp.vert
                 self.reg.calcNorm()
-        self.reg.calcStruct()
+        self.reg.calcStruct(vNorm=True)
         self.reg.values[:] = self.calcError(error)
         
     def calcError(self, method='norm'):

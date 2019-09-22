@@ -22,7 +22,7 @@ setup(name='AmpScan',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
       packages=['AmpScan'],
-      python_requires='>=3.6,<3.7',  # Your supported Python ranges
+      python_requires='>=3.6',  # Your supported Python ranges
       install_requires=['numpy',
                         'matplotlib',
                         'scipy',
