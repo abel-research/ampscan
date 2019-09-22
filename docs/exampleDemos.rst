@@ -14,5 +14,5 @@ via ``import AmpScan`` by navigating to the root directory and running
    :maxdepth: 2
 
    examples/fundamentals
-   examples/shape_comparison
+   examples/shape_comp
    examples/analysis
