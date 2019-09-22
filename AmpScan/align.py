@@ -451,7 +451,7 @@ class align(object):
         win.setBackground([1,1,1])
         # Set camera projection 
         # Set camera projection 
-        win.setView()
+        win.setView([0, -1, 0], 0)
         win.SetSize(512, 512)
         win.Modified()
         win.OffScreenRenderingOn()
@@ -461,7 +461,7 @@ class align(object):
         self.m.actor.setOpacity(0.5)
         win.renderActors([self.s.actor, self.m.actor])
         win.Render()
-        win.rens[0].GetActiveCamera().Azimuth(180)
+        win.rens[0].GetActiveCamera().Azimuth(0)
         win.rens[0].GetActiveCamera().SetParallelProjection(True)
         win.Render()
         im = win.getImage()
