@@ -433,3 +433,44 @@ class align(object):
         return win
 
 
+    def genIm(self, crop=False):
+        r"""
+        Display the static mesh and the aligned within an interactive VTK 
+        window 
+        
+        """
+        if not hasattr(self.s, 'actor'):
+            self.s.addActor()
+        if not hasattr(self.m, 'actor'):
+            self.m.addActor()
+        # Generate a renderer window
+        win = vtkRenWin()
+        # Set the number of viewports
+        win.setnumViewports(1)
+        # Set the background colour
+        win.setBackground([1,1,1])
+        # Set camera projection 
+        # Set camera projection 
+        win.setView()
+        win.SetSize(512, 512)
+        win.Modified()
+        win.OffScreenRenderingOn()
+        self.s.actor.setColor([1.0, 0.0, 0.0])
+        self.s.actor.setOpacity(0.5)
+        self.m.actor.setColor([0.0, 0.0, 1.0])
+        self.m.actor.setOpacity(0.5)
+        win.renderActors([self.s.actor, self.m.actor])
+        win.Render()
+        win.rens[0].GetActiveCamera().Azimuth(180)
+        win.rens[0].GetActiveCamera().SetParallelProjection(True)
+        win.Render()
+        im = win.getImage()
+        if crop is True:
+            mask = np.all(im == 1, axis=2)
+            mask = ~np.all(mask, axis=1)
+            im = im[mask, :, :]
+            mask = np.all(im == 1, axis=2)
+            mask = ~np.all(mask, axis=0)
+            im = im[:, mask, :]
+        return im, win
+
