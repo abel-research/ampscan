@@ -330,6 +330,25 @@ def planeEdgeintersect(edges, plane, axis=2):
     return intersectPoints
 
 
+def visualise_slices(amp):
+    r"""
+    Create an mpl figure with the 3D rendering, slices, slice height and cross sectional area
+    """
+    fig = plt.figure()
+    fig.set_size_inches(8, 8)
+    ax = plt.axes(projection="3d")
+    X = amp.vert[:, 0]
+    Y = amp.vert[:, 1]
+    Z = amp.vert[:, 2]
+    ax.view_init(elev=0., azim=-90)
+    ax.axis('off')
+    ax.set_proj_type('ortho')
+    ax.set_aspect('equal')
+    ax.plot_trisurf(X, Y, Z, triangles=amp.faces, color=(1.0, 1.0, 1.0), 
+                    shade=False, edgecolor='none', linewidth=0, antialiased=False)
+    plt.savefig('test1.png', dpi=600)
+    plt.close(fig)
+
 def plot_slices(amp, axis=2, slWidth=10):
     r"""
     Generate a mpl figure with information about the AmpObject
