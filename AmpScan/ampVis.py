@@ -58,6 +58,12 @@ class vtkRenWin(vtk.vtkRenderWindow):
             self.rens[viewport].RemoveActor(actor)
         for actor in actors:
             self.rens[viewport].AddActor(actor)
+            if hasattr(actor, 'pActors'):
+                for p in actor.pActors:
+                    self.rens[viewport].AddActor(p)
+            if hasattr(actor, 'lActors'):
+                for l in actor.lActors:
+                    self.rens[viewport].AddActor(l)
         self.rens[viewport].ResetCamera()
         self.rens[viewport].GetActiveCamera().Zoom(zoom)
         self.Render()
@@ -697,3 +703,53 @@ class ampActor(vtk.vtkActor):
             self.GetProperty().LightingOn()
         if shading is False:
             self.GetProperty().LightingOff()
+
+    def addSlices(self, slices):
+        r"""
+        Adds slices into the AmpActor which can then be rendered 
+
+        Parameters
+        ----------
+        slices: array_like
+            The values in the z-axis of which to make the slices 
+        """
+        self.planes = []
+        self.cutters = []
+        self.pMapper = []
+        self.pActors = []
+        self.lActors = []
+        self.labels = []
+        self.hier = []
+        self.lMapper = []
+        for s in slices:
+            p = vtk.vtkPlane()
+            p.SetOrigin(0, 0, s)
+            p.SetNormal(0, 0, 1)
+            c = vtk.vtkCutter()
+            c.SetCutFunction(p)
+            c.SetInputData(self.mesh)
+            c.Update()
+            cM=vtk.vtkPolyDataMapper()
+            cM.SetInputConnection(c.GetOutputPort())
+            pA=vtk.vtkActor()
+            pA.GetProperty().SetColor(31.0/255.0, 73.0/255.0, 125.0/255.0)
+            pA.GetProperty().SetLineWidth(5)
+            pA.GetProperty().SetInterpolationToFlat()
+            pA.GetProperty().EdgeVisibilityOn()
+            pA.GetProperty().SetRenderLinesAsTubes(True)
+            pA.SetMapper(cM)
+
+            text = vtk.vtkBillboardTextActor3D()
+            text.SetInput('test')
+            text.SetPosition(0,0,s)
+            text.GetTextProperty().SetColor(0, 0, 0)
+
+
+            self.planes.append(p)
+            self.cutters.append(c)
+            self.pMapper.append(cM)
+            self.pActors.append(pA)
+            self.lActors.append(text)
+        self.setOpacity(0.1)
+
+
