@@ -2,6 +2,7 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 from reportlab.pdfgen import canvas
 import io
 import os
+import csv
 
 
 def getPDF(lngths, perimeters, CSA, APW, MLW):
@@ -69,3 +70,27 @@ def get_downloads_folder():
         os.mkdir(downloads_path)
 
     return downloads_path
+
+
+def generateRegBinsCsv(file, regObject, numBins, scalarMin, scalarMax):
+    writer = csv.writer(file)
+
+    binSize = (scalarMax - scalarMin) / numBins
+    bins = []
+    binValues = []
+    for i in range(numBins):
+        binValues.append(scalarMin + binSize * i)
+        bins.append(0)
+    for point in regObject.values:
+        bin = int((point - scalarMin) / binSize)
+        if bin < 0:
+            bins[0] += 1
+        elif bin >= len(bins):
+            bins[-1] += 1
+        else:
+            bins[bin] += 1
+    l = len(regObject.values)
+
+    for i in range(numBins):
+        writer.writerow([scalarMin+binSize*i, bins[i] / l])
+
