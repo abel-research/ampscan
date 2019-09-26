@@ -103,3 +103,15 @@ def generateRegBinsCsv(file, regObject, numBins, scalarMin, scalarMax):
     for i in range(numBins):
         writer.writerow([scalarMin+binSize*i, bins[i] / l])
 
+
+def generateRegCsv(file, regObject):
+    """
+    Generates a CSV file output of scalar values put into bins
+    :param file: The open file to save csv output to. Should be open with newline=''
+    :param regObject: The reg object with scalar values
+    :return: None
+    """
+    writer = csv.writer(file)
+    for i in regObject.values:
+        writer.writerow(i)
+
