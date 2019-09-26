@@ -73,6 +73,15 @@ def get_downloads_folder():
 
 
 def generateRegBinsCsv(file, regObject, numBins, scalarMin, scalarMax):
+    """
+    Generates a CSV file output of scalar values put into bins
+    :param file: The open file to save csv output to. Should be open with newline=''
+    :param regObject: The reg object with scalar values
+    :param numBins: Number of bins for scalar values
+    :param scalarMin: The min scalar value to look for
+    :param scalarMax: The max scalar value to look for
+    :return: None
+    """
     writer = csv.writer(file)
 
     binSize = (scalarMax - scalarMin) / numBins
