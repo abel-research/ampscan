@@ -113,5 +113,5 @@ def generateRegCsv(file, regObject):
     """
     writer = csv.writer(file)
     for i in regObject.values:
-        writer.writerow(i)
+        writer.writerow([i])
 
