@@ -18,10 +18,10 @@ docs/_build/
 docs/*.ai
 docs/*.png
 
-GUIs/__pycache__
-GUIs/build
-GUIs/dist
-GUIS/*.spec
+gui/__pycache__
+gui/build
+gui/dist
+gui/*.spec
 Internship_Diary/*.pdf
 Internship_Diary/*.gz
 *.ipynb_checkpoints
