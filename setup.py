@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Dec 15 13:43:43 2016
-
-@author: js22g12
+Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 """
 
 from setuptools import setup, find_packages
@@ -13,15 +11,15 @@ def readme():
         return f.read()
 
 
-setup(name='AmpScan',
-      version='0.7',
+setup(name='ampscan',
+      version='0.3',
       description=('Package for analysis of '
-                   'surface scan data of residual limbs'),
+                   'surface scan data for P&O applications'),
       long_description=readme(),
       author='Joshua Steer',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
-      packages=['AmpScan'],
+      packages=['ampscan'],
       python_requires='>=3.6',  # Your supported Python ranges
       install_requires=['numpy',
                         'matplotlib',

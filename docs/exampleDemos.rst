@@ -2,13 +2,13 @@ Tutorials
 =========
 
 This section provides a series of workflows that demonstrate the 
-core functionality of AmpScan. Some require sample stl 
+core functionality of ampscan. Some require sample stl 
 files - these can be downloaded from the Gitlab repository `here`_. 
 If you are using a git clone you can make the module importable 
-via ``import AmpScan`` by navigating to the root directory and running 
+via ``import ampscan`` by navigating to the root directory and running 
 ``pip install -e .``.
 
-.. _here: https://git.soton.ac.uk/js22g12/AmpScan/tree/master/docs/examples
+.. _here: https://git.soton.ac.uk/js22g12/ampscan/tree/master/docs/examples
 
 .. toctree::
    :maxdepth: 2

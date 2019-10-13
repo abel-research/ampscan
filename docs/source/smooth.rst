@@ -1,7 +1,7 @@
 smooth module
 =============
 
-.. automodule:: AmpScan.smooth
+.. automodule:: ampscan.smooth
     :members:
     :undoc-members:
     :show-inheritance:

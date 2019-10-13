@@ -1,7 +1,7 @@
 core module
 ===========
 
-.. automodule:: AmpScan.core
+.. automodule:: ampscan.core
     :members:
     :undoc-members:
     :show-inheritance:

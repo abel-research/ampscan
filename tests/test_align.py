@@ -4,7 +4,7 @@ Testing suite for the align module
 
 import unittest
 from util import get_path
-from AmpScan import align
+from ampscan import align
 
 
 class TestAlign(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestAlign(unittest.TestCase):
         """Runs before each unit test.
         Sets up AmpObject object using "stl_file_4.stl" "stl_file_5.stl".
         """
-        from AmpScan.core import AmpObject
+        from ampscan.core import AmpObject
         # Load 2 spheres with radius 1, and 1.2
         stl_path = get_path("stl_file_5.stl") # R=1
         self.amp1 = AmpObject(stl_path)

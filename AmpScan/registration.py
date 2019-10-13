@@ -6,7 +6,7 @@ Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 import numpy as np
 import copy
 from scipy import spatial
-from AmpScan.core import AmpObject
+from ampscan.core import AmpObject
 import matplotlib.pyplot as plt
 
 # For the doc examples
@@ -41,7 +41,7 @@ class registration(object):
     
     Examples
     --------
-    >>> from AmpScan.core import AmpObject
+    >>> from ampscan.core import AmpObject
     >>> baseline = AmpObject(basefh)
     >>> target = AmpObject(targfh)
     >>> reg = registration(baseline, target, steps=10, neigh=10, smooth=1).reg

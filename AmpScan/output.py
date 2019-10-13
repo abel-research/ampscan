@@ -52,7 +52,7 @@ def getPDF(lngths, perimeters, CSA, APW, MLW):
     output.addPage(page)
     output.addPage(page2)
 
-    output_file_path = os.path.join(get_downloads_folder(), "AmpScanReport.pdf")
+    output_file_path = os.path.join(get_downloads_folder(), "ampscanReport.pdf")
     outputStream = open(output_file_path, "wb")
     output.write(outputStream)
 

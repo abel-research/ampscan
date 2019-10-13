@@ -20,8 +20,8 @@ sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'AmpScan'
-copyright = '2018, AmpScan developers'
+project = 'ampscan'
+copyright = '2018, ampscan developers'
 author = 'Oliver Stocks'
 
 # The short X.Y version
@@ -54,7 +54,7 @@ autodoc_mock_imports=['vtk']
 
 add_module_names = False
 
-modindex_common_prefix = ['AmpScan.']
+modindex_common_prefix = ['ampscan.']
 
 autoclass_content = 'both'
 
@@ -62,9 +62,9 @@ html_use_index = False
 
 nbsphinx_kernel_name = 'python3'
 
-html_logo = "AmpScanlogosmall.svg"
+html_logo = "ampscanlogosmall.svg"
 
-html_favicon = "AmpScanlogo.ico"
+html_favicon = "ampscanlogo.ico"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -126,7 +126,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'AmpScandoc'
+htmlhelp_basename = 'ampscandoc'
 
 
 # -- Options for LaTeX output ------------------------------------------------
@@ -153,7 +153,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'AmpScan.tex', 'AmpScan Documentation',
+    (master_doc, 'ampscan.tex', 'ampscan Documentation',
      'Joshua Steer', 'manual'),
 ]
 
@@ -163,7 +163,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ampscan', 'AmpScan Documentation',
+    (master_doc, 'ampscan', 'ampscan Documentation',
      [author], 1)
 ]
 
@@ -174,8 +174,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'AmpScan', 'AmpScan Documentation',
-     author, 'AmpScan', 'One line description of project.',
+    (master_doc, 'ampscan', 'ampscan Documentation',
+     author, 'ampscan', 'One line description of project.',
      'Miscellaneous'),
 ]
 

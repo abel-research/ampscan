@@ -4,7 +4,7 @@ Testing suite for the registration module
 
 import unittest
 from util import get_path
-from AmpScan import registration, analyse
+from ampscan import registration, analyse
 import math
 
 
@@ -15,7 +15,7 @@ class TestRegistration(unittest.TestCase):
         """Runs before each unit test.
         Sets up the AmpObject object using "stl_file.stl".
         """
-        from AmpScan.core import AmpObject
+        from ampscan.core import AmpObject
 
         # Radius = 1
         stl_path = get_path("stl_file_4.stl")

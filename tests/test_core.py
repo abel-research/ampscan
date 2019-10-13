@@ -6,7 +6,7 @@ import unittest
 import numpy as np
 from random import randrange
 from util import get_path
-from AmpScan import analyse
+from ampscan import analyse
 
 
 class TestCore(unittest.TestCase):
@@ -16,7 +16,7 @@ class TestCore(unittest.TestCase):
         """Runs before each unit test.
         Sets up the AmpObject object using "stl_file.stl".
         """
-        from AmpScan.core import AmpObject
+        from ampscan.core import AmpObject
         stl_path = get_path("stl_file.stl")
         self.amp = AmpObject(stl_path)
 
@@ -40,7 +40,7 @@ class TestCore(unittest.TestCase):
             self.amp.centreStatic([])
 
         # Import second shape
-        from AmpScan.core import AmpObject
+        from ampscan.core import AmpObject
         stl_path = get_path("stl_file_2.stl")
         amp2 = AmpObject(stl_path)
 

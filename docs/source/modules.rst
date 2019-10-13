@@ -1,7 +1,7 @@
-AmpScan
+ampscan
 =======
 
 .. toctree::
    :maxdepth: 4
 
-   AmpScan
+   ampscan

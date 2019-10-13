@@ -3,10 +3,10 @@ import webbrowser
 
 import numpy as np
 import vtk
-from AmpScan import AmpObject, analyse
-from AmpScan.registration import registration
-from AmpScan.align import align
-from AmpScan.ampVis import qtVtkWindow, vtkRenWin
+from ampscan import AmpObject, analyse
+from ampscan.registration import registration
+from ampscan.align import align
+from ampscan.ampVis import qtVtkWindow, vtkRenWin
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)
@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QHBoxLayout,
                              QAbstractButton, QCheckBox, QErrorMessage)
 
 
-class AmpScanGUI(QMainWindow):
+class ampscanGUI(QMainWindow):
     """
     Generates an GUI for handling stl data. Window is derived from QT.
 
@@ -27,12 +27,12 @@ class AmpScanGUI(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from GUIs.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.ampscanGUI import ampscanGUI
 
     """
 
     def __init__(self, parent = None):
-        super(AmpScanGUI, self).__init__()
+        super(ampscanGUI, self).__init__()
         self.vtkWidget = qtVtkWindow()
         self.renWin = self.vtkWidget._RenderWindow
         self.renWin.setBackground([1,1,1])
@@ -47,7 +47,7 @@ class AmpScanGUI(QMainWindow):
         self.Layout = QGridLayout()
         self.Layout.addWidget(self.vtkWidget, 0, 0)
         self.mainWidget.setLayout(self.Layout)
-        self.setWindowTitle("AmpScan Visualiser")
+        self.setWindowTitle("ampscan Visualiser")
         self.resize(800, 800)
         self.show()
         self.fileManager = fileManager(self)
@@ -468,7 +468,7 @@ class fileManager(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from GUIs.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.ampscanGUI import ampscanGUI
 
     """
 
@@ -526,7 +526,7 @@ class AlignControls(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from GUIs.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.ampscanGUI import ampscanGUI
 
     """
 
@@ -589,7 +589,7 @@ class RegistrationControls(QMainWindow):
     -------
     Perhaps an example implementation:
 
-    >>> from GUIs.AmpScanGUI import AmpScanGUI
+    >>> from GUIs.ampscanGUI import ampscanGUI
 
     """
 
@@ -658,6 +658,6 @@ def show_message(message, message_type="err", title="An Error Occured..."):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 #    mainWin = AlignControls([''])
-    mainWin = AmpScanGUI()
+    mainWin = ampscanGUI()
     mainWin.show()
     sys.exit(app.exec_())

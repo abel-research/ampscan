@@ -4,7 +4,7 @@ Testing suite for the smoothing module
 
 import unittest
 from util import get_path
-from AmpScan import analyse
+from ampscan import analyse
 import math
 
 
@@ -16,7 +16,7 @@ class TestSmoothing(unittest.TestCase):
         """Runs before each unit test.
         Sets up the AmpObject object using "stl_file.stl".
         """
-        from AmpScan.core import AmpObject
+        from ampscan.core import AmpObject
         stl_path = get_path("stl_file_5.stl")
         self.amp = AmpObject(stl_path)
 

@@ -33,7 +33,7 @@ class trimMixin(object):
         Examples
         --------
 
-        >>> from AmpScan import AmpObject
+        >>> from ampscan import AmpObject
         >>> amp = AmpObject(filename)
         >>> amp.planarTrim(100, 2)
 

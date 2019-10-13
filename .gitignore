@@ -5,14 +5,14 @@
 /*.egg
 
 !ipynb tests/*.stl
-AmpScan/AmpScan
-AmpScan/*.pyc
+ampscan/ampscan
+ampscan/*.pyc
 *.tiff
 *.c
-AmpScan/Build
+ampscan/Build
 .ipynb_checkpoints
 ipynb tests/.ipynb_checkpoints
-AmpScan/.ipynb_checkpoints
+ampscan/.ipynb_checkpoints
 
 docs/_build/
 docs/*.ai

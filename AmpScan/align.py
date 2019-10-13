@@ -10,8 +10,8 @@ import vtk
 import math
 from scipy import spatial
 from scipy.optimize import minimize
-from AmpScan.core import AmpObject
-from AmpScan.ampVis import vtkRenWin
+from ampscan.core import AmpObject
+from ampscan.ampVis import vtkRenWin
 
 # For doc examples
 import os

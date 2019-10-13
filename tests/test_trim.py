@@ -11,7 +11,7 @@ class TestTrim(unittest.TestCase):
         """Runs before each unit test
         Sets up the AmpObject object using "stl_file.stl"
         """
-        from AmpScan.core import AmpObject
+        from ampscan.core import AmpObject
         stl_path = get_path("stl_file.stl")
         self.amp = AmpObject(stl_path)
 

@@ -1,6 +1,6 @@
 # Contributing 
 
-Hey everyone! Thanks for taking time to contribute, we want to ensure AmpScan is a collaborative project within the P&O community and we really appreciate your input. 
+Hey everyone! Thanks for taking time to contribute, we want to ensure ampscan is a collaborative project within the P&O community and we really appreciate your input. 
 
 Before you contribute to the repo, please discuss your prospective change with a member of the core team. We can be contacted via email, twitter or on GitHub. 
 

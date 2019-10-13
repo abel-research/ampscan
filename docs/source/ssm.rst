@@ -1,7 +1,7 @@
 ssm module
 ==========
 
-.. automodule:: AmpScan.ssm
+.. automodule:: ampscan.ssm
     :members:
     :undoc-members:
     :show-inheritance:

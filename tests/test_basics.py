@@ -15,7 +15,7 @@ class TestBasicFunction(unittest.TestCase):
 
     def test_python_imports(self):
         """Test imports"""
-        import numpy, scipy, matplotlib, vtk, AmpScan.core
+        import numpy, scipy, matplotlib, vtk, ampscan.core
         s = str(type(numpy))
         self.assertEqual(s, "<class 'module'>")
         s = str(type(scipy))
@@ -24,5 +24,5 @@ class TestBasicFunction(unittest.TestCase):
         self.assertEqual(s, "<class 'module'>")
         s = str(type(vtk))
         self.assertEqual(s, "<class 'module'>")
-        s = str(type(AmpScan.core))
-        self.assertEqual(s, "<class 'module'>", "Failed import: AmpScan.core")
+        s = str(type(ampscan.core))
+        self.assertEqual(s, "<class 'module'>", "Failed import: ampscan.core")

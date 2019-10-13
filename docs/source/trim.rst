@@ -1,7 +1,7 @@
 trim module
 ===========
 
-.. automodule:: AmpScan.trim
+.. automodule:: ampscan.trim
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,7 +1,7 @@
 analyse module
 ==============
 
-.. automodule:: AmpScan.analyse
+.. automodule:: ampscan.analyse
     :members:
     :undoc-members:
     :show-inheritance:

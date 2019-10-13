@@ -1,7 +1,7 @@
 align module
 ============
 
-.. automodule:: AmpScan.align
+.. automodule:: ampscan.align
     :members:
     :undoc-members:
     :show-inheritance:

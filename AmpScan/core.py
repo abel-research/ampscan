@@ -8,9 +8,9 @@ Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 import numpy as np
 import os
 import struct
-from AmpScan.trim import trimMixin
-from AmpScan.smooth import smoothMixin
-from AmpScan.ampVis import visMixin
+from ampscan.trim import trimMixin
+from ampscan.smooth import smoothMixin
+from ampscan.ampVis import visMixin
 
 
 # The file path used in doc examples
@@ -19,7 +19,7 @@ filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
 class AmpObject(trimMixin, smoothMixin, visMixin):
     r"""
-    Base class for the AmpScan project.
+    Base class for the ampscan project.
     Stores mesh data and extra information 
     Inherits methods via mixins
     Flexible class able to deal with surface data using 3 or 4 node faces and 

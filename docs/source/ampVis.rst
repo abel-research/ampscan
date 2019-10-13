@@ -1,7 +1,7 @@
 ampVis module
 =============
 
-.. automodule:: AmpScan.ampVis
+.. automodule:: ampscan.ampVis
     :members:
     :undoc-members:
     :show-inheritance:

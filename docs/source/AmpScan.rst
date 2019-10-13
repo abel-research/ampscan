@@ -1,69 +1,69 @@
-AmpScan package
+ampscan package
 ===============
 
 Submodules
 ----------
 
-AmpScan.align module
+ampscan.align module
 --------------------
 
-.. automodule:: AmpScan.align
+.. automodule:: ampscan.align
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.ampVis module
+ampscan.ampVis module
 ---------------------
 
-.. automodule:: AmpScan.ampVis
+.. automodule:: ampscan.ampVis
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.analyse module
+ampscan.analyse module
 ----------------------
 
-.. automodule:: AmpScan.analyse
+.. automodule:: ampscan.analyse
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.core module
+ampscan.core module
 -------------------
 
-.. automodule:: AmpScan.core
+.. automodule:: ampscan.core
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.registration module
+ampscan.registration module
 ---------------------------
 
-.. automodule:: AmpScan.registration
+.. automodule:: ampscan.registration
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.ssm module
+ampscan.ssm module
 ------------------
 
-.. automodule:: AmpScan.ssm
+.. automodule:: ampscan.ssm
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.smooth module
+ampscan.smooth module
 ---------------------
 
-.. automodule:: AmpScan.smooth
+.. automodule:: ampscan.smooth
     :members:
     :undoc-members:
     :show-inheritance:
 
-AmpScan.trim module
+ampscan.trim module
 -------------------
 
-.. automodule:: AmpScan.trim
+.. automodule:: ampscan.trim
     :members:
     :undoc-members:
     :show-inheritance:
@@ -72,7 +72,7 @@ AmpScan.trim module
 Module contents
 ---------------
 
-.. automodule:: AmpScan
+.. automodule:: ampscan
     :members:
     :undoc-members:
     :show-inheritance:

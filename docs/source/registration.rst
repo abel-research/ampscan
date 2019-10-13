@@ -1,7 +1,7 @@
 registration module
 ===================
 
-.. automodule:: AmpScan.registration
+.. automodule:: ampscan.registration
     :members:
     :undoc-members:
     :show-inheritance:

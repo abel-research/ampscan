@@ -6,7 +6,7 @@ Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
-from AmpScan.core import AmpObject
+from ampscan.core import AmpObject
 import matplotlib.pyplot as plt
 import matplotlib.colors as clr
 import matplotlib.colorbar as clb
@@ -116,7 +116,7 @@ def calc_perimeter(polys):
     ----------
     polys: list
         A list of numpy arrays, each array contains the vertices of the 
-        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+        polygon generated from the slice. Generate using ampscan.analyse.create_slices()
 
     Returns
     -------
@@ -145,7 +145,7 @@ def calc_widths(polys):
     ----------
     polys: list
         A list of numpy arrays, each array contains the vertices of the 
-        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+        polygon generated from the slice. Generate using ampscan.analyse.create_slices()
 
     Returns
     -------
@@ -175,7 +175,7 @@ def calc_csa(polys):
     ----------
     polys: list
         A list of numpy arrays, each array contains the vertices of the 
-        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+        polygon generated from the slice. Generate using ampscan.analyse.create_slices()
 
     Returns
     -------
@@ -212,7 +212,7 @@ def est_volume(polys):
     ----------
     polys: list
         A list of numpy arrays, each array contains the vertices of the 
-        polygon generated from the slice. Generate using AmpScan.analyse.create_slices()
+        polygon generated from the slice. Generate using ampscan.analyse.create_slices()
 
     Returns
     -------
