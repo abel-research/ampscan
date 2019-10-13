@@ -2,4 +2,4 @@ from .analyse import (create_slices, calc_perimeter, calc_widths, calc_csa, est_
                       visualise_slices, plot_slices, MeasurementsOut, CMapOut)
 from .output import getPDF, generateRegBinsCsv, generateRegCsv
 
-del analyse, output
+# del analyse, output
