@@ -5,12 +5,11 @@ Module Documentation
    :maxdepth: 3
    
    source/align
-   source/ampVis
    source/analyse
    source/core
    source/registration
    source/output
    source/smooth
-   source/ssm
    source/trim
+   source/vis
 

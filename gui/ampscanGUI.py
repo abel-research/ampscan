@@ -6,7 +6,7 @@ import vtk
 from ampscan import AmpObject, analyse
 from ampscan.registration import registration
 from ampscan.align import align
-from ampscan.ampVis import qtVtkWindow, vtkRenWin
+from ampscan.vis import qtVtkWindow, vtkRenWin
 from PyQt5.QtCore import QPoint, QSize, Qt, QTimer, QRect, pyqtSignal
 from PyQt5.QtGui import (QColor, QFontMetrics, QImage, QPainter, QIcon,
                          QOpenGLVersionProfile)

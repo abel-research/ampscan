@@ -1,7 +1,7 @@
 output module
 ===================
 
-.. automodule:: ampscan.output
+.. automodule:: ampscan.analyse.output
     :members:
     :undoc-members:
     :show-inheritance:

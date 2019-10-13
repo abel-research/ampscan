@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="40"
+   height="55"
+   viewBox="0 0 10.583333 14.552083"
+   version="1.1"
+   id="svg856"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"
+   sodipodi:docname="ampscanlogosmall.svg">
+  <defs
+     id="defs850">
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect4602"
+       is_visible="true"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="22.799075"
+     inkscape:cy="28.321042"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="986"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata853">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-282.44792)">
+    <path
+       style="fill:none;stroke:#ffffff;stroke-width:0.32231966;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 0.52416463,286.07763 c 0,1.69288 0,3.3858 0.2807561,4.82979 0.28075607,1.44399 0.84224007,2.63895 1.65421707,3.59288 0.811977,0.95392 1.8868765,1.6751 2.9809349,1.61042 1.0940585,-0.0647 2.2025522,-0.90274 2.9587486,-1.88718 0.7561964,-0.98444 1.1546994,-2.1112 1.3584622,-3.23219 0.2037629,-1.12099 0.2128204,-2.23639 0.221877,-3.35168"
+       id="path4600"
+       inkscape:connector-curvature="0"
+       inkscape:path-effect="#path-effect4602"
+       inkscape:original-d="m 0.52416463,286.07763 c 3.841e-5,1.69288 3.841e-5,3.3858 0,5.07876 0.56155787,1.195 1.12304487,2.38996 1.68451107,3.58501 1.059662,0.71696 2.1373734,1.43395 3.2060038,2.151 1.1139725,-0.8536 2.2279385,-1.68443 3.3418501,-2.52658 0.3985094,-1.12671 0.7970112,-2.25347 1.1954599,-3.38014 0.00905,-1.11532 0.01815,-2.23072 0.027171,-3.34601"
+       sodipodi:nodetypes="ccccccc" />
+    <ellipse
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:0.32231966;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       id="path4550"
+       cx="5.2380776"
+       cy="286.04175"
+       rx="4.7131963"
+       ry="2.2525322" />
+  </g>
+</svg>
