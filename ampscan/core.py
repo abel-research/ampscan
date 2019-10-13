@@ -10,7 +10,7 @@ import os
 import struct
 from ampscan.trim import trimMixin
 from ampscan.smooth import smoothMixin
-from ampscan.ampVis import visMixin
+from ampscan.vis import visMixin
 
 
 # The file path used in doc examples

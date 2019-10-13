@@ -11,7 +11,7 @@ import math
 from scipy import spatial
 from scipy.optimize import minimize
 from ampscan.core import AmpObject
-from ampscan.ampVis import vtkRenWin
+from ampscan.vis import vtkRenWin
 
 # For doc examples
 import os

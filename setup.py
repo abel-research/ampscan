@@ -19,7 +19,7 @@ setup(name='ampscan',
       author='Joshua Steer',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
-      packages=['ampscan'],
+      packages=find_packages(),
       python_requires='>=3.6',  # Your supported Python ranges
       install_requires=['numpy',
                         'matplotlib',
