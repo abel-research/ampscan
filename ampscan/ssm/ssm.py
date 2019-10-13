@@ -7,8 +7,8 @@ Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 
 import os
 import numpy as np
-from .core import AmpObject
-from .registration import registration
+from ampscan.core import AmpObject
+from ampscan.registration import registration
 import os
 
 
