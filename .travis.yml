@@ -5,7 +5,7 @@ python:
 install:
   - pip install -r requirements.txt
   - pip install .
-script: pytest --doctest-modules -v --ignore=guis --ignore=docs
+script: pytest --doctest-modules -v --ignore=gui --ignore=docs
 notifications:
   webhooks:
     urls:
