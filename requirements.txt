@@ -2,7 +2,7 @@ numpy==1.16.4
 matplotlib==2.2.2
 scipy==1.2.1
 sphinxcontrib-napoleon==0.7
-vtk==8.1.0
+vtk
 PyQt5==5.13.0
 PyPDF2==1.26.0
 reportlab==3.5.23

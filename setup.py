@@ -4,6 +4,7 @@ Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
 """
 
 from setuptools import setup, find_packages
+from os import path, walk
 
 
 def readme():
@@ -12,13 +13,14 @@ def readme():
 
 
 setup(name='ampscan',
-      version='0.3',
+      version='0.3.0',
       description=('Package for analysis of '
                    'surface scan data for P&O applications'),
       long_description=readme(),
       author='Joshua Steer',
       author_email='Joshua.Steer@soton.ac.uk',
       license='MIT',
+      include_package_data=True,
       packages=find_packages(),
       python_requires='>=3.6',  # Your supported Python ranges
       install_requires=['numpy',
@@ -29,6 +31,5 @@ setup(name='ampscan',
                         'PyPDF2==1.26.0',
                         'PyQt5==5.13.0',
                         'reportlab==3.5.23'],
-      package_data={},
-      include_package_data=True,
+      url = 'https://ampscan.readthedocs.io/en/latest/',
       zip_safe=False,)

@@ -1,2 +1,2 @@
 include README.md
-include gui/*
+include gui/ampscanGUI.py
