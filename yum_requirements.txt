@@ -1,0 +1,4 @@
+libXt
+libXt-devel
+mesa-libGLU-devel
+python3-tkinter
