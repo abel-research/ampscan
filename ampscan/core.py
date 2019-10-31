@@ -253,11 +253,15 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         """
         fC = self.vert[self.faces].mean(axis=1)
         cent = self.vert.mean(axis=0)
-        polarity = np.sum(self.norm * (fC-cent), axis=1) < 0
-        if polarity.mean() > 0.5:
-            self.faces[:, [1,2]] = self.faces[:, [2,1]]
-            self.calcNorm()
-            if hasattr(self, 'vNorm'): self.calcVNorm()
+        # polarity = np.sum(self.norm * (fC-cent), axis=1) < 0
+        # if polarity.mean() > 0.5:
+        #     self.faces[:, [1,2]] = self.faces[:, [2,1]]
+        #     self.calcNorm()
+        #     if hasattr(self, 'vNorm'): self.calcVNorm()
+        polarity  = np.einsum('ij, ij->i', fC - cent, self.norm) < 0
+        self.faces[polarity, [1,2]] = self.faces[polarity, [2,1]]
+        self.calcNorm()
+        if hasattr(self, 'vNorm'): self.calcVNorm()
         
     def calcVNorm(self):
         """
@@ -279,6 +283,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         self.vNorm = np.zeros(self.vert.shape)
         for i in range(self.vert.shape[0]):
             self.vNorm[i, :] = np.nanmean(norms[ndx[i]:ndx[i+1], :], axis=0)
+            
 
     def save(self, filename):
         r"""
