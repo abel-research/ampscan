@@ -261,7 +261,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         polarity  = np.einsum('ij, ij->i', fC - cent, self.norm) < 0
         # self.faces[polarity, [1,2]] = self.faces[polarity, [2,1]]
         for i, f in enumerate(self.faces):
-            if polarity[i] is True:
+            if polarity[i] == True:
                 self.faces[i, :] = [f[0], f[2], f[1]]
 
         self.calcNorm()
