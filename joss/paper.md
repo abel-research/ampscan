@@ -1,5 +1,5 @@
 ---
-title: 'ampscan: A lightweight Python package for clinical analysis of prosthetics and orthotics'
+title: 'ampscan: A lightweight Python package for shape analysis of prosthetics and orthotics'
 tags:
 - Python
 - prosthetics
@@ -12,6 +12,8 @@ authors:
    affiliation: 1
  - name: Oliver Stocks
    affiliation: 1
+ - name: Jack Parsons
+   affiliation: 1 
  - name: Peter R Worsley
    orcid: 0000-0003-0145-5042
    affiliation: 2
