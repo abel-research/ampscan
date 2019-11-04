@@ -1,5 +1,5 @@
 ---
-title: 'ampscan: A lightweight Python package for shape analysis of prosthetics and orthotics'
+title: 'ampscan: A lightweight Python package for clinical analysis of prosthetics and orthotics'
 tags:
 - Python
 - prosthetics
@@ -7,21 +7,21 @@ tags:
 - scanning
 - meshes
 authors:
-- name: Joshua W Steer
+ - name: Joshua W Steer
    orcid: 0000-0002-6288-1347
    affiliation: 1
-- name: Oliver Stocks
+ - name: Oliver Stocks
    affiliation: 1
-- name: Peter R Worsley
+ - name: Peter R Worsley
    orcid: 0000-0003-0145-5042
    affiliation: 2
-- name: Alexander S Dickinson
+ - name: Alexander S Dickinson
    orcid: 0000-0002-9647-1944
    affiliation: 1
 affiliations:
-- name: Bioengineering Research Group, University of Southampton
+ - name: Bioengineering Research Group, University of Southampton
    index: 1
-- name: Fundamental Care and Safety Research Group, University of Southampton
+ - name: Fundamental Care and Safety Research Group, University of Southampton
    index: 2
 date: 04 November 2019
 bibliography: paper.bib
