@@ -21,9 +21,9 @@ authors:
    orcid: 0000-0002-9647-1944
    affiliation: 1
 affiliations:
- - name: Bioengineering Research Group, University of Southampton
+ - name: Bioengineering Sciences Research Group, School of Engineering, Faculty of Engineering and Physical Sciences, University of Southampton
    index: 1
- - name: Fundamental Care and Safety Research Group, University of Southampton
+ - name: Clinical Academic Facility, School of Health Sciences, Faculty of Environment and Life Sciences, University of Southampton
    index: 2
 date: 04 November 2019
 bibliography: paper.bib
