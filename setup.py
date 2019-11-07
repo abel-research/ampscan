@@ -26,7 +26,7 @@ setup(name='ampscan',
       license='MIT',
       include_package_data=True,
       packages=find_packages(),
-      python_requires='>=3.6',  # Your supported Python ranges
+      python_requires='>=3.5',  # Your supported Python ranges
       install_requires=requirements(),
       url = 'https://ampscan.readthedocs.io/en/latest/',
       zip_safe=False,)
