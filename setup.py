@@ -11,6 +11,10 @@ def readme():
     with open('README.md') as f:
         return f.read()
 
+def requirements():
+    with open('requirements.txt') as f:
+        return f.read().split('\n')
+
 
 setup(name='ampscan',
       version='0.3.0',
@@ -23,12 +27,6 @@ setup(name='ampscan',
       include_package_data=True,
       packages=find_packages(),
       python_requires='>=3.6',  # Your supported Python ranges
-      install_requires=['numpy',
-                        'matplotlib',
-                        'scipy',
-                        'sphinxcontrib-napoleon',
-                        'PyPDF2==1.26.0',
-                        'PyQt5==5.13.0',
-                        'reportlab==3.5.23'],
+      install_requires=requirements(),
       url = 'https://ampscan.readthedocs.io/en/latest/',
       zip_safe=False,)
