@@ -36,9 +36,9 @@ Building on foundational work published by Zachariah, Sorenson and Sanders [@San
 
 This method was written in MATLAB, however, this was considered restrictive for other researchers to access as they may not possess a MATLAB license.  In order to maximise access to the developed techniques and improve performance, especially for 3D visualisation, the methods were rewritten from scratch within Python, including updated algorithms for each stage of the aforementioned process. 
 
-![A Graphical summary of the ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](AmpScan_Overview.png)
-
 The ampscan package has been designed with a range of user groups in mind, from practicing clinicians to biomedical engineering researchers, with an appreciation that they may not have an extensive background in coding. To this aim, the software has been developed in Python and leverages the commonly used libraries of NumPy, SciPy, matplotlib, vtk and pyqt. As such, full functionality of the software can be accessed without requiring additional installs. The core analysis of the package can be carried out both within a script-based environment, or alternatively with the supplied lightweight GUI [@Steer:ISPO].  
+
+![A Graphical summary of the ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](AmpScan_Overview.png)
 
 The core functionality of ampscan is summarised below with a more detailed description available in the online [documentation](https://ampscan.readthedocs.io/en/latest/):
 
