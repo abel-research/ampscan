@@ -26,7 +26,7 @@ Navigate to the `ampscan/` directory and run a pip install using:
 
 ``pip install -e .``
 
-ampscan will soon be available on pip once v0.1 is released 
+ampscan will soon be available on pip once v0.3 is released 
 
 If you are installing on Red Hat, you may need to install the dependencies listed in the [Yum Requirements file](yum_requirements.txt).
 
