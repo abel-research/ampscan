@@ -34,9 +34,9 @@ The increasing accessibility of surface scanners is giving users the ability to 
 
 Building on foundational work published by Zachariah, Sorenson and Sanders [@Sanders:2005], in a previously published paper [@Dickinson:2016] we detailed a method for comparing pairs of surface scans using alignment, registration and visualisation, and extracting key measurements for evaluation of the accuracy and reliability of clinically-used scanners. Further studies have also demonstrated using this package for comparing the consistency of casting techniques [@Dickinson:APOSM], statistical shape modeling across the population [@Steer:BMMB] and quantifying rectifications between the residual limb and the prosthetic socket [@Steer:AOPA]. 
 
-![A Graphical summary of the ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](AmpScan_Overview.png)
-
 This method was written in MATLAB, however, this was considered restrictive for other researchers to access as they may not possess a MATLAB license.  In order to maximise access to the developed techniques and improve performance, especially for 3D visualisation, the methods were rewritten from scratch within Python, including updated algorithms for each stage of the aforementioned process. 
+
+![A Graphical summary of the ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](AmpScan_Overview.png)
 
 The ampscan package has been designed with a range of user groups in mind, from practicing clinicians to biomedical engineering researchers, with an appreciation that they may not have an extensive background in coding. To this aim, the software has been developed in Python and leverages the commonly used libraries of NumPy, SciPy, matplotlib, vtk and pyqt. As such, full functionality of the software can be accessed without requiring additional installs. The core analysis of the package can be carried out both within a script-based environment, or alternatively with the supplied lightweight GUI [@Steer:ISPO].  
 
