@@ -56,8 +56,11 @@ Other packages perform the specific tasks of ampscan more comprehensively such a
 
 # Acknowledgments 
 While the ampscan package was not funded directly, the authors would like to thank the following for their financial support:
+
 - JWS: the University of Southampton’s EPSRC Doctoral Training Program (ref EP/M508147/1) and EUROSTARS project (ref 9396)
+
 - PRW: the EPSRC-NIHR “Medical Device and Vulnerable Skin Network” (ref EP/M000303/1),
+
 - ASD: the Royal Academy of Engineering, UK, (ref RF/130).
 
 # References
