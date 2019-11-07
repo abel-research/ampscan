@@ -34,7 +34,7 @@ The increasing accessibility of surface scanners is giving users the ability to 
 
 Building on foundational work published by Zachariah, Sorenson and Sanders [@Sanders:2005], in a previously published paper [@Dickinson:2016] we detailed a method for comparing pairs of surface scans using alignment, registration and visualisation, and extracting key measurements for evaluation of the accuracy and reliability of clinically-used scanners. Further studies have also demonstrated using this package for comparing the consistency of casting techniques [@Dickinson:APOSM], statistical shape modeling across the population [@Steer:BMMB] and quantifying rectifications between the residual limb and the prosthetic socket [@Steer:AOPA]. 
 
-![A Graphical summary of the ampscan process](AmpScan_Overview.png)
+![A Graphical summary of the ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](AmpScan_Overview.png)
 
 This method was written in MATLAB, however, this was considered restrictive for other researchers to access as they may not possess a MATLAB license.  In order to maximise access to the developed techniques and improve performance, especially for 3D visualisation, the methods were rewritten from scratch within Python, including updated algorithms for each stage of the aforementioned process. 
 
