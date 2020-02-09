@@ -61,7 +61,8 @@ class smoothMixin(object):
         n: int, default 1
             number of iterations of smoothing
         beta: float, default 0.6
-            scalar between [0, 1] which dictates influence of 
+            scalar between [0, 1] which dictates influence of distance from adjacent to original point.  
+            If beta=1, then this effectively acts as the laplacian smooth 
         brim: bool, default True
             If true, then this will not smooth the vertices on the brim
         
