@@ -63,6 +63,6 @@ While the ampscan package was not funded directly, the authors would like to tha
 
 - ASD: the Royal Academy of Engineering, UK, (ref RF/130).
 
-Finally, the authors would like to thank the Research Software Group at the University of Southampton for all their support during the development of this software. 
+Finally, the authors would like to thank the Research Software Group at the University of Southampton for all their support during the development of this software, as well as Omar Animashaun and Tim Dunn for their contributions to ampscan.  
 
 # References
