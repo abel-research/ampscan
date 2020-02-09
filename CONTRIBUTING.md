@@ -2,81 +2,36 @@
 
 Hey everyone! Thanks for taking time to contribute, we want to ensure ampscan is a collaborative project within the P&O community and we really appreciate your input. 
 
-Before you contribute to the repo, please discuss your prospective change with a member of the core team. We can be contacted via email, twitter or on GitHub. 
+Before you contribute to the repo, please discuss your prospective change with a member of the core team. We can be contacted via email, twitter or on GitHub. We want to ensure ampscan has a clear focus for the P&O community and can be used by those who are not software experts.  
 
-We also have a code of conduct, please follow it in any interactions within the project. 
+We also have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in any interactions within the project. 
 
-## Code of Conduct
 
-### Our Pledge
+## Reporting issues
 
-In the interest of fostering an open and welcoming environment, we as
-contributors and maintainers pledge to making participation in our project and
-our community a harassment-free experience for everyone, regardless of age, body
-size, disability, ethnicity, gender identity and expression, level of experience,
-nationality, personal appearance, race, religion, or sexual identity and
-orientation.
+- **Search for existing issues.** Please check to see if someone else has reported the same issue.
+- **Share as much information as possible.** Include operating system and version, browser, version and any screenshots. Also, include steps to reproduce the bug.
 
-### Our Standards
+## Project Setup
+Refer to the [README](README.md).
 
-Examples of behavior that contributes to creating a positive environment
-include:
+## Code Style
 
-* Using welcoming and inclusive language
-* Being respectful of differing viewpoints and experiences
-* Gracefully accepting constructive criticism
-* Focusing on what is best for the community
-* Showing empathy towards other community members
+## Testing
+Testing is performed automatically using [Travis Ci](https://travis-ci.org/abel-research/ampscan). New tests can be added to the repo using the python unittest module with in the tests folder. 
 
-Examples of unacceptable behavior by participants include:
+## Pull requests
+- Try not to pollute your pull request with unintended changes – keep them simple and small. If possible, squash your commits.
+- Try to share how your code has been tested before submitting a pull request.
+- If your PR resolves an issue, include **closes #ISSUE_NUMBER** in your commit message (or a [synonym](https://help.github.com/articles/closing-issues-via-commit-messages)).
+- Review
+    - If your PR is ready for review, another contributor will be assigned to review your PR
+    - The reviewer will accept or comment on the PR. 
+    - If needed address the comments left by the reviewer. Once you're ready to continue the review, ping the reviewer in a comment.
+    - Once accepted your code will be merged to `master`
 
-* The use of sexualized language or imagery and unwelcome sexual attention or
-advances
-* Trolling, insulting/derogatory comments, and personal or political attacks
-* Public or private harassment
-* Publishing others' private information, such as a physical or electronic
-  address, without explicit permission
-* Other conduct which could reasonably be considered inappropriate in a
-  professional setting
-
-### Our Responsibilities
-
-Project maintainers are responsible for clarifying the standards of acceptable
-behavior and are expected to take appropriate and fair corrective action in
-response to any instances of unacceptable behavior.
-
-Project maintainers have the right and responsibility to remove, edit, or
-reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned to this Code of Conduct, or to ban temporarily or
-permanently any contributor for other behaviors that they deem inappropriate,
-threatening, offensive, or harmful.
-
-### Scope
-
-This Code of Conduct applies both within project spaces and in public spaces
-when an individual is representing the project or its community. Examples of
-representing a project or community include using an official project e-mail
-address, posting via an official social media account, or acting as an appointed
-representative at an online or offline event. Representation of a project may be
-further defined and clarified by project maintainers.
-
-### Enforcement
-
-Instances of abusive, harassing, or otherwise unacceptable behavior may be
-reported by contacting the project team at Alex.Dickinson@soton.ac.uk or Joshua.Steer@soton.ac.uk. All
-complaints will be reviewed and investigated and will result in a response that
-is deemed necessary and appropriate to the circumstances. The project team is
-obligated to maintain confidentiality with regard to the reporter of an incident.
-Further details of specific enforcement policies may be posted separately.
-
-Project maintainers who do not follow or enforce the Code of Conduct in good
-faith may face temporary or permanent repercussions as determined by other
-members of the project's leadership.
-
-### Attribution
-
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4,
-available at [http://contributor-covenant.org/version/1/4][version]
-
-[homepage]: http://contributor-covenant.org
-[version]: http://contributor-covenant.org/version/1/4/
+## Documentation
+Documentation for the ampscan library is automatically generated using 
+[sphinx](http://www.sphinx-doc.org/en/master/). Any additional code should be documented in 
+accordance with 'numpy style' docstrings. A template can be found 
+[here](https://www.numpy.org/devdocs/docs/howto_document.html#example).
