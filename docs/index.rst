@@ -18,8 +18,8 @@ ampscan relies heavily on numpy_ and scipy_ to perform
 mathematical operations with visualisation handled by PyQt_
 and VTK_. The package is still under development by researchers at the Amputee BioEngineering Lab (ABEL) at University of Southampton. 
 The foundations of this toolbox were developed in research funded by:
-- the UK's Engineering and Physical Sciences Research Council (EPSRC), grants EP/M508147/1 and EP/M000303/1, and
-- the UK's Royal Academy of Engineering (RAEng), grant RF/130.
+* the UK's Engineering and Physical Sciences Research Council (EPSRC), grants EP/M508147/1 and EP/M000303/1, and
+* the UK's Royal Academy of Engineering (RAEng), grant RF/130.
 For full documentation, visit the ampscan_ website.
 
 .. _numpy: http://www.numpy.org/

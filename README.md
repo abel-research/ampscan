@@ -43,7 +43,13 @@ Testing
 
 Testing is performed automatically using [Travis Ci](https://travis-ci.org/abel-research/ampscan). New tests can be added to the repo. 
 
+
+Licesnse
+--------
+
+At ampscan we use the MIT license, which can be founde here [here](../master/LICENSE)
+
 How to acknowledge
 ------------------
 
-Find license [here](../master/LICENSE)
+ampscan is currently under review at JOSS, check the progress here [here](https://github.com/openjournals/joss-reviews/issues/2060)
