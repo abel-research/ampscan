@@ -1,7 +1,7 @@
 numpy>=1.12
 matplotlib>=2
-scipy==1.2.1
-sphinxcontrib-napoleon==0.7
+scipy>=1.2.1
+sphinxcontrib-napoleon
 vtk>=8
 PyQt5>=5,<=5.13
 PyPDF2>=1.20
