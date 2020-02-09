@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Package for dealing with registration methods between two AmpObject meshes
-Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk
+Copyright: Joshua Steer 2020, Joshua.Steer@soton.ac.uk
 """
 import numpy as np
 import copy

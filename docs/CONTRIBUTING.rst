@@ -5,8 +5,9 @@ Hey everyone! Thanks for taking time to contribute, we want to ensure ampscan is
 
 Before you contribute to the repo, please discuss your prospective change with a member of the core team. We can be contacted via email, twitter or on GitHub. We want to ensure ampscan has a clear focus for the P&O community and can be used by those who are not software experts.  
 
-We also have a [code of conduct](CODE_OF_CONDUCT.md), please follow it in any interactions within the project. 
+We also have a `code of conduct`_, please follow it in any interactions within the project. 
 
+.. _code of conduct: CODE_OF_CONDUCT.html
 
 Reporting issues
 ----------------
@@ -16,29 +17,38 @@ Reporting issues
 
 Project Setup
 -------------
-Refer to the [README](README.md).
+Refer to the `README`_.
+
+.. _README: https://github.com/abel-research/ampscan/blob/master/README.md
 
 Code Style
 ----------
 
 Testing
 -------
-Testing is performed automatically using [Travis Ci](https://travis-ci.org/abel-research/ampscan). New tests can be added to the repo using the python unittest module with in the tests folder. 
+Testing is performed automatically using `Travis Ci`_. New tests can be added to the repo using the python unittest module with in the tests folder. 
+
+.. _Travis CI: https://travis-ci.org/abel-research/ampscan
 
 Pull requests
 -------------
 - Try not to pollute your pull request with unintended changes – keep them simple and small. If possible, squash your commits.
 - Try to share how your code has been tested before submitting a pull request.
-- If your PR resolves an issue, include **closes #ISSUE_NUMBER** in your commit message (or a [synonym](https://help.github.com/articles/closing-issues-via-commit-messages)).
+- If your PR resolves an issue, include **closes #ISSUE_NUMBER** in your commit message (or a `synonym`_).
 - Review
     - If your PR is ready for review, another contributor will be assigned to review your PR
     - The reviewer will accept or comment on the PR. 
     - If needed address the comments left by the reviewer. Once you're ready to continue the review, ping the reviewer in a comment.
     - Once accepted your code will be merged to `master`
 
+.. _synonym: https://help.github.com/articles/closing-issues-via-commit-messages
+
 Documentation
 -------------
 Documentation for the ampscan library is automatically generated using 
-[sphinx](http://www.sphinx-doc.org/en/master/). Any additional code should be documented in 
+`sphinx`_. Any additional code should be documented in 
 accordance with 'numpy style' docstrings. A template can be found 
-[here](https://www.numpy.org/devdocs/docs/howto_document.html#example).
+`here`_.
+
+.. _sphinx: http://www.sphinx-doc.org/en/master/
+.. _here: https://www.numpy.org/devdocs/docs/howto_document.html#example

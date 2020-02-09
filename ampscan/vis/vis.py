@@ -2,7 +2,7 @@
 """
 Classes and functions to deal with the visualisation of the AmpObjects. These
 include wrappers for vtk and Qt
-Copyright: Joshua Steer 2019, Joshua.Steer@soton.ac.uk 
+Copyright: Joshua Steer 2020, Joshua.Steer@soton.ac.uk 
 """
 
 import numpy as np

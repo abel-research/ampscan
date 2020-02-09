@@ -8,7 +8,7 @@ If you are using a git clone you can make the module importable
 via ``import ampscan`` by navigating to the root directory and running 
 ``pip install -e .``.
 
-.. _here: https://git.soton.ac.uk/js22g12/ampscan/tree/master/docs/examples
+.. _here: https://github.com/abel-research/ampscan/tree/master/tests
 
 .. toctree::
    :maxdepth: 2

@@ -66,5 +66,6 @@ Developers Guide
    code
    LICENSE
    CONTRIBUTING
+   CODE_OF_CONDUCT
 
 
