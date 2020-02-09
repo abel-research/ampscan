@@ -46,7 +46,14 @@ Navigate to the `ampscan/` directory and run a pip install using:
 
 ``pip install -e .``
 
-ampscan will soon be available on pip once v0.1 is released 
+ampscan will soon be available on pip once v0.3 is released 
+
+Testing
+-------
+
+Testing is performed automatically using `Travis Ci`.
+
+.. _Travis Ci: https://travis-ci.org/abel-research/ampscan
 
 
 Getting Started

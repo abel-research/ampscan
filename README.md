@@ -38,7 +38,10 @@ Documentation for the ampscan library is automatically generated using
 accordance with 'numpy style' docstrings. A template can be found 
 [here](https://www.numpy.org/devdocs/docs/howto_document.html#example).
 
-Testing is performed automatically using [Travis Ci](https://travis-ci.org/). New tests can be added to the repo. 
+Testing
+-------
+
+Testing is performed automatically using [Travis Ci](https://travis-ci.org/abel-research/ampscan). New tests can be added to the repo. 
 
 How to acknowledge
 ------------------
