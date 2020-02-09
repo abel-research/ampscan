@@ -65,4 +65,6 @@ Developers Guide
    
    code
    LICENSE
+   CONTRIBUTING
+
 
