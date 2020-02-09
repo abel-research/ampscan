@@ -31,7 +31,7 @@ class TestSmoothing(unittest.TestCase):
     def test_smoothing_volume(self):
         """Tests that smoothing affects the volume within given acceptable range"""
         # TODO check this is actually working properly
-        poly1 = analyse.create_slices(self.amp, [0.02, 0.98, 0.005, typ='norm_intervals', axis=2)
+        poly1 = analyse.create_slices(self.amp, [0.02, 0.98], 0.005, typ='norm_intervals', axis=2)
         vol1 = analyse.est_volume(poly1) 
         print(vol1)
         
