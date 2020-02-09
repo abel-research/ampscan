@@ -23,6 +23,6 @@ def get_path(filename):
         # This is for Pycharm testing
         stl_path = filename
     else:
-        # This is for the Gitlab testing
+        # This is for the Github testing
         stl_path = os.path.join(os.path.abspath(os.getcwd()), "tests", filename)
     return stl_path

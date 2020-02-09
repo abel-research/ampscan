@@ -38,7 +38,7 @@ Install dependencies using conda:
 
 ``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
 
-For the most up to date version of ampscan, clone directly from the gitlab repository using:
+For the most up to date version of ampscan, clone directly from the github repository using:
 
 ``git clone https://github.com/abel-research/ampscan``
 
