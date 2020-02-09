@@ -49,7 +49,7 @@ class smoothMixin(object):
         self.calcNorm()
         self.calcVNorm()
 
-    def hc_smooth(self, beta=0.6, n=1, brim=True):
+    def hc_smooth(self, n=1 ,beta=0.6, brim=True):
         r"""
         Function to apply a Humphrey’s Classes smooth to the mesh. Note, this assumes
         that alpha=0 (ie the original point through the iteration has no effect). 
