@@ -17,7 +17,7 @@ class TestSmoothing(unittest.TestCase):
         Sets up the AmpObject object using "stl_file.stl".
         """
         from ampscan.core import AmpObject
-        stl_path = get_path("stl_file_2.stl")
+        stl_path = get_path("stl_file.stl")
         self.amp = AmpObject(stl_path)
         self.amp2 = AmpObject(stl_path)
         self.amp3 = AmpObject(stl_path)
