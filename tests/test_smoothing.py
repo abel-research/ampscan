@@ -39,7 +39,7 @@ class TestSmoothing(unittest.TestCase):
         self.assertAlmostEqual(analyse.est_volume(poly1), analyse.est_volume(poly2), delta=TestSmoothing.DELTA)
         
         self.amp2.hc_smooth(1)
-        poly3 = analyse.create_slices(self.amp, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
+        poly3 = analyse.create_slices(self.amp2, [0.001, 0.999], 0.001, typ='norm_intervals', axis=2)
         print(analyse.est_volume(poly3))
         self.assertAlmostEqual(analyse.est_volume(poly1), analyse.est_volume(poly3), delta=TestSmoothing.DELTA)
         self.assertLess(analyse.est_volume(poly1)-analyse.est_volume(poly3), analyse.est_volume(poly1)-analyse.est_volume(poly2))
