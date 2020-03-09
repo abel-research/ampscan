@@ -39,6 +39,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
         self.markers = []
         self.labels = []
         self.triad = None
+
         
     def renderActors(self, actors, viewport=0, zoom=1.0):
         r"""

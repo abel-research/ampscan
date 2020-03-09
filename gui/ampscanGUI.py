@@ -310,6 +310,7 @@ class ampscanGUI(QMainWindow):
                 analyse.CMapOut(reg, colors=self.CMapN2P)
                 # reg.plotResults(name="distributionofshapevariance.png")
             self.display()  # Reset which objects are displayed
+            self.renWin.setScalarBar(reg.actor, title = 'Shape difference, mm')
 
             print('Run the Registration code between %s and %s' % (baseline, target))
         else:
@@ -555,14 +556,14 @@ class RegistrationControls(QMainWindow):
         self.baseline = QComboBox()
         self.target = QComboBox()
         self.reg = QPushButton("Run Registration")
-        self.tick = QCheckBox("Generate Output File for Comparison?")
+        # self.tick = QCheckBox("Generate Output File for Comparison?")
         self.setCentralWidget(self.main)
         self.layout = QGridLayout()
         self.layout.addWidget(QLabel('Baseline'), 0, 0)
         self.layout.addWidget(QLabel('Target'), 1, 0)
         self.layout.addWidget(self.baseline, 0, 1)
         self.layout.addWidget(self.target, 1, 1)
-        self.layout.addWidget(self.tick, 2,1)
+        # self.layout.addWidget(self.tick, 2,1)
         self.layout.addWidget(self.reg, 3, 0, 1, -1)
         self.main.setLayout(self.layout)
         self.setWindowTitle("Registration Manager")
