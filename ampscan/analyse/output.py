@@ -1,4 +1,6 @@
 from PyPDF2 import PdfFileReader, PdfFileWriter
+import pathlib
+from pathlib import Path
 from reportlab.pdfgen import canvas
 import io
 import os
@@ -16,6 +18,12 @@ def getPDF(lngths, perimeters, CSA, APW, MLW):
     -------
     The file path to the PDF
     """
+    path = pathlib.Path(__file__).parent.absolute()
+    my_file = Path(path, "Measurements Template.pdf")
+    try:
+        my_abs_path = my_file.resolve(strict=True)
+    except:
+        return(1) 
     packet = io.BytesIO()
     c = canvas.Canvas(packet)
     for i in range(1, len(lngths)-1):
@@ -42,8 +50,9 @@ def getPDF(lngths, perimeters, CSA, APW, MLW):
     c.save()
     packet.seek(0)
     newpdf = PdfFileReader(packet)
-    template = PdfFileReader(open(os.path.join("res", "Measurements Template.pdf"), "rb"))
-    t2 = PdfFileReader(open(os.path.join("res", "Output Template.pdf"), "rb"))
+
+    template = PdfFileReader(open(os.path.join(path, "Measurements Template.pdf"), "rb"))
+    t2 = PdfFileReader(open(os.path.join(path, "Output Template.pdf"), "rb"))
     output = PdfFileWriter()
     page = t2.getPage(0)
     page.mergePage(newpdf.getPage(1))

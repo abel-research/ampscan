@@ -350,9 +350,11 @@ class ampscanGUI(QMainWindow):
         else:
             [name, _, color, opacity, display] = self.fileManager.getRow(0)
             output_file_path = analyse.MeasurementsOut(self.files[name], self.pnt)
-
+            if output_file_path == 1:
+                show_message("Analysis file cannot be found, ensure you have downloaded the pdf files and placed them into the ampscan/analyse folder")
             # Open Report in webbrowser
-            webbrowser.get().open(output_file_path)  # .get() gets the default browser
+            else:
+                webbrowser.get().open(output_file_path)  # .get() gets the default browser
     
     def createActions(self):
         """
@@ -373,11 +375,11 @@ class ampscanGUI(QMainWindow):
                                 triggered=self.register)
         self.analyse = QAction(QIcon('open.png'), 'Analyse', self,
                                 triggered=self.analyse)
-        self.pick = QAction(QIcon('open.png'), 'Pick', self,
+        self.pick = QAction(QIcon('open.png'), 'Right click to select Mid-Patella', self,
                                 triggered=self.Point_Pick)
         self.removePick = QAction(QIcon('open.png'), 'Clear all picked points', self,
                                 triggered = self.removePick)
-        self.Measure = QAction(QIcon('open.png'), 'Generate Measurements', self,
+        self.Measure = QAction(QIcon('open.png'), 'Generate Measurements File', self,
                                 triggered = self.measure)
         self.openObjectManager = QAction(QIcon('open.png'), 'Show Object Manager', self,
                                 triggered=self.openAmpObjectManager)
@@ -396,9 +398,9 @@ class ampscanGUI(QMainWindow):
         self.alignMenu.addAction(self.align)
         self.regMenu = self.menuBar().addMenu("&Registration")
         self.regMenu.addAction(self.rect)
-        self.analyseMenu = self.menuBar().addMenu("&Analyse")
-        self.analyseMenu.addAction(self.analyse)
-        self.measureMenu = self.menuBar().addMenu("Measure")
+        self.measureMenu = self.menuBar().addMenu("&Measure")
+        self.measureMenu.addAction(self.pick)
+        self.measureMenu.addAction(self.removePick)
         self.measureMenu.addAction(self.Measure)
         self.viewMenu = self.menuBar().addMenu("&View")
         self.viewMenu.addAction(self.openObjectManager)
