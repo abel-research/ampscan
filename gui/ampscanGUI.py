@@ -82,13 +82,18 @@ class ampscanGUI(QMainWindow):
             self.regCont.getNames()
 #        self.AmpObj.lp_smooth()
 
+    def saveFile(self):
+        self.saveCont = saveControls(self.filesDrop, self)
+        self.saveCont.show()
+        self.saveCont.save.clicked.connect(self.chooseSaveFile)
+
     def chooseSaveFile(self):
         fname = QFileDialog.getSaveFileName(self, 'Save file',
                                             filter="Meshes (*.stl)")
         if fname[0] == '':
             return
-        moving = str(self.alCont.moving.currentText())
-        self.files[moving].save(fname[0])
+        file = str(self.saveCont.files.currentText())
+        self.files[file].save(fname[0])
         try:
             f = open(fname[0]+'.txt','w+')
             f.write('{}'.format(self.pnt))
@@ -367,7 +372,7 @@ class ampscanGUI(QMainWindow):
                                 triggered=self.chooseOpenFile)
         self.saveFile = QAction(QIcon('open.png'), 'Save', self,
                                 shortcut='Ctrl+S',
-                                triggered=self.chooseSaveFile)
+                                triggered=self.saveFile)
         self.exitAct = QAction("E&xit", self, shortcut="Ctrl+Q",
                                triggered=self.close)
         self.align = QAction(QIcon('open.png'), 'Align', self,
@@ -576,6 +581,37 @@ class RegistrationControls(QMainWindow):
         self.baseline.addItems(self.names)
         self.target.clear()
         self.target.addItems(self.names)
+
+class saveControls(QMainWindow):
+    """
+    Pop up for controls to align the 
+    
+    Example
+    -------
+    Perhaps an example implementation:
+
+    >>> from GUIs.ampscanGUI import ampscanGUI
+
+    """
+
+    def __init__(self, names, parent = None):
+        super(saveControls, self).__init__(parent)
+        self.main = QWidget()
+        self.names = names
+        self.files = QComboBox()
+        self.files.clear()
+        self.files.addItems(names)
+        self.save = QPushButton("Save file")
+        # self.tick = QCheckBox("Generate Output File for Comparison?")
+        self.setCentralWidget(self.main)
+        self.layout = QGridLayout()
+        self.layout.addWidget(QLabel('File'), 0, 0)
+        self.layout.addWidget(self.files, 0, 1)
+        # self.layout.addWidget(self.tick, 2,1)
+        self.layout.addWidget(self.save, 1, 0, 1, -1)
+        self.main.setLayout(self.layout)
+        self.setWindowTitle("Save file Manager")
+
 
 
 def show_message(message, message_type="err", title="An Error Occured..."):
