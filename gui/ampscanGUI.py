@@ -21,7 +21,6 @@ class ampscanGUI(QMainWindow):
     """
     Generates an GUI for handling stl data. Window is derived from QT.
 
-    More detailed description...
 
     Example
     -------
@@ -47,7 +46,7 @@ class ampscanGUI(QMainWindow):
         self.Layout = QGridLayout()
         self.Layout.addWidget(self.vtkWidget, 0, 0)
         self.mainWidget.setLayout(self.Layout)
-        self.setWindowTitle("ampscan Visualiser")
+        self.setWindowTitle("ampscan")
         self.resize(800, 800)
         self.show()
         self.fileManager = fileManager(self)
@@ -60,9 +59,7 @@ class ampscanGUI(QMainWindow):
         """
         Handles importing of stls into the GUI.
 
-        More writing...
-
-
+        
         """
         fname = QFileDialog.getOpenFileName(self, 'Open file',
                                             filter="Meshes (*.stl)")
@@ -100,6 +97,7 @@ class ampscanGUI(QMainWindow):
 
     def display(self):
         render = []
+
         for r in range(self.fileManager.n):
             [name, _, color, opacity, display] = self.fileManager.getRow(r)
             # Make the object visible
@@ -129,8 +127,15 @@ class ampscanGUI(QMainWindow):
                 self.files[name].actor.setOpacity(float(opacity))
             except ValueError:
                 show_message("Invalid opacity: {}".format(opacity))
-
+            
+            # transform = vtk.vtkTransform()
+            # transform.Translate(1.0, 0.0, 0.0)
+            # axes = vtk.vtkAxesActor()
+            # #  The axes are positioned with a user transform
+            # axes.SetUserTransform(transform)
             self.renWin.renderActors(render)
+        self.renWin.addTriad(render, color = [0, 0, 0])
+        # print(self.renWin.lim)
 
     def align(self):
         """
@@ -305,6 +310,7 @@ class ampscanGUI(QMainWindow):
                 analyse.CMapOut(reg, colors=self.CMapN2P)
                 # reg.plotResults(name="distributionofshapevariance.png")
             self.display()  # Reset which objects are displayed
+
             print('Run the Registration code between %s and %s' % (baseline, target))
         else:
             show_message("Must be at least 2 objects loaded to run registration")

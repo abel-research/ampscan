@@ -38,6 +38,7 @@ class vtkRenWin(vtk.vtkRenderWindow):
 #        self.axes.append(vtk.vtkCubeAxesActor())
         self.markers = []
         self.labels = []
+        self.triad = None
         
     def renderActors(self, actors, viewport=0, zoom=1.0):
         r"""
@@ -182,8 +183,9 @@ class vtkRenWin(vtk.vtkRenderWindow):
         ax = self.axes
         for actor in actors:
             lim.append(actor.GetBounds())
-        lim = np.array(lim)
-        ax.SetBounds(tuple(lim.max(axis=0)))
+        if lim:
+            lim = np.array(lim) * 1.2
+            ax.SetBounds(tuple(lim.max(axis=0)))
         ax.SetCamera(self.rens[viewport].GetActiveCamera())
         ax.SetFlyModeToClosestTriad()
         for axes in range(3):
@@ -191,14 +193,56 @@ class vtkRenWin(vtk.vtkRenderWindow):
             ax.GetLabelTextProperty(axes).SetColor(color)
             ax.GetTitleTextProperty(axes).SetFontFamilyToCourier()
             ax.GetLabelTextProperty(axes).SetFontFamilyToCourier()
-#        self.axes[viewport].GetXAxesLinesProperty().SetColor(color)
-#        self.axes[viewport].GetYAxesLinesProperty().SetColor(color)
-#        self.axes[viewport].GetZAxesLinesProperty().SetColor(color)
-#        self.axes[viewport].SetGridLineLocation(self.axes[viewport].VTK_GRID_LINES_FURTHEST)
-#        self.axes[viewport].XAxisMinorTickVisibilityOff()
-#        self.axes[viewport].YAxisMinorTickVisibilityOff()
-#        self.axes[viewport].ZAxisMinorTickVisibilityOff()
-#        self.rens[viewport].AddActor(self.axes[viewport])
+        ax.GetXAxesLinesProperty().SetColor(color)
+        ax.GetYAxesLinesProperty().SetColor(color)
+        ax.GetZAxesLinesProperty().SetColor(color)
+        ax.XAxisMinorTickVisibilityOff()
+        ax.YAxisMinorTickVisibilityOff()
+        ax.ZAxisMinorTickVisibilityOff()
+        actors.append(ax)
+        self.renderActors(actors)
+
+    def addTriad(self, actors, viewport=0, color = [1.0, 1.0, 1.0], font=None):
+        r"""
+        Add 3D axes to the vtk window 
+        
+        Parameters
+        ----------
+        actors: list
+            List of ampActors, this is used to determine the necessary limits
+            of the axes
+        viewport: int, default 0
+            The index of the viewport add the axes into
+        color: array_like
+            The RGB values as floats of the axes line and text colour
+            between [0, 1]
+        """
+        lim = []
+        for actor in actors:
+            lim.append(actor.GetBounds())
+        if lim:
+            lim = np.array(lim) * 1.1
+            lim = lim.max(axis=0)
+        else:
+            lim = [0, 1, 0, 1, 0, 1]
+        transform = vtk.vtkTransform()
+        transform.Translate(lim[0], lim[2], lim[4])
+        scale = (lim[5] - lim[4]) * 0.1
+        transform.Scale(scale, scale, scale)
+        if self.triad:
+            self.rens[viewport].RemoveActor(self.triad)
+        self.triad = vtk.vtkAxesActor()
+        #  The axes are positioned with a user transform
+        self.triad.SetUserTransform(transform)
+        for ax in [self.triad.GetXAxisCaptionActor2D(), self.triad.GetYAxisCaptionActor2D(), self.triad.GetZAxisCaptionActor2D()]:
+            ax.GetTextActor().GetTextProperty().SetFontFamilyToCourier()
+            ax.GetTextActor().GetTextProperty().SetColor(0, 0, 0)
+            ax.GetTextActor().GetTextProperty().ShadowOff()
+            ax.GetTextActor().GetTextProperty().BoldOff()
+            ax.GetTextActor().GetTextProperty().ItalicOff()
+            ax.GetTextActor().GetTextProperty().SetFontSize(8)
+        self.rens[viewport].AddActor(self.triad)
+        self.Render()
 
 
     def setnumViewports(self, n):
