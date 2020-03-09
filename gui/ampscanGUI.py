@@ -401,10 +401,6 @@ class ampscanGUI(QMainWindow):
         self.saveFile = QAction(QIcon('open.png'), 'Save', self,
                                 shortcut='Ctrl+S',
                                 triggered=self.chooseSaveFile)
-        self.openFE = QAction(QIcon('open.png'), 'Open FE', self,
-                                triggered=self.chooseFE)
-        self.openPress = QAction(QIcon('open.png'), 'Open Press', self,
-                                triggered=self.choosePress)
         self.exitAct = QAction("E&xit", self, shortcut="Ctrl+Q",
                                triggered=self.close)
         self.align = QAction(QIcon('open.png'), 'Align', self,
@@ -436,15 +432,8 @@ class ampscanGUI(QMainWindow):
         self.alignMenu.addAction(self.align)
         self.regMenu = self.menuBar().addMenu("&Registration")
         self.regMenu.addAction(self.rect)
-        self.feMenu = self.menuBar().addMenu("&FE Analysis")
-        self.feMenu.addAction(self.openFE)
         self.analyseMenu = self.menuBar().addMenu("&Analyse")
         self.analyseMenu.addAction(self.analyse)
-        self.kineticMenu = self.menuBar().addMenu("&Kinetic Measurements")
-        self.kineticMenu.addAction(self.openPress)
-        self.PointMenu = self.menuBar().addMenu("&Pick Point")
-        self.PointMenu.addAction(self.pick)
-        self.PointMenu.addAction(self.removePick)
         self.measureMenu = self.menuBar().addMenu("Measure")
         self.measureMenu.addAction(self.Measure)
         self.viewMenu = self.menuBar().addMenu("&View")
