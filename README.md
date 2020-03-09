@@ -6,7 +6,7 @@
 
 ampscan is an open-source Python package for analysis and visualisation of digitised surface scan data, specifically for applications within Prosthetics and Orthotics, developed with the ABEL at the University of Southampton. These industries are increasingly using surface scanners as part of clinical practice to capture the patient's individual geometry to design personalised devices. ampscan gives researchers within this field access to powerful tools to analyse the collected scans to help inform clinical practice towards improved patient-outcomes. This package has been designed to be accessible for researchers and clinicians with only a limited knowledge of Python. Therefore, analysis procedures can all be accessed using the lightweight Graphical User Interface within the git repo, and will soon be available as a standalone [web-app](https://github.com/abel-research/ampscan_webapp).
 
-![A graphical summary of a typical ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](../joss/AmpScan_Overview.png)
+![A graphical summary of a typical ampscan process. a) Importing a pair of scans, b) Automatically snap centres, c) Align using ICP algorithm, d) Register and visualise shape deviation and e) Automatically analyse the registered scan](../master/joss/AmpScan_Overview.png)
 
 The typical ampscan process is demonstrated above (Figure 1) and the core functionality summarised below, with a more detailed description available in the online [documentation](https://ampscan.readthedocs.io/en/latest/):
 
@@ -18,7 +18,7 @@ The typical ampscan process is demonstrated above (Figure 1) and the core functi
 
 - **[Analysis](https://ampscan.readthedocs.io/en/latest/source/analyse.html)**: This is used to extract key geometrical infomation about the shape, including volume and serial slice cross section areas and perimeters. 
 
-- **[Graphical User Interface](../gui/ampscanGUI.py)**: This enables visualisation to multiple AmpObjects within a single window, giving access to the automated and manual alignment tools as well as registration. This facilitates the core analysis of the scan data for users who are not experienced Python users. The python version of the GUI is available in the [gui](https://github.com/abel-research/ampscan/tree/master/gui) folder from the git repo and a standalone [webapp](https://github.com/abel-research/ampscan_webapp) will soon be avilable. 
+- **[Graphical User Interface](../master/gui/ampscanGUI.py)**: This enables visualisation to multiple AmpObjects within a single window, giving access to the automated and manual alignment tools as well as registration. This facilitates the core analysis of the scan data for users who are not experienced Python users. The python version of the GUI is available in the [gui](https://github.com/abel-research/ampscan/tree/master/gui) folder from the git repo and a standalone [webapp](https://github.com/abel-research/ampscan_webapp) will soon be avilable. 
 
 Potential applications of ampscan include tracking how the limb shape and volume has changed over time, digitising manual prosthetic socket design modifications, and comparing the outputs of different scanning technologies. 
 
