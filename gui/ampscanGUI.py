@@ -341,48 +341,6 @@ class ampscanGUI(QMainWindow):
         else:
             show_message("Please load object first")
 
-    def chooseFE(self):
-        """
-        Numpy style docstring.
-
-        """
-        FEname = QFileDialog.getOpenFileName(self, 'Open file',
-                                            filter="FE results (*.npy)")
-        if FEname[0] != "":  # Check that there was a file selected
-            print(FEname)
-            self.renWin.setnumViewports(1)
-            self.FE = AmpObject([FEname[0],], stype='FE') # TODO check this is correct - AmpObject expects dicts or strings
-            self.AmpObj.lp_smooth()
-            self.AmpObj.addActor(CMap=self.AmpObj.CMap02P, bands=5)
-            self.AmpObj.actor.setScalarRange(smin=0.0, smax=50)
-            self.renWin.renderActors(self.FE.actor, shading=True)
-            self.renWin.setScalarBar(self.FE.actor)
-
-    def choosePress(self):
-        """
-        Numpy style docstring.
-
-        """
-        vName = QFileDialog.getOpenFileName(self, 'Open file',
-                                            filter="Sensor vertices (*.csv)")
-        if vName[0] == "":  # If no file selected, exit
-            return
-        pName = QFileDialog.getOpenFileName(self, 'Open file',
-                                            filter="Sensor pressures (*.csv)")
-        if pName[0] == "":  # If no file selected, exit
-            return
-        self.renWin.setnumViewports(1)
-        self.pSense = pressSense()
-        self.pSense.calcFaces(d=5)
-        self.pSense.importVert(vName[0])
-        self.pSense.importPress(pName[0])
-        self.pSense.addActor(CMap=self.AmpObj.CMap02P)
-        self.AmpObj.actors['antS'] = self.pSense.actors['antS']
-        self.AmpObj.actors['socket'].setColor([1.0, 1.0, 1.0])
-        self.AmpObj.actors['socket'].setOpacity(1.0)
-        self.renWin.renderActors(self.AmpObj.actors, ['socket', 'antS'])
-        self.renWin.setScalarBar(self.AmpObj.actors['antS'])
-
     def measure(self):
         # If no point selected condition move to analyse.py
         if not self.objectsReady(1):
