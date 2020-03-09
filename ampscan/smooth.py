@@ -11,7 +11,7 @@ class smoothMixin(object):
     
     def lp_smooth(self, n=1, brim = True):
         r"""
-        Function to apply a laplacian smooth to the mesh. This method replaces 
+        Function to apply a Laplacian smooth to the mesh. This method replaces 
         each vertex with the mean of its connected neighbours 
 
         Parameters
@@ -53,7 +53,7 @@ class smoothMixin(object):
         r"""
         Function to apply a Humphrey’s Classes smooth to the mesh. Note, this assumes
         that alpha=0 (ie the original point through the iteration has no effect). 
-        If beta=1, then this effectively acts as the laplacian smooth 
+        If beta=1, then this effectively acts as the Laplacian smooth 
 
         Parameters
         ----------
@@ -62,7 +62,7 @@ class smoothMixin(object):
             number of iterations of smoothing
         beta: float, default 0.6
             scalar between [0, 1] which dictates influence of distance from adjacent to original point.  
-            If beta=1, then this effectively acts as the laplacian smooth 
+            If beta=1, then this effectively acts as the Laplacian smooth 
         brim: bool, default True
             If true, then this will not smooth the vertices on the brim
         
@@ -94,9 +94,9 @@ class smoothMixin(object):
                 adj = neighVerts[ndx[j]:ndx[j+1]]
                 # Get the original vertex
                 q = self.vert[j, :]
-                # calculate new laplacian location 
+                # calculate new Laplacian location 
                 p = adj.mean(axis=0)
-                # Distance between laplacian and original 
+                # Distance between Laplacian and original 
                 b = p - q
                 # Mean distance adjacent between original 
                 d = (adj - q).mean(axis=0)
@@ -107,7 +107,7 @@ class smoothMixin(object):
     
     def smoothValues(self, n=1):
         """
-        Function to apply a simple laplacian smooth to the values array. 
+        Function to apply a simple Laplacian smooth to the values array. 
         Identical to the vertex smoothing except it applies the smoothing
         to the values
 

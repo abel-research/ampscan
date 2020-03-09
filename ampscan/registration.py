@@ -76,7 +76,7 @@ class registration(object):
             the value of scale will be used as a plane from which the nodes are scaled.
             Nodes with a higher z value will not be scaled. 
         smooth: int, default 1
-            Indicate number of laplacian smooth steps in between the steps 
+            Indicate number of Laplacian smooth steps in between the steps 
         fixBrim: bool, default False
             If True, the nodes on the brim line will not be included in the smooth
         error: bool, default False
