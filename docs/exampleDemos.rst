@@ -16,3 +16,4 @@ via ``import ampscan`` by navigating to the root directory and running
    examples/fundamentals
    examples/shape_comp
    examples/analysis
+   examples/gui_instructions
