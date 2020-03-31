@@ -35,4 +35,4 @@ class TestAnalyse(unittest.TestCase):
         # Check the volume is correct
         # Object is a sphere, so area is (4/3)*math.pi*(R**3)
         # In this case R = 1.2
-        self.assertAlmostEqual(analyse.calc_volume_closed(self.amp2), (4/3)*math.pi*(1.2**3), delta=TestAnalyse.DELTA)
+        self.assertAlmostEqual(analyse.calc_volume_closed(self.amp2, return_closed=False), (4/3)*math.pi*(1.2**3), delta=TestAnalyse.DELTA)
