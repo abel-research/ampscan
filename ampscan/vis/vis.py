@@ -479,6 +479,7 @@ class visMixin(object):
 #            win.setProjection(projection, viewport=i)
             win.renderActors([self.actor,], zoom=zoom)
         win.rens[0].GetActiveCamera().Azimuth(az)
+        win.rens[0].GetActiveCamera().Elevation(el)
         if cam is not None:
             win.rens[0].SetActiveCamera(cam)
         win.Render()

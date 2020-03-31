@@ -22,8 +22,8 @@ filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
 def calc_volume_closed(amp_in, return_closed=False):
     r"""
-    Calculates the volume of a closed surface. If the surface is not closed the algorithm fills in the holes
-
+    Calculates the volume of a closed surface. If the surface is not closed the algorithm fills in the holes using a simple
+    hole filling algorithm, the surface without holes can be accessed if return_closed is set to True.
 
 
     Parameters
@@ -38,7 +38,7 @@ def calc_volume_closed(amp_in, return_closed=False):
     vol: float
         The volume of the AmpObject
     amp: AmpObject
-        If 
+        If return_closed is True, then the closed shape is returned 
     """
     amp = AmpObject({
         'vert': amp_in.vert.copy(),
