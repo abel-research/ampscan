@@ -20,10 +20,9 @@ import os
 # The file path used in doc examples
 filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
-def calc_volume_closed(amp, fill=False):
+def calc_volume_closed(amp_in, return_closed=True):
     r"""
-    Calculates the volume of a closed surface. If the surface is not closed and fill is set to false
-    then the function will return an error 
+    Calculates the volume of a closed surface. If the surface is not closed the algorithm estimates the filled in holes 
 
     Parameters
     ----------
@@ -37,6 +36,24 @@ def calc_volume_closed(amp, fill=False):
     vol: float
         The volume of the AmpObject
     """
+    amp = AmpObject({
+        'vert': amp_in.vert.copy(),
+        'faces': amp_in.faces.copy(),
+        'values': amp_in.values.copy(),
+    })
+    amp.calcStruct()
+    while (amp.faceEdges == -99999).sum() != 0: 
+        edges = (amp.faceEdges == -99999).sum(axis=1).astype(bool)
+        edges = amp.edges[edges, :]
+        vInd = logEuPath(edges)
+        midpoint = amp.vert[vInd, :].mean(axis=0)
+        amp.vert = np.r_[amp.vert, midpoint[None, :]]
+        f0 = amp.vert.shape[0] - 1
+        for f1, f2 in zip(vInd, np.roll(vInd, 1)):
+            amp.faces = np.r_[amp.faces, [[f1, f0, f2]]]
+        amp.calcStruct()
+        # Add a new point at the midpoint of the loop
+        # Create faces from the edges
     # Calculate the area of each face in the array using vector cross product
     v01 = amp.vert[amp.faces[:, 1], :] - amp.vert[amp.faces[:, 0], :]
     v02 = amp.vert[amp.faces[:, 2], :] - amp.vert[amp.faces[:, 0], :]
@@ -44,7 +61,10 @@ def calc_volume_closed(amp, fill=False):
     area = 0.5 * np.sqrt(cp.sum(axis=1))
     # Get surface volume contributions 
     sVC = area * amp.vert[amp.faces, 2].mean(axis=1) * amp.norm[:, 2]
-    return sVC.sum()
+    if return_closed == True:
+        return sVC.sum(), amp
+    else:
+        return sVC.sum()
 
 
 
@@ -275,13 +295,15 @@ def logEuPath(arr):
     """
     vmax = arr.shape[0]
     rows = list(range(vmax))
-    order = np.zeros([vmax], dtype=int)
+    # order = np.zeros([vmax], dtype=int)
+    order = [];
     i = 0
     val = arr[i, 0]
     nmax = vmax-1
     for n in range(nmax):
         del rows[i]
-        order[n] = val
+        # order[n] = val
+        order.append(val)
         i=0
         for x in rows: 
             if arr[x, 0] == val:
@@ -291,7 +313,9 @@ def logEuPath(arr):
                 val = arr[x, 0]
                 break
             i+=1
-    order[n+1] = val
+    # order[n+1] = val
+    order.append(val)
+    order = np.asarray(order, dtype=int)
     return order
 
 
