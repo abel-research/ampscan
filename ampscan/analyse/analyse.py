@@ -20,6 +20,34 @@ import os
 # The file path used in doc examples
 filename = os.path.join(os.getcwd(), "tests", "stl_file.stl")
 
+def calc_volume_closed(amp, fill=False):
+    r"""
+    Calculates the volume of a closed surface. If the surface is not closed and fill is set to false
+    then the function will return an error 
+
+    Parameters
+    ----------
+    amp: AmpObject 
+        The AmpObject to analyse
+    fill: bool, default False
+        Indicate whether to fill the hole of an open surface. 
+
+    Returns
+    -------
+    vol: float
+        The volume of the AmpObject
+    """
+    # Calculate the area of each face in the array using vector cross product
+    v01 = amp.vert[amp.faces[:, 1], :] - amp.vert[amp.faces[:, 0], :]
+    v02 = amp.vert[amp.faces[:, 2], :] - amp.vert[amp.faces[:, 0], :]
+    cp = np.square(np.cross(v01, v02))
+    area = 0.5 * np.sqrt(cp.sum(axis=1))
+    # Get surface volume contributions 
+    sVC = area * amp.vert[amp.faces, 2].mean(axis=1) * amp.norm[:, 2]
+    return sVC.sum()
+
+
+
 def create_slices(amp, *args,  typ='slices', axis = 2):
     r"""
     Generate polygons from planar slices through the AmpObject. The slices are either defined as a 
