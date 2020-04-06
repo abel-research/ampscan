@@ -59,11 +59,11 @@ An ampscan [webapp](https://github.com/abel-research/ampscan_webapp) is currentl
 # Acknowledgments 
 While the ampscan package was not funded directly, the authors would like to thank the following for their financial support:
 
-- JWS: the University of Southampton’s EPSRC Doctoral Training Program (ref EP/M508147/1) and EUROSTARS project (ref 9396)
+- JWS: the University of Southampton’s EPSRC Doctoral Training Program (ref EP/M508147/1) and EUROSTARS project (ref 9396).
 
-- PRW: the EPSRC-NIHR “Medical Device and Vulnerable Skin Network” (ref EP/M000303/1),
+- PRW: the EPSRC-NIHR “Medical Device and Vulnerable Skin Network” (ref EP/M000303/1).
 
-- ASD: the Royal Academy of Engineering, UK, (ref RF/130).
+- ASD: the Royal Academy of Engineering, UK, (ref RF/130) and the EPSRC-NIHR "Global Challenges Research Fund" (ref EP/R014213/1).
 
 Finally, the authors would like to thank the Research Software Group at the University of Southampton for all their support during the development of this software, as well as Omar Animashaun and Tim Dunn for their contributions to ampscan.  
 
