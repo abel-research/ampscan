@@ -6,6 +6,7 @@ tags:
 - orthotics
 - scanning
 - meshes
+- measurement
 authors:
  - name: Joshua W Steer
    orcid: 0000-0002-6288-1347
