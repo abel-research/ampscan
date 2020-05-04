@@ -2,7 +2,10 @@
 
 **Join chat:** [![Join the chat at https://gitter.im/ampscan](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ampscan)
 **Build status:** [![Build Status](https://travis-ci.org/abel-research/ampscan.svg?branch=master)](https://travis-ci.org/abel-research/ampscan)
+**Docs:** [![Documentation Status](https://readthedocs.org/projects/ampscan/badge/?version=latest)](https://ampscan.readthedocs.io/en/latest/?badge=latest)
 **License:** [![License](https://img.shields.io/github/license/abel-research/ampscan)](../master/LICENSE)
+**DOI:** [![DOI](https://joss.theoj.org/papers/10.21105/joss.02060/status.svg)](https://doi.org/10.21105/joss.02060)
+
 
 ampscan is an open-source Python package for analysis and visualisation of digitised surface scan data, specifically for applications within Prosthetics and Orthotics, developed with the ABEL at the University of Southampton. These industries are increasingly using surface scanners as part of clinical practice to capture the patient's individual geometry to design personalised devices. ampscan gives researchers within this field access to powerful tools to analyse the collected scans to help inform clinical practice towards improved patient-outcomes. This package has been designed to be accessible for researchers and clinicians with only a limited knowledge of Python. Therefore, analysis procedures can all be accessed using the lightweight Graphical User Interface within the git repo, and will soon be available as a standalone [web-app](https://github.com/abel-research/ampscan_webapp).
 
