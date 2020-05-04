@@ -54,6 +54,9 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             for k, v in data.items():
                 setattr(self, k, v)
             self.calcStruct()
+        elif isinstance(data, bytes):
+            self.read_bytes(data, unify, struc)
+
     
 
 
@@ -86,6 +89,57 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             NFaces, = struct.unpack('@i', fh.read(COUNT_SIZE))
             # Read the remaining data and save as void, then close file
             data = np.fromfile(fh, data_type)
+        # Test if the file is ascii
+        if str(head[:5], 'utf-8') == 'solid':
+            raise ValueError("ASCII files not supported")
+        # Write the data to a numpy arrays in AmpObj
+        tfcond = NFaces==data['vertices'].shape[0]			#assigns true or false to tfcond
+        if not tfcond:							#if tfcond is false, raise error
+            raise ValueError("File is corrupt")							#if true, move on
+        vert = np.resize(np.array(data['vertices']), (NFaces*3, 3))
+        norm = np.array(data['normals'])
+        faces = np.reshape(range(NFaces*3), [NFaces,3])
+        self.faces = faces
+        self.vert = vert
+        self.norm = norm
+        
+        # Call function to unify vertices of the array
+        if unify is True:
+            self.unifyVert()
+        # Call function to calculate the edges array
+#        self.fixNorm()
+        if struc is True:
+            self.calcStruct()
+        self.values = np.zeros([len(self.vert)])
+
+    def read_bytes(self, data, unify=True, struc=True):
+        """
+        Function to read .stl file from filename and import data into 
+        the AmpObj 
+        
+        Parameters
+        -----------
+        filename: str 
+            file path of the .stl file to read 
+        unify: boolean, default True
+            unify the coincident vertices of each face
+        struc: boolean, default True
+            Calculate the underlying structure of the mesh, such as edges
+
+        """
+        # Defined no of bytes for header and no of faces
+        HEADER_SIZE = 80
+        COUNT_SIZE = 4
+        # State the data type and length in bytes of the normals and vertices
+        data_type = np.dtype([('normals', np.float32, (3, )),
+                                ('vertices', np.float32, (9, )),
+                                ('atttr', '<i2', (1, ))])
+        # Read the header of the STL
+        head = data[:HEADER_SIZE].lower()
+        # Read the number of faces
+        NFaces, = struct.unpack('@i', data[HEADER_SIZE:HEADER_SIZE+COUNT_SIZE])
+        # Read the remaining data and save as void, then close file
+        data = np.frombuffer(data[COUNT_SIZE+HEADER_SIZE:], data_type)
         # Test if the file is ascii
         if str(head[:5], 'utf-8') == 'solid':
             raise ValueError("ASCII files not supported")
