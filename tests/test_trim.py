@@ -57,4 +57,4 @@ class TestTrim(unittest.TestCase):
         
         self.amp.threePointTrim(p0, p1, p2)
         height = -(self.amp.vert[:, 0]*c[0] + self.amp.vert[:, 1]*c[0] + k)/c[2]
-        self.assertLessEqual(self.amp.vert[:, 2], height)
+        self.assertLessEqual(self.amp.vert[:, 2].max(), height.max())
