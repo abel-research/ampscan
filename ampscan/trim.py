@@ -61,3 +61,59 @@ class trimMixin(object):
             self.calcStruct()
         else:
             raise TypeError("height arg must be a float")
+
+
+    def threePointTrim(self, p0, p1, p2, above = True):
+        r"""
+        Trim the vertices using a plane defined by three points 
+
+        Parameters
+        -----------
+        height: float
+            Trim height, values above this will be deleted
+
+        
+        Examples
+        --------
+
+        >>> from ampscan import AmpObject
+        >>> amp = AmpObject(filename)
+        >>> p0 = [50, 50, 0]
+        >>> p1 = [50, -50, -40]
+        >>> p2 = [-50, 50, 10]
+        >>> amp.threePointTrim(p0, p1, p2)
+
+        """
+        # Ensure asarrays
+        p0 = np.asarray(p0)
+        p1 = np.asarray(p1)
+        p2 = np.asarray(p2)
+
+        # Calculate plane 
+        v0 = p1 - p0
+        v1 = p2 - p0
+        c = np.cross(v0, v1)
+        c = c/np.linalg.norm(c)
+        k = -np.multiply(c, p0).sum()
+        # planar values for each vert on face 
+        height = -(self.vert[:, 0]*c[0] + self.vert[:, 1]*c[0] + k)/c[2]
+        # Number points on each face are above cut plane
+        fv = self.vert[self.faces, 2]
+        fvHeight = height[self.faces]
+        fvlogic = (fv > fvHeight).sum(axis=1)
+        # Faces with points both above and below cut plane
+        adjf = self.faces[np.logical_or(fvlogic == 2, fvlogic == 1)]
+        # Get adjacent vertices
+        adjv = np.unique(adjf)
+        # Get vert above height and set to height
+        abvInd = adjv[self.vert[adjv, 2] > height[adjv]]
+        self.vert[abvInd, 2] = height[abvInd]
+        # Find all verts above plane
+        delv = self.vert[:, 2] > height
+        # Reorder verts to account for deleted one
+        vInd = np.cumsum(~delv) - 1
+        self.faces = self.faces[fvlogic != 3, :]
+        self.faces = vInd[self.faces]
+        self.vert = self.vert[~delv, :]
+        self.values = self.values[~delv]
+        self.calcStruct()
