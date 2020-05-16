@@ -54,6 +54,7 @@ class TestTrim(unittest.TestCase):
         c = c/np.linalg.norm(c)
         k = -np.multiply(c, p0).sum()
         # planar values for each vert on face 
-        height = -(self.amp.vert[:, 0]*c[0] + self.amp.vert[:, 1]*c[0] + k)/c[2]
+        
         self.amp.threePointTrim(p0, p1, p2)
+        height = -(self.amp.vert[:, 0]*c[0] + self.amp.vert[:, 1]*c[0] + k)/c[2]
         self.assertLessEqual(self.amp.vert[:, 2], height)
