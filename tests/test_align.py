@@ -29,3 +29,21 @@ class TestAlign(unittest.TestCase):
         self.assertAlmostEqual(al.vert.mean(axis=0)[0], 0, delta=TestAlign.DELTA)
         self.assertAlmostEqual(al.vert.mean(axis=0)[1], 0, delta=TestAlign.DELTA)
         self.assertAlmostEqual(al.vert.mean(axis=0)[2], 0, delta=TestAlign.DELTA)
+
+
+    def test_align_points(self):
+        """Test that the shape can be aligned to -5mm in z axis"""
+        mv = [
+            [0, 0, 5],
+            [5, 0, 5],
+            [0, 5, 5]
+        ]
+        sv = [
+            [0, 0, 0],
+            [5, 0, 0],
+            [0, 5, 0]
+        ]
+        al = align(self.amp1, self.amp2, mv=mv, sv=sv, method='contPoints').m
+        zMax = self.amp1.vert[:, 2].max() - 5
+        # Both objects are already centered, so should be close to origin (allowing for some inaccuracy)
+        self.assertAlmostEqual(al.vert[:, 2].max(), zMax, delta=TestAlign.DELTA)

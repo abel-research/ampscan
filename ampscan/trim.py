@@ -65,12 +65,17 @@ class trimMixin(object):
 
     def threePointTrim(self, p0, p1, p2, above = True):
         r"""
-        Trim the vertices using a plane defined by three points 
+        Trim the vertices using a plane defined by three points. By default, all points  
+        above the plane are deleted.
 
         Parameters
         -----------
-        height: float
-            Trim height, values above this will be deleted
+        p0: array_like 
+            The co-ordinates of the first point to define the plane
+        p1: array_like 
+            The co-ordinates of the second point to define the plane
+        p2: array_like 
+            The co-ordinates of the third point to define the plane
 
         
         Examples
