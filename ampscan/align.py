@@ -33,9 +33,9 @@ class align(object):
     method: str, default 'linPoint2Plane'
         A string of the method used for alignment
     *args:
-    	The arguments used for the registration methods
+    	The arguments used for the alignment methods
     **kwargs:
-    	The keyword arguments used for the registration methods
+    	The keyword arguments used for the alignment methods
 
     Returns
     -------
@@ -78,9 +78,9 @@ class align(object):
             transformation, if < 1 then vertices with highest error are 
             discounted
         *args:
-        	The arguments used for the registration methods
+        	The arguments used for the alignment methods
         **kwargs:
-        	The keyword arguments used for the registration methods
+        	The keyword arguments used for the alignment methods
         
         """
         # Define the rotation, translation, error and quaterion arrays
@@ -123,6 +123,18 @@ class align(object):
                 [R, T] = getattr(self, method)(self.m.vert[sort, :],
                                                fC[idx, :],
                                                *args, **kwargs)
+            elif method == 'contPoints':
+                [R, T] = getattr(self, method)(*args, **kwargs)
+                self.m.rigidTransform(R, T)
+                [dist, idx] = kdTree.query(self.m.vert, 1)
+                sort = np.argsort(dist)
+                [dist, idx] = [dist[sort], idx[sort]]
+                [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
+                self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(T, 1)[:, None].T]
+                self.R = R
+                self.T = T
+                self.rmse = math.sqrt(dist.mean())
+                return 
             else: KeyError('Not a supported alignment method')
             Rs[:, :, i+1] = np.dot(R, Rs[:, :, i])
             Ts[:, i+1] = np.dot(R, Ts[:, i]) + T
@@ -249,6 +261,64 @@ class align(object):
         R = np.dot(V.T, sign)
         R = np.dot(R, U.T)
         T = sv.mean(axis=0) - np.dot(R, mv.mean(axis=0))
+        return (R, T)
+
+    @staticmethod
+    def contPoints(mv=None, sv=None):
+        r"""
+        Point-to-Point Iterative Closest Point algorithm which 
+        relies on using singular value decomposition on the centered arrays.  
+        
+        Parameters
+        ----------
+        mv: ndarray
+            The array of control points to be moved 
+        sv: ndarray
+            The array of control points 
+        
+        Returns
+        -------
+        R: ndarray
+            The optimal rotation array 
+        T: ndarray
+            The optimal translation array
+        
+        References
+        ----------
+        .. [1] Besl, Paul J.; N.D. McKay (1992). "A Method for Registration of 3-D
+           Shapes". IEEE Trans. on Pattern Analysis and Machine Intelligence (Los
+           Alamitos, CA, USA: IEEE Computer Society) 14 (2): 239-256.
+        
+        .. [2] Chen, Yang; Gerard Medioni (1991). "Object modelling by registration of
+           multiple range images". Image Vision Comput. (Newton, MA, USA:
+           Butterworth-Heinemann): 145-155
+
+        Examples
+        --------
+        >>> static = AmpObject(staticfh)
+        >>> moving = AmpObject(movingfh)
+        >>> al = align(moving, static, method='linPoint2Point').m
+
+        """
+        if mv is None or sv is None:
+            return ValueError('To call the contPoints ICP method, ensure that '
+                              'mv and sv have been defined as keyword arguments')
+        mv = np.asarray(mv)
+        sv = np.asarray(sv)
+        if mv.shape != sv.shape:
+            return ValueError('Not the same number of static and moving control points')
+        mCent = mv - mv.mean(axis=0)
+        sCent = sv - sv.mean(axis=0)
+        C = np.dot(mCent.T, sCent)
+        [U,_,V] = np.linalg.svd(C)
+        det = np.linalg.det(np.dot(U, V))
+        sign = np.eye(3)
+        sign[2,2] = np.sign(det)
+        R = np.dot(V.T, sign)
+        R = np.dot(R, U.T)
+        T = sv.mean(axis=0) - np.dot(R, mv.mean(axis=0))
+        print(R)
+        print(T)
         return (R, T)
     
     @staticmethod
