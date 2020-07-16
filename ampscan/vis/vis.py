@@ -494,7 +494,7 @@ class visMixin(object):
                 im = im[:, mask, :]
             return im, win
         elif out == 'fh':
-            win.getScreenshot(fh)
+            win.getScreenshot(fh, mag=mag)
             return
         
     def display(self):
