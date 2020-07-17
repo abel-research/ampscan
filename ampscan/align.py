@@ -53,18 +53,14 @@ class align(object):
     """    
 
     def __init__(self, moving, static, method = 'linPoint2Plane', 
-                 accuracy = 'accurate', idxstatic = np.zeros(4), 
-                 idxmoving = np.zeros(4), *args, **kwargs):
+                *args, **kwargs):
         mData = dict(zip(['vert', 'faces', 'values'], 
                          [moving.vert, moving.faces, moving.values]))
         alData = copy.deepcopy(mData)
         self.m = AmpObject(alData, stype='reg')
         self.s = static
-        if accuracy == 'accurate':
-            self.runICP(method=method, *args, **kwargs)
-        if accuracy == 'rough':
-            self.ICP_rough(idxstatic,idxmoving, *args, **kwargs)
-        
+        self.runICP(method=method, *args, **kwargs)
+
     
     def runICP(self, method = 'linPoint2Plane', maxiter=20, inlier=1.0,
                initTransform=None, *args, **kwargs):
@@ -91,18 +87,11 @@ class align(object):
         # Define the rotation, translation, error and quaterion arrays
         Rs = np.zeros([3, 3, maxiter+1])
         Ts = np.zeros([3, maxiter+1])
-#        qs = np.r_[np.ones([1, maxiter+1]), 
-#                   np.zeros([6, maxiter+1])]
-#        dq  = np.zeros([7, maxiter+1])
-#        dTheta = np.zeros([maxiter+1])
         err = np.zeros([maxiter+1])
         if initTransform is None:
             initTransform = np.eye(4)
         Rs[:, :, 0] = initTransform[:3, :3]
         Ts[:, 0] = initTransform[3, :3]
-#        qs[:4, 0] = self.rot2quat(Rs[:, :, 0]) 
-#        qs[4:, 0] = Ts[:, 0]
-        # Define 
         fC = self.s.vert[self.s.faces].mean(axis=1)
         kdTree = spatial.cKDTree(fC)
         self.m.rigidTransform(Rs[:, :, 0], Ts[:, 0])
@@ -139,7 +128,19 @@ class align(object):
                 self.R = R
                 self.T = T
                 self.rmse = math.sqrt(dist.mean())
-                return 
+                return
+            elif method == 'idxPoints':
+                [R, T] = getattr(self, 'idxPoints')(*args, **kwargs)
+                self.m.rigidTransform(R, T)
+                [dist, idx] = kdTree.query(self.m.vert, 1)
+                sort = np.argsort(dist)
+                [dist, idx] = [dist[sort], idx[sort]]
+                [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
+                self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(T, 1)[:, None].T]
+                self.R = R
+                self.T = T
+                self.rmse = math.sqrt(dist.mean())
+                return
             else: KeyError('Not a supported alignment method')
             Rs[:, :, i+1] = np.dot(R, Rs[:, :, i])
             Ts[:, i+1] = np.dot(R, Ts[:, i]) + T
@@ -157,8 +158,7 @@ class align(object):
         self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(Ts[:, -1], 1)[:, None].T]
         self.R = R
         self.T = Ts[:, -1]
-        self.rmse = err[-1]
-        
+        self.rmse = err[-1]  
             
     
     @staticmethod
@@ -322,9 +322,51 @@ class align(object):
         R = np.dot(V.T, sign)
         R = np.dot(R, U.T)
         T = sv.mean(axis=0) - np.dot(R, mv.mean(axis=0))
-        print(R)
-        print(T)
+        # print(R)
+        # print(T)
         return (R, T)
+
+    def idxPoints(self, mv=None, sv=None):
+        r"""
+        Point-to-Point Iterative Closest Point algorithm which 
+        relies on using singular value decomposition on the centered arrays.  
+        
+        Parameters
+        ----------
+        mv: ndarray
+            The index array of moving vertices to be aligned
+        sv: ndarray
+            The index array of static vertices to be aligned to
+        
+        Returns
+        -------
+        R: ndarray
+            The optimal rotation array 
+        T: ndarray
+            The optimal translation array
+        
+        References
+        ----------
+        .. [1] Besl, Paul J.; N.D. McKay (1992). "A Method for Registration of 3-D
+           Shapes". IEEE Trans. on Pattern Analysis and Machine Intelligence (Los
+           Alamitos, CA, USA: IEEE Computer Society) 14 (2): 239-256.
+        
+        .. [2] Chen, Yang; Gerard Medioni (1991). "Object modelling by registration of
+           multiple range images". Image Vision Comput. (Newton, MA, USA:
+           Butterworth-Heinemann): 145-155
+
+        Examples
+        --------
+        >>> static = AmpObject(staticfh)
+        >>> moving = AmpObject(movingfh)
+        >>> al = align(moving, static, mv = [0, 1, 2], sv = [0, 1, 2], method='idxPoints').m
+
+        """
+        if mv is None or sv is None:
+            return ValueError('To call the contPoints ICP method, ensure that '
+                              'mv and sv have been defined as keyword arguments')
+        return self.contPoints(mv=self.m.vert[mv, :], sv=self.s.vert[sv, :])
+
     
     @staticmethod
     def optPoint2Point(mv, sv, opt='L-BFGS-B'):
@@ -474,91 +516,7 @@ class align(object):
                 z = 0.5*r
         return np.array([w, x, y, z])
     
-    def ICP_rough(self, idxstatic, idxmoving, maxiter=10, inlier=1.0,
-               initTransform=None, *args, **kwargs):
-        """
-        The function to run a rough ICP algorithm, this function calls a
-        method that uses 4 points on each object to get a transformation that
-        roughly puts the objects in the right place. This makes it way easier
-        for the default ICP algorithm to find and reach a minimum.
-        
-        Parameters
-        ----------
-        idxstatic : numpy array
-            the indices of the vertices in the static object to be used.
-        idxmoving : numpy array
-            the indices of the vertices in the moving object.
-        
-        The order of idxstatic has to be the same as that of idxmoving, as the 
-        first index of idxmoving will be matched with the first index of 
-        idxstatic, second to second, etc...
-        Currently, the # of vertices has to be 4!!
-        
-        """
-        
-        faces = np.array([[0, 2, 3],[1, 2, 3]])
-        ampmoving = dict(zip(['vert', 'faces', 'values'], 
-                           [self.m.vert[idxmoving,:],
-                            faces, 
-                            self.m.values[idxmoving]]))
-        ampstatic = dict(zip(['vert', 'faces', 'values'], 
-                           [self.s.vert[idxstatic,:],
-                            faces, 
-                            self.s.values[idxstatic]]))
-        self.ampmoving = AmpObject(ampmoving, stype='limb')
-        self.ampstatic = AmpObject(ampstatic, stype='limb')
-                
-        mData = dict(zip(['vert', 'faces', 'values'], 
-                         [self.m.vert, self.m.faces, self.m.values]))
-        roughData = copy.deepcopy(mData)
-        self.m_rough = AmpObject(roughData, stype='limb')
-        
-        Rs = np.zeros([3, 3, maxiter+1])
-        Ts = np.zeros([3, maxiter+1])
-        err = np.zeros([maxiter+1])
-        if initTransform is None:
-            initTransform = np.eye(4)
-        initTransform = np.eye(4)
-        Rs[:, :, 0] = initTransform[:3, :3]
-        Ts[:, 0] = initTransform[3, :3]
-        
-        # fC = self.ampface.vert[self.ampface.faces].mean(axis=1)
-        # kdTree = spatial.cKDTree(fC)
-        self.ampmoving.rigidTransform(Rs[:, :, 0], Ts[:, 0])
-        self.m_rough.rigidTransform(Rs[:, :, 0], Ts[:, 0])
-        inlier = math.ceil(self.ampmoving.vert.shape[0]*inlier)
-        dist = np.sqrt(np.sum((self.ampmoving.vert - self.ampstatic.vert)**2, axis=1))
-        idx = np.array([0, 1, 2, 3])
-        # Sort by distance
-        sort = np.argsort(dist)
 
-        # Keep only those within the inlier fraction
-        [dist, idx] = [dist[sort], idx[sort]]
-        [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
-        err[0] = np.sqrt(dist.mean())
-        
-        for i in range(maxiter):
-            [R,T] = getattr(self, 'linPoint2Point')(self.ampmoving.vert[sort,:],
-                                                      self.ampstatic.vert[sort,:])
-            Rs[:, :, i+1] = np.dot(R, Rs[:, :, i])
-            Ts[:, i+1] = np.dot(R, Ts[:, i]) + T
-            self.ampmoving.rigidTransform(R, T)
-            self.m_rough.rigidTransform(R, T)
-            dist = np.sqrt(np.sum((self.ampmoving.vert - self.ampstatic.vert)**2,axis=1))
-            idx = np.array([0, 1, 2, 3])
-            # [dist, idx] = kdTree.query(self.ampface.vert, 1)
-            sort = np.argsort(dist)
-            [dist, idx] = [dist[sort], idx[sort]]
-            [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
-            err[i+1] = np.sqrt(dist.mean())
-        R = Rs[:, :, -1]
-        [U, s, V] = np.linalg.svd(R)
-        R = np.dot(U, V)
-        # self.files[face].rigidTransform(R,T)
-        self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(Ts[:, -1], 1)[:, None].T]
-        self.R = R
-        self.T = Ts[:, -1]
-        self.rmse = err[-1]
     
     def display(self):
         r"""
