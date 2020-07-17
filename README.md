@@ -73,4 +73,6 @@ At ampscan we use the MIT license, which can be found here [here](../master/LICE
 How to acknowledge
 ------------------
 
-ampscan is currently under review at JOSS, check the progress [here](https://github.com/openjournals/joss-reviews/issues/2060)
+ampscan has been published in [JOSS](https://doi.org/10.21105/joss.02060). 
+Please cite as:
+Steer et al., (2020). ampscan: A lightweight Python package for shape analysis of prosthetics and orthotics. Journal of Open Source Software, 5(48), 2060, https://doi.org/10.21105/joss.02060
