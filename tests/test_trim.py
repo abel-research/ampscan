@@ -15,6 +15,8 @@ class TestTrim(unittest.TestCase):
         from ampscan.core import AmpObject
         stl_path = get_path("stl_file.stl")
         self.amp = AmpObject(stl_path)
+        stl_path = get_path("stl_file_4.stl") # R=1.2
+        self.amp2 = AmpObject(stl_path)
 
     def test_trim(self):
         """Tests the trim method of AmpObject for TypeErrors"""
@@ -58,3 +60,11 @@ class TestTrim(unittest.TestCase):
         self.amp.threePointTrim(p0, p1, p2)
         height = -(self.amp.vert[:, 0]*c[0] + self.amp.vert[:, 1]*c[0] + k)/c[2]
         self.assertLessEqual(self.amp.vert[:, 2].max(), height.max())
+
+
+    def test_trim_3(self):
+        """Tests the trim method of AmpObject by checking no vertices are above trim line"""
+        # Test no points are above 10
+        v = self.amp.vert.shape[0]
+        self.amp.dynamicTrim(self.amp2, 100)
+        self.assertLess(self.amp.vert.shape[0], v)
