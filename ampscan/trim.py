@@ -5,7 +5,6 @@ Copyright: Joshua Steer 2020, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
-from ampscan import AmpObject
 from numbers import Number
 import os
 from scipy import spatial
@@ -126,11 +125,11 @@ class trimMixin(object):
         self.values = self.values[~delv]
         self.calcStruct()
     
-    @staticmethod
-    def dynamictrim(s, m, maxdist = 20):
+
+    def dynamicTrim(self, s, maxdist = 20):
         """
-        This function trims vertices and faces from the m mesh. It calculates 
-        the distance between the m mesh centroids and their nearest neighbour 
+        This function trims vertices and faces from the AmpObject. It calculates 
+        the distance between the AmpObject mesh centroids and their nearest neighbour 
         on the s mesh. If this distance is more than maxdist, the face is 
         removed, and subsequently the vertices no longer connected to a face.
                                             
@@ -138,46 +137,26 @@ class trimMixin(object):
         ----------
         s : AmpObject
             The target object
-        m : AmpObject
-            The active object. This is the object where faces/vertices will be
-            removed.
         maxdist : float
             The threshold distance. Faces on the m mesh that have a higher 
             distance with their nearest neighbour on the s mesh than maxdist
             will be removed, as will the vertices no longer connected to a 
             face afterwards.
-            
-        Returns
-        -------
-        m : AmpObject
-            The edited object.
+
         """
         
         kdTree = spatial.cKDTree(s.vert)
-        fC = m.vert[m.faces].mean(axis=1)
+        fC = self.vert[self.faces].mean(axis=1)
         [dist, idx] = kdTree.query(fC,1)
-        faceid = []
-        vertid = []
-        for i in range(len(dist)):
-            if np.absolute(dist[i]) < maxdist:
-                faceid.append(i)
-        faces = np.zeros([len(faceid), 3], dtype=int)
-        for i in faceid:
-            vertid.append(m.faces[i,0])
-            vertid.append(m.faces[i,1])
-            vertid.append(m.faces[i,2])
-        vertid = list(dict.fromkeys(vertid))
-        vertices = m.vert[vertid,:]
-        
-        for i in range(len(faceid)):
-            faces[i,0] = vertid.index(m.faces[faceid[i],0])
-            faces[i,1] = vertid.index(m.faces[faceid[i],1])
-            faces[i,2] = vertid.index(m.faces[faceid[i],2])
-        
-        mData = dict(zip(['vert', 'faces', 'values'], 
-                             [vertices, 
-                              faces, 
-                              m.values[vertid]]))
-        preppedData = copy.deepcopy(mData)
-        m = AmpObject(preppedData, stype='reg')
-        return m
+        # faceid = np.arange(len(dist))[dist < maxdist]
+        # Find the faces with a centroid outside maxdist
+        self.faces = self.faces[dist <= maxdist, :]
+        # Index any vertices to keep 
+        keepV = np.zeros([self.vert.shape[0]], dtype = bool)
+        keepV[np.unique(self.faces)] = 1
+        vInd = np.cumsum(keepV) - 1
+
+        # Set the vertices and faces 
+        self.faces = vInd[self.faces]
+        self.vert = self.vert[keepV, :]
+        self.calcStruct()
