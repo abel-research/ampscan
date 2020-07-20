@@ -2,6 +2,7 @@ language: python
 cache: pip
 os:
   - linux
+  - windows
 python:
   - "3.5"
   - "3.6"
