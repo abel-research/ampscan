@@ -53,13 +53,16 @@ class align(object):
     """    
 
     def __init__(self, moving, static, method = 'linPoint2Plane', 
-                *args, **kwargs):
+                inverse=False, *args, **kwargs):
         mData = dict(zip(['vert', 'faces', 'values'], 
                          [moving.vert, moving.faces, moving.values]))
         alData = copy.deepcopy(mData)
         self.m = AmpObject(alData, stype='reg')
         self.s = static
-        self.runICP(method=method, *args, **kwargs)
+        if inverse:
+            self.inverse(method=method, *args, **kwargs)
+        else:
+            self.runICP(method=method, *args, **kwargs)
 
     
     def runICP(self, method = 'linPoint2Plane', maxiter=20, inlier=1.0,
@@ -160,6 +163,23 @@ class align(object):
         self.T = Ts[:, -1]
         self.rmse = err[-1]  
             
+    def inverse(self, method = 'linPoint2Plane', *args, **kwargs):
+        #inverting the objects
+        self.temp = self.s
+        self.s = self.m
+        self.m = self.temp
+        self.runICP(method=method, *args, **kwargs)
+        #resetting the objects
+        self.temp = self.s
+        self.s = self.m
+        self.m = self.temp
+        del self.temp
+        #inverting the transformation on both objects
+        self.R = self.R.transpose()
+        self.T = -self.T
+        self.tForm = np.r_[np.c_[self.R, np.zeros(3)], np.append(self.T, 1)[:, None].T]
+        self.s.rigidTransform(self.R, self.T)
+        self.m.rigidTransform(self.R, self.T)
     
     @staticmethod
     def linPoint2Plane(mv, sv, sn):
