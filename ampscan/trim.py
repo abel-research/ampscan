@@ -103,7 +103,7 @@ class trimMixin(object):
         c = c/np.linalg.norm(c)
         k = -np.multiply(c, p0).sum()
         # planar values for each vert on face 
-        height = -(self.vert[:, 0]*c[0] + self.vert[:, 1]*c[0] + k)/c[2]
+        height = -(self.vert[:, 0]*c[0] + self.vert[:, 1]*c[1] + k)/c[2]
         # Number points on each face are above cut plane
         fv = self.vert[self.faces, 2]
         fvHeight = height[self.faces]
