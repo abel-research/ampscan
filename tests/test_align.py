@@ -56,3 +56,15 @@ class TestAlign(unittest.TestCase):
         self.amp4.rotateAng([5, 5, 5], ang='deg')
         al = align(self.amp3, self.amp4, mv=[0, 1, 2, 3], sv=[0, 1, 2, 3], method='idxPoints')
         all(self.assertAlmostEqual(al.m.vert[i, 0], al.s.vert[i, 0], delta=0.1) for i in range(al.s.vert.shape[0]))
+        
+    def test_align_invert(self):
+        """Test for the inverted ICP. The transformations should be the same."""
+        al = align(self.amp1, self.amp2, inverse=False)
+
+        al_inv = align(self.amp2, self.amp1, inverse=True)
+
+        print(al.R)
+        print(al_inv.R)
+
+        print(al.T)
+        print(al_inv.T)
