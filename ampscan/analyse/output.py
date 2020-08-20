@@ -5,7 +5,7 @@ from reportlab.pdfgen import canvas
 import io
 import os
 import csv
-
+import numpy as np
 
 def getPDF(lngths, perimeters, CSA, APW, MLW):
     """
@@ -123,4 +123,63 @@ def generateRegCsv(file, regObject):
     writer = csv.writer(file)
     for i in regObject.values:
         writer.writerow([i])
+        
+def generate_spec(file, regObject):
+        """
+        This function automatically generates specific output for the specified
+        registration object.
+        
+        Parameters
+        ----------
+        regObject: AmpObject
+            the registration object.
+    
+        Returns
+        -------
+        none    
+        """    
+        
+        absmean = np.mean(np.abs(regObject.values))
+        absstd = np.std(np.abs(regObject.values))
+        mean = np.mean(regObject.values)
+        std = np.std(regObject.values)
+        valuemin = np.min(regObject.values)
+        valuemax = np.max(regObject.values)
+
+        idxleft = np.where(regObject.vert[:,0] >= 0)
+        idxright = np.where(regObject.vert[:,0] <= 0)
+        valueleft = regObject.values[idxleft]
+        valueright = regObject.values[idxright]
+        meanleft = np.mean(valueleft)
+        stdleft = np.std(valueleft)
+        meanright = np.mean(valueright)
+        stdright = np.std(valueright)
+        
+        gap = np.where(regObject.values > 0)[0]
+        integratedgap = np.sum(regObject.values[gap])/regObject.values.shape[0]
+        gap = (gap.shape[0])/(regObject.values.shape[0])*100
+        pressure = np.where(regObject.values < -3)[0]
+        integratedHP = np.sum(regObject.values[pressure])/regObject.values.shape[0]
+        pressure = (pressure.shape[0])/(regObject.values.shape[0])*100
+        
+        outdict = {'mean distance':mean,
+                   'standard deviation':std,
+                   'minimum distance':valuemin,
+                   'maximum distance':valuemax,
+                   'mean absolute distance':absmean,
+                   'absolute standard deviation':absstd,
+                   'Left mean distance':meanleft,
+                   'Left standard deviation':stdleft,
+                   'Right mean distance':meanright,
+                   'Right standard deviation':stdright,
+                   'percentage of gap area':gap,
+                   'percentage of high pressure area':pressure,
+                   'percentage of area within range':100-pressure-gap,
+                   'integrated value of gap area':integratedgap,
+                   'integrated value of high pressure area':integratedHP}
+        
+        with open(os.getcwd()+file, 'w', newline='') as myfile:
+                writer = csv.DictWriter(myfile, fieldnames=['Name', 'Value'])
+                for i in outdict:
+                    writer.writerow({'Name':i, 'Value':outdict[i]})
 
