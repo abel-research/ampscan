@@ -36,3 +36,12 @@ class TestAnalyse(unittest.TestCase):
         # Object is a sphere, so area is (4/3)*math.pi*(R**3)
         # In this case R = 1.2
         self.assertAlmostEqual(analyse.calc_volume_closed(self.amp2, return_closed=False), (4/3)*math.pi*(1.2**3), delta=TestAnalyse.DELTA)
+    
+    def test_generate_spec(self):
+        """Test the output function that generates general output values
+        for a registration object, such as the mean, standard deviation, etc."""
+        
+        from ampscan import registration, output
+        
+        reg = registration(self.amp1, self.amp2).reg
+        output.generate_spec('output.csv', reg)
