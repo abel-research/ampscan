@@ -21,7 +21,7 @@ The typical ampscan process is demonstrated above (Figure 1) and the core functi
 
 - **[Analysis](https://ampscan.readthedocs.io/en/latest/source/analyse.html)**: This is used to extract key geometrical infomation about the shape, including volume and serial slice cross section areas and perimeters. 
 
-- **[Graphical User Interface](../master/gui/ampscanGUI.py)**: This enables visualisation to multiple AmpObjects within a single window, giving access to the automated and manual alignment tools as well as registration. This facilitates the core analysis of the scan data for users who are not experienced Python users. The python version of the GUI is available in the [gui](https://github.com/abel-research/ampscan/tree/master/gui) folder from the git repo and a standalone [webapp](https://github.com/abel-research/ampscan_webapp) will soon be avilable. 
+- **[Graphical User Interface](../master/gui/ampscanGUI.py)**: This enables visualisation to multiple AmpObjects within a single window, giving access to the automated and manual alignment tools as well as registration. This facilitates the core analysis of the scan data for users who are not experienced Python users. The python version of the GUI is available in the [gui](https://github.com/abel-research/ampscan/tree/master/gui) folder from the git repo and a standalone [webapp](https://ampscan.io/) is now avilable. 
 
 Potential applications of ampscan include tracking how the limb shape and volume has changed over time, digitising manual prosthetic socket design modifications, and comparing the outputs of different scanning technologies. 
 
