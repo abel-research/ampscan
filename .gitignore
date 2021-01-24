@@ -45,3 +45,9 @@ instance/
 .coverage
 .vscode
 htmlcov/
+
+fill_test.stl
+tests/obj.obj
+tests/stl_file_2_hc.stl
+tests/stl_file_2_lp.stl
+tests/stl_file_trim.stl

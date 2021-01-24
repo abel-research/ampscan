@@ -23,6 +23,10 @@ class TestAlign(unittest.TestCase):
         stl_path = get_path("stl_file.stl")
         self.amp3 = AmpObject(stl_path)
         self.amp4 = AmpObject(stl_path)
+        stl_path = get_path("cone1.stl")
+        self.cone1 = AmpObject(stl_path)
+        stl_path = get_path("cone2.stl")
+        self.cone2 = AmpObject(stl_path)
 
     def test_align(self):
         """Test that objects that are already centered on origin are aligned correctly"""
@@ -68,3 +72,11 @@ class TestAlign(unittest.TestCase):
 
         print(al.T)
         print(al_inv.T)
+
+    def test_optZVol(self):
+        self.cone1.rotateAng([90, 0, 0], ang='deg')
+        self.cone2.rotateAng([90, 0, 0], ang='deg')
+        al = align(self.cone2, self.cone1, method='optZVol')
+        self.assertAlmostEqual(al.m.vert[:, 2].min(), -2)
+        self.assertAlmostEqual(al.T[2], 3)
+        
