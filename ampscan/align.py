@@ -12,6 +12,7 @@ from scipy import spatial
 from scipy.optimize import minimize
 from ampscan.core import AmpObject
 from ampscan.vis import vtkRenWin
+from ampscan.analyse import create_slices, est_volume, calc_csa
 
 # For doc examples
 import os
@@ -135,6 +136,17 @@ class align(object):
             elif method == 'idxPoints':
                 [R, T] = getattr(self, 'idxPoints')(*args, **kwargs)
                 self.m.rigidTransform(R, T)
+                [dist, idx] = kdTree.query(self.m.vert, 1)
+                sort = np.argsort(dist)
+                [dist, idx] = [dist[sort], idx[sort]]
+                [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
+                self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(T, 1)[:, None].T]
+                self.R = R
+                self.T = T
+                self.rmse = math.sqrt(dist.mean())
+                return
+            elif method == 'optZVol':
+                [R, T] = getattr(self, 'optZVol')(*args, **kwargs)
                 [dist, idx] = kdTree.query(self.m.vert, 1)
                 sort = np.argsort(dist)
                 [dist, idx] = [dist[sort], idx[sort]]
@@ -443,6 +455,7 @@ class align(object):
         T = X.x[3:]
         return (R, T)
 
+
     @staticmethod
     def optDistError(X, mv, sv):
         r"""
@@ -482,6 +495,87 @@ class align(object):
         dist = dist.sum(axis=1)
         err = np.sqrt(dist.mean())
         return err
+
+    def optZVol(self, z0 = 0):
+        r"""
+        Direct minimisation of the volume. 
+        1) Translate moving object to match minZ of static 
+        2) Calculate volume to static z0
+        3) Cumulative sum the slices and evaluate volume
+        4) Find slice nearest volume of static 
+        
+        Parameters
+        ----------
+        opt: z0, default 0
+            The slice height to evaluate the static volume from  
+        
+        Returns
+        -------
+        R: ndarray
+            The optimal rotation array, rotation 
+        T: ndarray
+            The optimal translation array
+            
+            
+        """
+        sMinZ = self.s.vert[:, 2].min()
+        mMinZ = self.m.vert[:, 2].min()
+        dZ = mMinZ - sMinZ
+        # Keep track of T
+        T = dZ
+        print(T)
+        self.m.vert[:, 2] += dZ
+        mMaxZ = self.m.vert[:, 2].max()
+        # Create slices of static from 2 mm below dist to z0
+        # print([sMinZ + 1, z0])
+        sPolys = create_slices(self.s, [sMinZ + 1, z0], 0.5, typ='real_intervals', axis=2)
+        
+        sVol = est_volume(sPolys)
+        # Create slices of static from 2 mm below dist to z0
+        mPolys = create_slices(self.s, [sMinZ + 1, mMaxZ - 1], 0.5, typ='real_intervals', axis=2)
+        # Iterate through mPolys
+        csa = calc_csa(mPolys)
+        # Get the distance between each slice 
+        d = []
+        for p in mPolys: 
+            d.append(p[:, 2].mean())
+        d = np.asarray(d)
+        # Get distance between each slice 
+        dist = np.abs(d[1:]- d[:-1])
+        vol = np.c_[csa[1:], csa[:-1]]
+        vol = np.mean(vol, axis=1) * dist
+        # Add in 0 at start to ease indexing 
+        # vol = np.insert(vol, 0, 0)
+        
+        # print(sVol)
+        vol = np.cumsum(vol) - sVol
+        # print(vol)
+        for (i, v) in enumerate(vol):
+            if v >= 0:
+                break
+        # Linear interpolate z in between slices, different as (n-1) sections to slices
+        zl = d[i - 1]
+        zh = d[i]
+        print(zl)
+        print(zh)
+        vl = vol[i - 1]
+        vh = vol[i]
+        dz = zh - zl
+        dv = vh - vl
+        # Absolute value of z to reach
+        z =  zl + ((0 - vl)/ dv) * dz;
+        #  Translate by the calculated z value 
+        z -= d[0]
+        print(z)
+        T += z
+        self.m.vert[:, 2] += z
+
+
+
+
+        R = np.eye(3)
+        T = [0, 0, T]
+        return (R, T)
 
     
     @staticmethod

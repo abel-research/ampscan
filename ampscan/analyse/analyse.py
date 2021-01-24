@@ -118,6 +118,7 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
         lim = args[0]
         intervals = args[1]
         slices = np.arange(lim[0], lim[1], intervals)
+        # print(intervals)
     elif typ == 'norm_intervals':
         # Get the minimum and maximum of the limb
         limb_min = amp.vert[:, axis].min()
