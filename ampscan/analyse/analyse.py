@@ -118,7 +118,7 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
         lim = args[0]
         intervals = args[1]
         slices = np.arange(lim[0], lim[1], intervals)
-        # print(intervals)
+        slices = np.append(slices, lim[1])
     elif typ == 'norm_intervals':
         # Get the minimum and maximum of the limb
         limb_min = amp.vert[:, axis].min()
@@ -127,6 +127,7 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
         lim = args[0]
         intervals = args[1]
         slices = np.arange(lim[0], lim[1], intervals)
+        slices = np.append(slices, lim[1])
         slices = limb_min + (slices * limb_len)
         
     else: 
@@ -140,30 +141,33 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
     # Find all vertices below plane 
     polys = []
     for plane in slices:
-        ind = vE < plane
-        # Select edges with one vertex above and one below the slice plane 
-        validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
-        validfE = amp.faceEdges[validEdgeInd, :].astype(int)
-        faceOrder = logEuPath(validfE)
-        # Get array of three edges attached to each face
-        validEdges = amp.edgesFace[faceOrder, :]
-        # Remove the edge that is not intersected by the plane
-        edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
-        # Remove the duplicate edge from order 
-        e = edges.flatten()
-        sortE = []
-        for ed in e:
-            if ed not in sortE:
-                sortE.append(ed)
-        sortE.append(sortE[0])
-        # Add first edge to end of array
-#            sortE = np.append(sortE, sortE[0])
-        sortE = np.asarray(sortE)
-        polyEdge = amp.edges[sortE]
-        EdgePoints = np.c_[amp.vert[polyEdge[:,0], :], 
-                            amp.vert[polyEdge[:,1], :]]
-        #Create poly from 
-        polys.append(planeEdgeIntersect_cy(EdgePoints, plane, axis))
+        try:
+            ind = vE < plane
+            # Select edges with one vertex above and one below the slice plane 
+            validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
+            validfE = amp.faceEdges[validEdgeInd, :].astype(int)
+            faceOrder = logEuPath(validfE)
+            # Get array of three edges attached to each face
+            validEdges = amp.edgesFace[faceOrder, :]
+            # Remove the edge that is not intersected by the plane
+            edges = validEdges[np.isin(validEdges, validEdgeInd)].reshape([-1,2])
+            # Remove the duplicate edge from order 
+            e = edges.flatten()
+            sortE = []
+            for ed in e:
+                if ed not in sortE:
+                    sortE.append(ed)
+            sortE.append(sortE[0])
+            # Add first edge to end of array
+    #            sortE = np.append(sortE, sortE[0])
+            sortE = np.asarray(sortE)
+            polyEdge = amp.edges[sortE]
+            EdgePoints = np.c_[amp.vert[polyEdge[:,0], :], 
+                                amp.vert[polyEdge[:,1], :]]
+            #Create poly from 
+            polys.append(planeEdgeIntersect_cy(EdgePoints, plane, axis))
+        except:
+            continue
     return polys
 
 def calc_perimeter(polys):

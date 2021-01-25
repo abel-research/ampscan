@@ -77,6 +77,6 @@ class TestAlign(unittest.TestCase):
         self.cone1.rotateAng([90, 0, 0], ang='deg')
         self.cone2.rotateAng([90, 0, 0], ang='deg')
         al = align(self.cone2, self.cone1, method='optZVol')
-        self.assertAlmostEqual(al.m.vert[:, 2].min(), -2)
-        self.assertAlmostEqual(al.T[2], 3)
+        self.assertAlmostEqual(al.m.vert[:, 2].min(), -2, places=2)
+        self.assertAlmostEqual(al.T[2], 3, places=2)
         

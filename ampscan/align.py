@@ -146,14 +146,13 @@ class align(object):
                 self.rmse = math.sqrt(dist.mean())
                 return
             elif method == 'optZVol':
-                [R, T] = getattr(self, 'optZVol')(*args, **kwargs)
+                self.optZVol(*args, **kwargs)
+                # print(self.T)
                 [dist, idx] = kdTree.query(self.m.vert, 1)
                 sort = np.argsort(dist)
                 [dist, idx] = [dist[sort], idx[sort]]
                 [dist, idx, sort] = dist[:inlier], idx[:inlier], sort[:inlier]
-                self.tForm = np.r_[np.c_[R, np.zeros(3)], np.append(T, 1)[:, None].T]
-                self.R = R
-                self.T = T
+                self.tForm = np.r_[np.c_[self.R, np.zeros(3)], np.append(self.T, 1)[:, None].T]
                 self.rmse = math.sqrt(dist.mean())
                 return
             else: KeyError('Not a supported alignment method')
@@ -523,7 +522,6 @@ class align(object):
         dZ = mMinZ - sMinZ
         # Keep track of T
         T = dZ
-        print(T)
         self.m.vert[:, 2] += dZ
         mMaxZ = self.m.vert[:, 2].max()
         # Create slices of static from 2 mm below dist to z0
@@ -532,7 +530,7 @@ class align(object):
         
         sVol = est_volume(sPolys)
         # Create slices of static from 2 mm below dist to z0
-        mPolys = create_slices(self.s, [sMinZ + 1, mMaxZ - 1], 0.5, typ='real_intervals', axis=2)
+        mPolys = create_slices(self.m, [sMinZ + 1, mMaxZ - 1], 0.5, typ='real_intervals', axis=2)
         # Iterate through mPolys
         csa = calc_csa(mPolys)
         # Get the distance between each slice 
@@ -545,9 +543,10 @@ class align(object):
         vol = np.c_[csa[1:], csa[:-1]]
         vol = np.mean(vol, axis=1) * dist
         # Add in 0 at start to ease indexing 
-        # vol = np.insert(vol, 0, 0)
+        vol = np.insert(vol, 0, 0)
         
         # print(sVol)
+        # print(vol)
         vol = np.cumsum(vol) - sVol
         # print(vol)
         for (i, v) in enumerate(vol):
@@ -556,26 +555,24 @@ class align(object):
         # Linear interpolate z in between slices, different as (n-1) sections to slices
         zl = d[i - 1]
         zh = d[i]
-        print(zl)
-        print(zh)
         vl = vol[i - 1]
         vh = vol[i]
         dz = zh - zl
         dv = vh - vl
         # Absolute value of z to reach
         z =  zl + ((0 - vl)/ dv) * dz;
+        # print(z)
         #  Translate by the calculated z value 
-        z -= d[0]
-        print(z)
-        T += z
-        self.m.vert[:, 2] += z
+        # z -= d[0]
+        T -= z
+        # print(vl, sVol, vh)
+        self.m.vert[:, 2] -= z
 
 
 
 
-        R = np.eye(3)
-        T = [0, 0, T]
-        return (R, T)
+        self.R = np.eye(3)
+        self.T = [0, 0, T]
 
     
     @staticmethod
