@@ -133,7 +133,7 @@ class registration(object):
 #            rVert += D/step
             self.disp.vert += D/step
             if smooth > 0 and step > 1:
-                self.disp.lp_smooth(smooth, brim = fixBrim)
+                self.disp.hc_smooth(smooth, beta=0.6,  brim = fixBrim)
                 self.reg.vert = self.b.vert + self.disp.vert
             else:
                 self.reg.vert = self.b.vert + self.disp.vert
