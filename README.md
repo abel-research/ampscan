@@ -32,6 +32,8 @@ Installing ampscan
 
 ampscan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and VTK. We recommend using pip for installation. It is possible to install via conda, but in our experience, VTK can be challenging to install via this route. If you do choose to use conda, we recommend the conda-forge channel for VTK. Before installation, ensure your environment is using Python 3. 
 
+ampscan currently is supported on Python 3.6-3.9 for Linux, Windows and Mac.
+
 For the most up to date version of ampscan, clone directly from the github repository using:
 
 ``git clone https://github.com/abel-research/ampscan``
