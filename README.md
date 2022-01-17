@@ -1,7 +1,7 @@
 ![ampscanlogo](docs/ampscan_header.svg)
 
 **Join chat:** [![Join the chat at https://gitter.im/ampscan](https://badges.gitter.im/gitterHQ/gitter.svg)](https://gitter.im/ampscan)
-**Build status:** [![Build Status](https://travis-ci.org/abel-research/ampscan.svg?branch=master)](https://travis-ci.org/abel-research/ampscan)
+**Build status:** [![Build Status](https://github.com/abel-research/ampscan/actions/workflows/python-package.yml/badge.svg)](https://github.com/abel-research/ampscan/actions/workflows/python-package.yml)
 **Docs:** [![Documentation Status](https://readthedocs.org/projects/ampscan/badge/?version=latest)](https://ampscan.readthedocs.io/en/latest/?badge=latest)
 **License:** [![License](https://img.shields.io/github/license/abel-research/ampscan)](../master/LICENSE)
 **DOI:** [![DOI](https://joss.theoj.org/papers/10.21105/joss.02060/status.svg)](https://doi.org/10.21105/joss.02060)
@@ -30,18 +30,17 @@ ampscan relies heavily on [NumPy](http://www.numpy.org/) and [SciPy](https://www
 Installing ampscan
 -------------------
 
-ampscan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and vtk. We recommend using 
-conda to deal with these. Before installation, ensure your environment is using Python 3. 
-
-Install dependencies using conda:
-
-``conda install numpy scipy pyqt matplotlib vtk==8.1.0``
+ampscan has a number of dependencies, namely; NumPy, SciPy, Matplotlib, PyQt and VTK. We recommend using pip for installation. It is possible to install via conda, but in our experience, VTK can be challenging to install via this route. If you do choose to use conda, we recommend the conda-forge channel for VTK. Before installation, ensure your environment is using Python 3. 
 
 For the most up to date version of ampscan, clone directly from the github repository using:
 
 ``git clone https://github.com/abel-research/ampscan``
 
-Navigate to the `ampscan/` directory and run a pip install using:
+To install via pip, navigate to the `ampscan/` directory and run a pip install using:
+
+``pip install -r requirements.txt``
+
+Followed by:
 
 ``pip install -e .``
 
@@ -62,7 +61,7 @@ accordance with 'numpy style' docstrings. A template can be found
 Testing
 -------
 
-Testing is performed automatically using [Travis Ci](https://travis-ci.org/abel-research/ampscan). New tests can be added to the repo. 
+Testing is performed automatically using [Gitlab Actions](https://github.com/abel-research/ampscan/actions). New tests can be added to the repo. 
 
 
 License
