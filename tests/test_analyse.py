@@ -41,7 +41,7 @@ class TestAnalyse(unittest.TestCase):
         """Test the output function that generates general output values
         for a registration object, such as the mean, standard deviation, etc."""
         
-        from ampscan import registration, output
+        from ampscan import registration, analyse
         
         reg = registration(self.amp1, self.amp2).reg
-        output.generate_spec('output.csv', reg)
+        analyse.generate_spec('output.csv', reg)
