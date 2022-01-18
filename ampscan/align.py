@@ -58,12 +58,54 @@ class align(object):
         mData = dict(zip(['vert', 'faces', 'values'], 
                          [moving.vert, moving.faces, moving.values]))
         alData = copy.deepcopy(mData)
-        self.m = AmpObject(alData, stype='reg')
-        self.s = static
+        self.setMoving(AmpObject(alData, stype='reg'))
+        self.setStatic(static)
+        self.R = np.eye(3)
+        self.T = np.zeros(3)
+        self.tForm = np.eye(4)
+        self.rmse = 0
+
         if inverse:
             self.inverse(method=method, *args, **kwargs)
         else:
             self.runICP(method=method, *args, **kwargs)
+
+    def setStatic(self, amp):
+        r"""
+        Set the static AmpObject
+        """
+        self.s = amp
+    
+    def setMoving(self, amp):
+        r"""
+        Set the moving AmpObject
+        """
+        self.m = amp
+
+    def getAlign(self):
+        r"""
+        Return the aligned AmpObject
+        """
+        return self.m
+
+    def getRT(self):
+        r"""
+        Return the rotation and translation array
+        """
+        return (self.R, self.T)
+    
+    def getTForm(self):
+        r"""
+        Return the transformation array
+        """
+        return self.tForm
+
+    def getRMSE(self):
+        r"""
+        Return the RMSE post alignment
+        """
+        return self.rmse
+
 
     
     def runICP(self, method = 'linPoint2Plane', maxiter=20, inlier=1.0,
