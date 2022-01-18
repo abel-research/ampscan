@@ -199,6 +199,42 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         if vNorm is True:
             self.calcVNorm()
 
+    def getVert(self):
+        r"""
+        Function to return the vert array
+        """
+        return self.vert
+
+    def setVert(self, vert):
+        r"""
+        Function to set the vert array
+        """
+        self.vert = vert
+
+    def getFaces(self):
+        r"""
+        Function to return the faces array
+        """
+        return self.faces
+
+    def setFaces(self, faces):
+        r"""
+        Function to set the faces array
+        """
+        self.faces = faces
+
+    def getValues(self):
+        r"""
+        Function to return the values array
+        """
+        return self.values
+
+    def setValues(self, values):
+        r"""
+        Function to set the values array
+        """
+        self.values = values
+
     def unifyVert(self):
         r"""
         Function to unify coincident vertices of the mesh to reduce
