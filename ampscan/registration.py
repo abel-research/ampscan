@@ -48,10 +48,38 @@ class registration(object):
 		
     """ 
     def __init__(self, baseline, target, method='point2plane', *args, **kwargs):
-        self.b = baseline
-        self.t = target
+        self.setBaseline(baseline)
+        self.setTarget(target)
+        self.reg = None
+        self.values = None
         if method is not None:
             getattr(self, method)(*args, **kwargs)
+        
+
+    def setBaseline(self, amp):
+        r"""
+        Set the baseline AmpObject
+        """
+        self.b = amp
+    
+    def setTarget(self, amp):
+        r"""
+        Set the target AmpObject
+        """
+        self.t = amp
+    
+    def getReg(self):
+        r"""
+        Return the registered AmpObject
+        """
+        return self.reg
+
+    def getValues(self):
+        r""""
+        Return the values array from the registration
+        """
+        return self.values
+
         
         
     def point2plane(self, steps = 1, neigh = 10, inside = True, subset = None, 
@@ -139,7 +167,8 @@ class registration(object):
                 self.reg.vert = self.b.vert + self.disp.vert
                 self.reg.calcNorm()
         self.reg.calcStruct(vNorm=True)
-        self.reg.values[:] = self.calcError(error)
+        self.values = self.calcError(error)
+        self.reg.values[:] = self.values
         
     def calcError(self, method='norm'):
         r"""
