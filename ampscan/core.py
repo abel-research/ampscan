@@ -53,7 +53,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         elif isinstance(data, dict):
             for k, v in data.items():
                 setattr(self, k, v)
-            self.calcStruct()
+            if struc is True:
+                self.calcStruct()
         elif isinstance(data, bytes):
             self.read_bytes(data, unify, struc)
 
