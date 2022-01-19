@@ -156,8 +156,8 @@ class registration(object):
             # print(G.shape, ind.shape)
             if inside is True:
                 # Adjust so inside face 
-                # G = self.__adjustBarycentric(self.reg.vert, G, ind)
-                G = self.__calcBarycentric(self.reg.vert, G, ind)
+                G = self.__adjustBarycentric(self.reg.vert, G, ind)
+                # G = self.__calcBarycentric(self.reg.vert, G, ind)
             # Find smallest distance from old to new point 
             G = G - self.reg.vert[:, None, :]
             GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
@@ -327,59 +327,47 @@ class registration(object):
             smallest magnitude is selected. All these points will lie within the target face
  
         """
-        # each vertex
-        for i, vind in enumerate(ind):
-            # each index
-            for j, idx in enumerate(vind):
-                P0 = self.t.vert[self.t.faces[idx, 0]]
-                P1 = self.t.vert[self.t.faces[idx, 1]]
-                P2 = self.t.vert[self.t.faces[idx, 2]]
-                
-                Gij = G[i, j, :]
-                
-                v0 = P2 - P0
-                v1 = P1 - P0
-                v2 = Gij - P0
-                
-                d00 = np.dot(v0, v0)
-                d01 = np.dot(v0, v1)
-                d02 = np.dot(v0, v2)
-                d11 = np.dot(v1, v1)
-                d12 = np.dot(v1, v2)
-                
-                denom = d00*d11 - d01*d01
-                u = (d11 * d02 - d01 * d12)/denom
-                v = (d00 * d12 - d01 * d02)/denom
-                w = 1 - u - v
-                # Test if inside 
-                if (u < 0) or (v < 0) or (u + v >= 1):
-                    #  Nearest point is a vertex 
-                    if w > 0 and v < 0 and u < 0: 
-                        newG = P0
-                    if w < 0 and v > 0 and u < 0: 
-                        newG = P1
-                    if w < 0 and v < 0 and u > 0: 
-                        newG = P2
-                    # Nearest point on edge 
-                    if w > 0 and v > 0 and u < 0:
-                        s = P1 - P0
-                        t = Gij - P0
-                        ps = np.dot(t, s)
-                        l2 = np.dot(s, s)
-                        newG = P0 + ps / l2 * s
-                    if w > 0 and v < 0 and u > 0:
-                        s = P2 - P0
-                        t = Gij - P0
-                        ps = np.dot(t, s)
-                        l2 = np.dot(s, s)
-                        newG = P0 + ps / l2 * s
-                    if w < 0 and v > 0 and u > 0:
-                        s = P2 - P1
-                        t = Gij - P1
-                        ps = np.dot(t, s)
-                        l2 = np.dot(s, s)
-                        newG = P1 + ps / l2 * s
-                    G[i, j, :] = newG
+        P0 = self.t.vert[self.t.faces[ind, 0]]
+        P1 = self.t.vert[self.t.faces[ind, 1]]
+        P2 = self.t.vert[self.t.faces[ind, 2]]
+        
+        
+        v0 = P2 - P0
+        v1 = P1 - P0
+        v2 = G - P0
+
+        d00 = np.einsum('ijk, ijk->ij', v0, v0)
+        d01 = np.einsum('ijk, ijk->ij', v0, v1)
+        d02 = np.einsum('ijk, ijk->ij', v0, v2)
+        d11 = np.einsum('ijk, ijk->ij', v1, v1)
+        d12 = np.einsum('ijk, ijk->ij', v1, v2)
+        
+        # Compute barycentric co-ordinates
+        denom = d00*d11 - d01*d01
+        u = (d11 * d02 - d01 * d12)/denom
+        v = (d00 * d12 - d01 * d02)/denom
+        w = 1 - u - v
+        
+        # Logic for adjustment 
+        P0_log = (w > 0) * (v < 0) * (u < 0)
+        P1_log = (w < 0) * (v > 0) * (u < 0)
+        P2_log = (w < 0) * (v < 0) * (u > 0)
+        P0P1_log = (w > 0) * (v > 0) * (u < 0)
+        P0P2_log = (w > 0) * (v < 0) * (u > 0)
+        P1P2_log = (w < 0) * (v > 0) * (u > 0)
+        
+        G[P0_log, :] = P0[P0_log, :]
+        G[P1_log, :] = P1[P1_log, :]
+        G[P2_log, :] = P2[P2_log, :]
+        
+        # Compute line intersection 
+        for pa, pb, log in [[P0, P1, P0P1_log], [P0, P2, P0P2_log], [P1, P2, P1P2_log]]:
+            s = pb - pa
+            t = G - pa
+            ps = np.einsum('ijk, ijk->ij', t, s)
+            l2 = np.einsum('ijk, ijk->ij', s, s)
+            newG = pa + ps[:, :, None] / l2[:, :, None] * s
+            G[log, :] = newG[log, :]
         return G
 
 
