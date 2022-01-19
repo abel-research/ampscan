@@ -6,6 +6,7 @@ import unittest
 from util import get_path
 from ampscan import analyse
 import math
+import numpy as np
 
 
 class TestSmoothing(unittest.TestCase):
@@ -21,6 +22,7 @@ class TestSmoothing(unittest.TestCase):
         self.amp = AmpObject(stl_path)
         self.amp2 = AmpObject(stl_path)
         self.amp3 = AmpObject(stl_path)
+        self.amp4 = AmpObject(stl_path)
 
     def test_smoothing_nans(self):
         """Tests that NaNs are properly dealt with by smooth method"""
@@ -47,4 +49,16 @@ class TestSmoothing(unittest.TestCase):
         print(vol3)
         # self.assertAlmostEqual(analyse.est_volume(poly1), analyse.est_volume(poly3), delta=TestSmoothing.DELTA)
         self.assertLess(vol1-vol3, vol1-vol2)
+        
+    def test_coincident(self):
+        idx_max = np.argmax(self.amp4.vert[:, 1])
+        idx_min = np.argmin(self.amp4.vert[:, 1])
+        delta = self.amp4.vert[idx_max, 1] - self.amp4.vert[idx_min, 1]
+        self.amp4.vert[idx_max, :] = self.amp4.vert[idx_min, :]
+        self.amp4.vert[idx_max, :] = self.amp4.vert[idx_min, :]
+        self.amp4.adjustCoincident(beta=1)
+        delta2 = self.amp4.vert[idx_max, 1] - self.amp4.vert[idx_min, 1]
+        self.assertGreater(delta2, delta*0.99)
+        
+        
 

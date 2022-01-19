@@ -122,7 +122,9 @@ class registration(object):
         self.reg = AmpObject(regData, stype='reg')
         self.disp = AmpObject({'vert': np.zeros(self.reg.vert.shape),
                                'faces': self.reg.faces,
-                               'values':self.reg.values})
+                               'values':self.reg.values}, struc=False)
+        self.disp.calcEdges()
+        
         if scale is not None:
             tmin = self.t.vert.min(axis=0)[2]
             rmin = self.reg.vert.min(axis=0)[2]
@@ -139,6 +141,8 @@ class registration(object):
         for step in np.arange(steps, 0, -1, dtype=float):
             # Index of 10 centroids nearest to each baseline vertex
             ind = tTree.query(self.reg.vert, neigh)[1]
+            if ind.ndim == 1:
+                ind = ind[:, None]
             # Define normals for faces of nearest faces
             norms = normals[ind]
             # Get a point on each face
@@ -149,26 +153,29 @@ class registration(object):
             # Calculate the vector from old point to new point
             G = self.reg.vert[:, None, :] + np.einsum('ijk, ij->ijk', norms, t)
             # Ensure new points lie inside points otherwise set to 99999
+            # print(G.shape, ind.shape)
+            if inside is True:
+                # Adjust so inside face 
+                G = self.__adjustBarycentric(self.reg.vert, G, ind)
+                # G = self.__calcBarycentric(self.reg.vert, G, ind)
             # Find smallest distance from old to new point 
-            if inside is False:
-                G = G - self.reg.vert[:, None, :]
-                GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
-                GInd = GMag.argmin(axis=1)
-            else:
-                G, GInd = self.__calcBarycentric(self.reg.vert, G, ind)
+            G = G - self.reg.vert[:, None, :]
+            GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
+            GInd = GMag.argmin(axis=1)
             # Define vector from baseline point to intersect point
             D = G[np.arange(len(G)), GInd, :]
 #            rVert += D/step
             self.disp.vert += D/step
             if smooth > 0 and step > 1:
-                self.disp.hc_smooth(smooth, beta=0.6,  brim = fixBrim)
+                self.disp.hc_smooth(smooth, beta=0.6,  brim = fixBrim, norms=False)
                 self.reg.vert = self.b.vert + self.disp.vert
             else:
                 self.reg.vert = self.b.vert + self.disp.vert
-                self.reg.calcNorm()
+                self.reg.adjustCoincident(beta=0.6)
         self.reg.calcStruct(vNorm=True)
         self.values = self.calcError(error)
         self.reg.values[:] = self.values
+
         
     def calcError(self, method='norm'):
         r"""
@@ -193,8 +200,7 @@ class registration(object):
             values = getattr(self, method)()
             return values
         except: ValueError('"%s" is not a method, try "abs", "cent" or "prod"' % method)
-        
-
+            
     
     def __absDist(self):
         r"""
@@ -266,9 +272,7 @@ class registration(object):
         G: array_like 
             The new array of candidates for registered vertices, from here, the one with 
             smallest magnitude is selected. All these points will lie within the target face
-        GInd: array_like
-            The index of the shortest distance between each baseline vertex and the registered vertex
-            
+
         """
         P0 = self.t.vert[self.t.faces[ind, 0]]
         P1 = self.t.vert[self.t.faces[ind, 1]]
@@ -297,10 +301,76 @@ class registration(object):
         i, j = np.meshgrid(np.arange(P.shape[0]), np.arange(P.shape[1]))
         nearP = P[i.T, j.T, :, pdx]
         G[~logic, :] = nearP[~logic, :]
-        G = G - vert[:, None, :]
-        GMag = np.sqrt(np.einsum('ijk, ijk->ij', G, G))
-        GInd = GMag.argmin(axis=1)
-        return G, GInd
+        return G
+
+
+    def __adjustBarycentric(self, vert, G, ind):
+        r"""
+        Calculate the barycentric co-ordinates of each target face and the registered vertex, 
+        this ensures that the registered vertex is within the bounds of the target face. If not 
+        the registered vertex is moved to the nearest vertex or edge on the target face 
+
+        Parameters
+        ----------
+        vert: array_like
+            The array of baseline vertices
+        G: array_like
+            The array of candidates for registered vertices. If neigh>1 then axis 2 will correspond 
+            to the number of nearest neighbours selected
+        ind: array_like
+            The index of the nearest faces to the baseline vertices
+        
+        Returns
+        -------
+        G: array_like 
+            The new array of candidates for registered vertices, from here, the one with 
+            smallest magnitude is selected. All these points will lie within the target face
+ 
+        """
+        P0 = self.t.vert[self.t.faces[ind, 0]]
+        P1 = self.t.vert[self.t.faces[ind, 1]]
+        P2 = self.t.vert[self.t.faces[ind, 2]]
+        
+        
+        v0 = P2 - P0
+        v1 = P1 - P0
+        v2 = G - P0
+
+        d00 = np.einsum('ijk, ijk->ij', v0, v0)
+        d01 = np.einsum('ijk, ijk->ij', v0, v1)
+        d02 = np.einsum('ijk, ijk->ij', v0, v2)
+        d11 = np.einsum('ijk, ijk->ij', v1, v1)
+        d12 = np.einsum('ijk, ijk->ij', v1, v2)
+        
+        # Compute barycentric co-ordinates
+        denom = d00*d11 - d01*d01
+        u = (d11 * d02 - d01 * d12)/denom
+        v = (d00 * d12 - d01 * d02)/denom
+        w = 1 - u - v
+        
+        # Logic for adjustment 
+        P0_log = (w > 0) * (v < 0) * (u < 0)
+        P1_log = (w < 0) * (v > 0) * (u < 0)
+        P2_log = (w < 0) * (v < 0) * (u > 0)
+        P0P1_log = (w > 0) * (v > 0) * (u < 0)
+        P0P2_log = (w > 0) * (v < 0) * (u > 0)
+        P1P2_log = (w < 0) * (v > 0) * (u > 0)
+        
+        G[P0_log, :] = P0[P0_log, :]
+        G[P1_log, :] = P1[P1_log, :]
+        G[P2_log, :] = P2[P2_log, :]
+        
+        # Compute line intersection 
+        for pa, pb, log in [[P0, P1, P0P1_log], [P0, P2, P0P2_log], [P1, P2, P1P2_log]]:
+            s = pb - pa
+            t = G - pa
+            ps = np.einsum('ijk, ijk->ij', t, s)
+            l2 = np.einsum('ijk, ijk->ij', s, s)
+            newG = pa + ps[:, :, None] / l2[:, :, None] * s
+            G[log, :] = newG[log, :]
+        return G
+
+
     
     def plotResults(self, name=None, xrange=None, color=None, alpha=None):
         r"""
