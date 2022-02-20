@@ -49,7 +49,10 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         self.stype = stype
         self.createCMap()
         if isinstance(data, str):
-            self.read_stl(data, unify, struc)
+            if data.lower().endswith('.aop'):
+                self.read_aop(data, struc)
+            else:
+                self.read_stl(data, unify, struc)
         elif isinstance(data, dict):
             for k, v in data.items():
                 setattr(self, k, v)
@@ -160,6 +163,123 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             self.unifyVert()
         # Call function to calculate the edges array
 #        self.fixNorm()
+        if struc is True:
+            self.calcStruct()
+        self.values = np.zeros([len(self.vert)])
+
+    def read_aop(self, filename,struc=True):
+        with open(filename, 'r') as f: 
+            lines = f.read().splitlines()
+        lID = 0
+        maxID = len(lines)
+        version = lines[lID]
+        lID =+ 1
+        # File comments
+        comments = ""
+        while lID < maxID:
+            if "END COMMENTS" == lines[lID]:
+                lID += 1
+                break
+            else:
+                comments += lines[lID] + "\n"
+                lID += 1
+        # CYS 
+        cys = lines[lID]
+        lID +=1
+        if cys != "CYLINDRICAL":
+            return ValueError('AOP Reader only accepts files in CYLINDRICAL cys')
+        # Orientation
+        side = lines[lID]
+        lID += 1
+        # Landmarks 
+        nLand = int(lines[lID])
+        lID += 1
+        self.landmarks = {}
+        # For each landmark
+        for i in range(nLand):
+            landName = lines[lID]
+            lID += 1
+            nPoints = int(lines[lID])
+            lID += 1
+            # For each point in the landmark
+            for j in range(nPoints):
+                r = float(lines[lID])
+                lID += 1
+                theta = np.deg2rad(float(lines[lID]))
+                lID += 1
+                z = float(lines[lID])
+                lID += 1
+                # Convert to cartesian 
+                x = r * np.cos(theta)
+                y = r * np.sin(theta)
+                self.landmarks[landName + '_%i' % j] = np.array([x, y, z])
+        # file parameters
+        # spokes 
+        nSpokes = int(lines[lID])
+        lID += 1
+        spokeDist = np.deg2rad(float(lines[lID]))
+        lID += 1
+        # Create the spokes array
+        if spokeDist == 0: 
+            # Irregular spacing so read in 
+            spokes = []
+            for i in range(nSpokes):
+                spokes.append(np.deg2rad(float(lines[lID])))
+                lID += 1
+            spokes = np.asarray(spokes)
+        else:
+            # regular spacing so compute 
+            spokes = np.arange(0, 2*np.pi, spokeDist)
+
+        # slices
+        nSlices = int(lines[lID])
+        lID += 1
+        sliceDist = np.deg2rad(float(lines[lID]))
+        lID += 1
+        # Create the slices array
+        if sliceDist == 0: 
+            # Irregular spacing so read in 
+            slices = []
+            for i in range(nSlices):
+                slices.append(float(lines[lID]))
+                lID += 1
+            slices = np.asarray(slices)
+        else:
+            # regular spacing so compute 
+            slices = np.arange(0, 2*np.pi, sliceDist)
+
+        # set up the vert and faces arrays 
+        nVerts = nSlices * nSpokes;
+        nFaces = (nSlices - 1) * (nSpokes * 2);
+        self.vert = np.zeros([nVerts, 3], dtype=float)
+        self.faces = np.zeros([nFaces, 3], dtype=int)
+
+        # Read in the radii as verts
+        for i in range(nSlices):
+            z = slices[i];
+            for j in range(nSpokes):
+                idx = (i * nSpokes) + j;
+                r = float(lines[lID])
+                theta = spokes[j];
+                x = r * np.cos(theta)
+                y = r * np.sin(theta)
+                self.vert[idx, :] = [x, y, z]
+                lID += 1
+        # Construct faces array 
+        fidx = 0;
+        for sl in range(nSlices - 1):
+            cur_stack_idx = sl * nSpokes;
+            next_stack_idx = (sl + 1) * nSpokes;
+            for sp in range(nSpokes):
+                next_spoke = (sp + 1) % nSpokes;
+                v0 = cur_stack_idx + sp;
+                v1 = cur_stack_idx + next_spoke;
+                v2 = next_stack_idx + next_spoke;
+                v3 = next_stack_idx + sp;
+                self.faces[fidx, :] = [v0, v1, v3];
+                self.faces[fidx + 1, :] = v1, v2, v3;
+                fidx += 2;
+
         if struc is True:
             self.calcStruct()
         self.values = np.zeros([len(self.vert)])
