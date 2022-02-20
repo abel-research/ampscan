@@ -6,7 +6,6 @@ Copyright: Joshua Steer 2020, Joshua.Steer@soton.ac.uk
 """
 
 import numpy as np
-from ampscan.core import AmpObject
 import matplotlib.pyplot as plt
 import matplotlib.colors as clr
 import matplotlib.colorbar as clb
@@ -40,29 +39,7 @@ def calc_volume_closed(amp_in, return_closed=False):
     amp: AmpObject
         If return_closed is True, then the closed shape is returned 
     """
-    amp = AmpObject({
-        'vert': amp_in.vert.copy(),
-        'faces': amp_in.faces.copy(),
-        'values': amp_in.values.copy(),
-    })
-    amp.calcStruct()
-    # Fill in the holes
-    while (amp.faceEdges == -99999).sum() != 0: 
-        # Find the edges which are only conected to one face
-        edges = (amp.faceEdges == -99999).sum(axis=1).astype(bool)
-        edges = amp.edges[edges, :]
-        # Return the vert indicies for the loop
-        vInd = logEuPath(edges)
-        # Calculate the mmidpoint 
-        midpoint = amp.vert[vInd, :].mean(axis=0)
-        # Add in the new vertex
-        amp.vert = np.r_[amp.vert, midpoint[None, :]]
-        f0 = amp.vert.shape[0] - 1
-        # Add in each face using adjacent vertices in loop
-        for f1, f2 in zip(vInd, np.roll(vInd, 1)):
-            amp.faces = np.r_[amp.faces, [[f1, f0, f2]]]
-        # Update structure and check if any more holes (algorithm keeps going until all holes filled)
-        amp.calcStruct()
+    amp = amp_in.close()
     # Calculate the area of each face in the array using vector cross product
     v01 = amp.vert[amp.faces[:, 1], :] - amp.vert[amp.faces[:, 0], :]
     v02 = amp.vert[amp.faces[:, 2], :] - amp.vert[amp.faces[:, 0], :]

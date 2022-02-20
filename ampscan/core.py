@@ -11,6 +11,7 @@ import struct
 from ampscan.trim import trimMixin
 from ampscan.smooth import smoothMixin
 from ampscan.vis import visMixin
+from .analyse import create_slices, calc_csa, logEuPath
 
 
 # The file path used in doc examples
@@ -48,6 +49,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
     def __init__(self, data=None, stype='limb', unify=True, struc=True):
         self.stype = stype
         self.createCMap()
+        self.landmarks = {}
         if isinstance(data, str):
             if data.lower().endswith('.aop'):
                 self.read_aop(data, struc)
@@ -168,6 +170,21 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         self.values = np.zeros([len(self.vert)])
 
     def read_aop(self, filename,struc=True):
+        """
+        Function to read .aop file from filename and import data into 
+        the AmpObj 
+        
+        Parameters
+        -----------
+        filename: str 
+            file path of the .stl file to read 
+        struc: boolean, default True
+            Calculate the underlying structure of the mesh, such as edges
+        
+        To access the landmarks use te getLandmarks() methods after the file 
+        has been imported
+
+        """
         with open(filename, 'r') as f: 
             lines = f.read().splitlines()
         lID = 0
@@ -201,6 +218,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             lID += 1
             nPoints = int(lines[lID])
             lID += 1
+            points = np.zeros([nPoints, 3])
             # For each point in the landmark
             for j in range(nPoints):
                 r = float(lines[lID])
@@ -212,7 +230,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
                 # Convert to cartesian 
                 x = r * np.cos(theta)
                 y = r * np.sin(theta)
-                self.landmarks[landName + '_%i' % j] = np.array([x, y, z])
+                points[j, :] = [x, y, z]
+            self.landmarks[landName] = points
         # file parameters
         # spokes 
         nSpokes = int(lines[lID])
@@ -355,6 +374,18 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         Function to set the values array
         """
         self.values = values
+
+    def getLandmarks(self):
+        r"""
+        Function to return the landmarks dictionary
+        """
+        return self.landmarks
+
+    def setLandmarks(self, landmarks):
+        r"""
+        Function to set the landmarks dictionary
+        """
+        self.landmarks = landmarks
 
     def unifyVert(self):
         r"""
@@ -527,6 +558,155 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
             data_write.tofile(fh)
 
+    def save_aop(self, filename, slices=100, spokes=72, closeEnd = True, side=None, adaptive=False, commments=None, landmarks=False):
+        r"""
+        Function to save the AmpObj as a binary .stl file 
+        
+        Parameters
+        -----------
+        filename: str
+            file path of the .aop file to save to
+        spokes: int or array_like
+            Either number of evenly spaced spokes or an array of spoke theta (in degrees)
+        slices: int or array_like
+            Either number of evenly spaced slices or an array of slice heights
+        closeEnd: bool, optional
+            Default: True. If 
+        side: str
+            Default: NONE
+        adaptive: bool, optional
+            Default: False. If True,  
+        comments: str, optional
+            Default: None
+        landmarks: dict or bool, optional
+            If True, then use the landmarks within the object. Otherwise pass a dictionary 
+            with string keys and numpy arrays of size [n x 3] where n is the number of points
+            in each landmark. Ensure passed in cartesian co-ordinates for ampscan  
+
+        """
+        minZ = self.getVert()[:, 2].min()
+        maxZ = self.getVert()[:, 2].max()
+        totZ = maxZ - minZ
+        minZ += totZ * 0.01
+        maxZ -= totZ * 0.01
+        lines = []
+        lines.append("AAOP1\n")
+        lines.append("AAOP1\n")
+        if commments:
+            lines.append("%s\n" % commments)
+        lines.append("Exported from ampscan\n")
+        lines.append("PLease credit at https://doi.org/10.21105/joss.02060\n")
+        lines.append("END COMMENTS\n")
+        lines.append("CYLINDRICAL\n")
+        # Set side
+        if side is None: 
+            lines.append("NONE\n")
+        else:
+            lines.append("%s\n" % side)
+        # Set landmarks
+        if landmarks is True:
+            landmarks = self.getLandmarks()
+        elif landmarks is False:
+            landmarks = {}
+        nLand = len(landmarks)
+        lines.append("%i\n" % nLand)
+        for landmark, points in landmarks.items():
+            # Landmark name
+            lines.append("%s\n" % landmark)
+            nPoints = points.shape[0]
+            lines.append("%i\n" % nPoints)
+            for x, y, z in points:
+                r = ((x ** 2) + (y ** 2)) ** 0.5
+                t = np.rad2deg(np.atan2(y, x))
+                z -= minZ
+                lines.append("%f\n" % r)
+                lines.append("%f\n" % t)
+                lines.append("%f\n" % z)
+        # Write the spokes 
+        if isinstance(spokes, int):
+            spacing = (360) / spokes
+            spokes = np.arange(0, 360, spacing)
+            nSpokes = len(spokes)
+            lines.append("%i\n" % nSpokes)
+            lines.append("%f\n" % spacing)
+        else:
+            spacing = 0
+            nSpokes = len(spokes)
+            lines.append("%i\n" % nSpokes)
+            lines.append("%i\n" % spacing)
+            for spoke in spokes:
+                lines.append("%f\n" % spoke)
+
+        # Write the slices
+        maxZ = self.getVert()[:, 2].max()
+
+        if isinstance(slices, int):
+            slices, spacing = np.linspace(minZ, maxZ, slices, retstep=True)
+            nSlices = len(slices)
+        else:
+            spacing = 0
+            nSlices = len(slices)
+
+        if adaptive is True:
+            minSliceDiff = 0.5
+            maxDelta = 0.15
+            spacing = 0
+            polys = create_slices(self, slices, typ='slices', axis = 2)
+            csa = calc_csa(polys)
+            sliceSpacing = np.diff(slices)
+            delta = np.abs(np.diff(csa) / csa[1:])
+            maxiter = 0
+            # print((sliceSpacing < minSliceDiff).any())
+            while (delta > maxDelta).any() and (sliceSpacing > minSliceDiff).all() and maxiter < 10: 
+                
+                idx = np.argmax(delta)
+                # print(idx)
+                # insert a new slice
+                slices = np.insert(slices, idx+1, slices[[idx, idx+1]].mean())
+                # print(slices)
+                polys = create_slices(self, slices, typ='slices', axis = 2)
+                csa = calc_csa(polys)
+                sliceSpacing = np.diff(slices)
+                delta = np.abs(np.diff(csa) / csa[1:])
+                maxiter += 1
+                # print(maxiter)
+                # print((delta > maxDelta).any(), (sliceSpacing > minSliceDiff).all(), maxiter < 10)
+            nSlices = len(slices)
+        
+        lines.append("%i\n" % nSlices)
+        if spacing == 0:
+            lines.append("%i\n" % spacing)
+            for sl in slices:
+                lines.append("%f\n" % (sl - minZ))
+        else:   
+            lines.append("%f\n" % spacing)
+
+        polys = create_slices(self, slices, typ='slices', axis = 2)
+
+        # print(len(polys))
+
+        for p in polys:
+            x = p[:-1, 0]
+            y = p[:-1, 1]
+            rPoly = ((x ** 2) + (y ** 2)) ** 0.5
+            tPoly = np.rad2deg(np.arctan2(y, x)) + 180
+            idx = np.argsort(tPoly)
+            rPoly = rPoly[idx]
+            np.append(rPoly, rPoly[0])
+            tPoly = tPoly[idx]
+            np.append(tPoly, 360)
+            rs = np.interp(spokes, tPoly, rPoly)
+            # print(len(rs))
+            for r in rs:
+                lines.append("%f\n" % r)
+
+        # lines.append("%f\n" % r)
+        with open(filename, 'w') as f:
+            f.writelines(lines)
+
+
+
+
     def translate(self, trans):
         r"""
         Translate the AmpObj in 3D space
@@ -654,6 +834,37 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             else:
                 raise TypeError("Expecting array-like translation, but found: "+type(T))
         
+    def close(self, overwrite=False):
+        amp = AmpObject({
+            'vert': self.vert.copy(),
+            'faces': self.faces.copy(),
+            'values': self.values.copy(),
+        })
+        amp.calcStruct()
+        # Fill in the holes
+        while (amp.faceEdges == -99999).sum() != 0: 
+            # Find the edges which are only conected to one face
+            edges = (amp.faceEdges == -99999).sum(axis=1).astype(bool)
+            edges = amp.edges[edges, :]
+            # Return the vert indicies for the loop
+            vInd = logEuPath(edges)
+            # Calculate the mmidpoint 
+            midpoint = amp.vert[vInd, :].mean(axis=0)
+            # Add in the new vertex
+            amp.vert = np.r_[amp.vert, midpoint[None, :]]
+            f0 = amp.vert.shape[0] - 1
+            # Add in each face using adjacent vertices in loop
+            for f1, f2 in zip(vInd, np.roll(vInd, 1)):
+                amp.faces = np.r_[amp.faces, [[f1, f0, f2]]]
+            # Update structure and check if any more holes (algorithm keeps going until all holes filled)
+            amp.calcStruct()
+        if overwrite is True:
+            self.vert = amp.vert
+            self.faces = amp.faces
+            self.calcStruct()
+        else:
+            return amp
+
 
     @staticmethod
     def rotMatrix(rot, ang='rad'):
