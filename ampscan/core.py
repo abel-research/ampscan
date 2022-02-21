@@ -8,10 +8,12 @@ Copyright: Joshua Steer 2020, Joshua.Steer@soton.ac.uk
 import numpy as np
 import os
 import struct
+
+from pyrsistent import v
 from ampscan.trim import trimMixin
 from ampscan.smooth import smoothMixin
 from ampscan.vis import visMixin
-from .analyse import create_slices, calc_csa, logEuPath
+from .analyse import create_slices, calc_perimeter, logEuPath
 
 
 # The file path used in doc examples
@@ -558,7 +560,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
             data_write.tofile(fh)
 
-    def save_aop(self, filename, slices=100, spokes=72, closeEnd = True, side=None, adaptive=False, commments=None, landmarks=False):
+    def save_aop(self, filename, slices=100, spokes=72, closeEnd = True, centreEnd = True, 
+                side=None, adaptive=False, commments=None, landmarks=False):
         r"""
         Function to save the AmpObj as a binary .stl file 
         
@@ -572,6 +575,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             Either number of evenly spaced slices or an array of slice heights
         closeEnd: bool, optional
             Default: True. If 
+        centreEnd: bool, optional
+            Default: True
         side: str
             Default: NONE
         adaptive: bool, optional
@@ -587,15 +592,41 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         minZ = self.getVert()[:, 2].min()
         maxZ = self.getVert()[:, 2].max()
         totZ = maxZ - minZ
-        minZ += totZ * 0.01
-        maxZ -= totZ * 0.01
+
+        if centreEnd:
+            distVLog = self.getVert()[:, 2] < (minZ + (totZ * 0.05))
+            xShift = self.getVert()[distVLog, 0].mean()
+            yShift = self.getVert()[distVLog, 1].mean()
+        else: 
+            xShift = 0
+            yShift = 0 
+        # Get first slices
+        delta = 0.001
+        ind = 0
+        polys = []
+        while not polys:
+            minSl = minZ + (totZ * ind * delta)
+            polys = create_slices(self, [minSl], typ='slices', axis = 2)
+            ind += 1
+        ind = 0
+        polys = []
+        while not polys:
+            maxSl = maxZ - (totZ * ind * delta)
+            polys = create_slices(self, [maxSl], typ='slices', axis = 2)
+            ind += 1
+
+        print(minSl, minZ)
+        print(maxSl, maxZ)
+        
+        # minZ += totZ * 0.01
+        # maxZ -= totZ * 0.01
         lines = []
         lines.append("AAOP1\n")
         lines.append("AAOP1\n")
         if commments:
             lines.append("%s\n" % commments)
         lines.append("Exported from ampscan\n")
-        lines.append("PLease credit at https://doi.org/10.21105/joss.02060\n")
+        lines.append("Please credit at https://doi.org/10.21105/joss.02060\n")
         lines.append("END COMMENTS\n")
         lines.append("CYLINDRICAL\n")
         # Set side
@@ -641,7 +672,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         maxZ = self.getVert()[:, 2].max()
 
         if isinstance(slices, int):
-            slices, spacing = np.linspace(minZ, maxZ, slices, retstep=True)
+            slices, spacing = np.linspace(minSl, maxSl, slices, retstep=True)
             nSlices = len(slices)
         else:
             spacing = 0
@@ -652,7 +683,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             maxDelta = 0.15
             spacing = 0
             polys = create_slices(self, slices, typ='slices', axis = 2)
-            csa = calc_csa(polys)
+            csa = calc_perimeter(polys)
             sliceSpacing = np.diff(slices)
             delta = np.abs(np.diff(csa) / csa[1:])
             maxiter = 0
@@ -665,7 +696,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
                 slices = np.insert(slices, idx+1, slices[[idx, idx+1]].mean())
                 # print(slices)
                 polys = create_slices(self, slices, typ='slices', axis = 2)
-                csa = calc_csa(polys)
+                csa = calc_perimeter(polys)
                 sliceSpacing = np.diff(slices)
                 delta = np.abs(np.diff(csa) / csa[1:])
                 maxiter += 1
@@ -673,21 +704,26 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
                 # print((delta > maxDelta).any(), (sliceSpacing > minSliceDiff).all(), maxiter < 10)
             nSlices = len(slices)
         
-        lines.append("%i\n" % nSlices)
+
+        lines.append("%i\n" % (nSlices))
         if spacing == 0:
             lines.append("%i\n" % spacing)
             for sl in slices:
-                lines.append("%f\n" % (sl - minZ))
+                lines.append("%f\n" % (sl - minSl))
         else:   
             lines.append("%f\n" % spacing)
 
         polys = create_slices(self, slices, typ='slices', axis = 2)
 
-        # print(len(polys))
+        if closeEnd:
+            polys.pop(0)
+            for i in range(len(spokes)):
+                lines.append("%f\n" % 0)
+
 
         for p in polys:
-            x = p[:-1, 0]
-            y = p[:-1, 1]
+            x = p[:-1, 0] - xShift
+            y = p[:-1, 1] - yShift
             rPoly = ((x ** 2) + (y ** 2)) ** 0.5
             tPoly = np.rad2deg(np.arctan2(y, x)) + 180
             idx = np.argsort(tPoly)

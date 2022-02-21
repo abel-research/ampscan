@@ -54,7 +54,7 @@ def calc_volume_closed(amp_in, return_closed=False):
 
 
 
-def create_slices(amp, *args,  typ='slices', axis = 2):
+def create_slices(amp, *args,  typ='slices', axis = 2, order=True):
     r"""
     Generate polygons from planar slices through the AmpObject. The slices are either defined as a 
     list of positions in some axis
@@ -119,7 +119,7 @@ def create_slices(amp, *args,  typ='slices', axis = 2):
     polys = []
     for plane in slices:
         try:
-            ind = vE < plane
+            ind = vE <= plane
             # Select edges with one vertex above and one below the slice plane 
             validEdgeInd = np.where(np.logical_xor(ind[:,0], ind[:,1]))[0]
             validfE = amp.faceEdges[validEdgeInd, :].astype(int)
