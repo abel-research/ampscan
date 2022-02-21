@@ -18,3 +18,4 @@ via ``import ampscan`` by navigating to the root directory and running
    examples/analysis
    examples/gui_instructions
    examples/webapp_instructions
+   examples/aop
