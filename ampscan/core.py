@@ -706,7 +706,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         if spacing == 0:
             lines.append("%i\n" % spacing)
             for sl in slices:
-                lines.append("%f\n" % (sl - minSl))
+                lines.append("%f\n" % (sl - slices[0]))
         else:   
             lines.append("%f\n" % spacing)
 
