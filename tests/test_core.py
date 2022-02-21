@@ -187,7 +187,7 @@ class TestCore(unittest.TestCase):
     def test_aop(self):
         """aop methods"""
         from ampscan.core import AmpObject
-        aop_path = get_path("Example.aop")
+        aop_path = get_path("Example.AOP")
         aop = AmpObject(aop_path)
         aop.save_aop(aop_path[:-4] + '_write.aop')
 
