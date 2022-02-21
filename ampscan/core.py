@@ -573,17 +573,19 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             Either number of evenly spaced spokes or an array of spoke theta (in degrees)
         slices: int or array_like
             Either number of evenly spaced slices or an array of slice heights
-        closeEnd: bool, optional
-            Default: True. If 
-        centreEnd: bool, optional
-            Default: True
-        side: str
-            Default: NONE
-        adaptive: bool, optional
-            Default: False. If True,  
-        comments: str, optional
-            Default: None
-        landmarks: dict or bool, optional
+        closeEnd: bool, default True
+            If True, then this will overwrite the most distal slice to close the shpae
+        centreEnd: bool, default True
+            If True, this will translate the shape so the distal end is centered in the 
+            x and y plane
+        side: str, default NONE
+            Either 'LEFT', 'RIGHT' or 'NONE' for the side
+        adaptive: bool, default False
+            If True, this will add slices where there is significant change in perimeter 
+            between consecutive slices
+        comments: str, default None
+            Any additional comments to add to the file
+        landmarks: dict or bool, default False
             If True, then use the landmarks within the object. Otherwise pass a dictionary 
             with string keys and numpy arrays of size [n x 3] where n is the number of points
             in each landmark. Ensure passed in cartesian co-ordinates for ampscan  
