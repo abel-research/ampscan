@@ -561,7 +561,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             data_write.tofile(fh)
 
     def save_aop(self, filename, slices=100, spokes=72, closeEnd = True, centreEnd = True, 
-                side=None, adaptive=False, commments=None, landmarks=False):
+                side=None, adaptive=False, commments=None, landmarks=False, returnVerts=False):
         r"""
         Function to save the AmpObj as a binary .stl file 
         
@@ -589,6 +589,9 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             If True, then use the landmarks within the object. Otherwise pass a dictionary 
             with string keys and numpy arrays of size [n x 3] where n is the number of points
             in each landmark. Ensure passed in cartesian co-ordinates for ampscan  
+        returnVerts: bool, default False
+            if True, return the resampled verts in an N x 3 numpy array in
+            cylindrical co-ordinates (r, theta, z)
 
         """
         minZ = self.getVert()[:, 2].min()
@@ -617,11 +620,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             polys = create_slices(self, [maxSl], typ='slices', axis = 2)
             ind += 1
 
-        print(minSl, minZ)
-        print(maxSl, maxZ)
         
-        # minZ += totZ * 0.01
-        # maxZ -= totZ * 0.01
         lines = []
         lines.append("AAOP1\n")
         lines.append("AAOP1\n")
@@ -689,21 +688,17 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             sliceSpacing = np.diff(slices)
             delta = np.abs(np.diff(csa) / csa[1:])
             maxiter = 0
-            # print((sliceSpacing < minSliceDiff).any())
             while (delta > maxDelta).any() and (sliceSpacing > minSliceDiff).all() and maxiter < 10: 
                 
                 idx = np.argmax(delta)
-                # print(idx)
+
                 # insert a new slice
                 slices = np.insert(slices, idx+1, slices[[idx, idx+1]].mean())
-                # print(slices)
                 polys = create_slices(self, slices, typ='slices', axis = 2)
                 csa = calc_perimeter(polys)
                 sliceSpacing = np.diff(slices)
                 delta = np.abs(np.diff(csa) / csa[1:])
                 maxiter += 1
-                # print(maxiter)
-                # print((delta > maxDelta).any(), (sliceSpacing > minSliceDiff).all(), maxiter < 10)
             nSlices = len(slices)
         
 
@@ -717,15 +712,23 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
 
         polys = create_slices(self, slices, typ='slices', axis = 2)
 
+        totPoints = len(spokes) * len(slices)
+        # print(totPoints)
+        vId = 0
+        verts = np.zeros([totPoints, 3])
+
         if closeEnd:
             polys.pop(0)
             for i in range(len(spokes)):
                 lines.append("%f\n" % 0)
+                verts[vId, :] = [0, spokes[i], 0]
+                vId += 1
 
 
-        for p in polys:
+        for i, p in enumerate(polys):
             x = p[:-1, 0] - xShift
             y = p[:-1, 1] - yShift
+            z = slices[i] - minSl
             rPoly = ((x ** 2) + (y ** 2)) ** 0.5
             tPoly = np.rad2deg(np.arctan2(y, x)) + 180
             idx = np.argsort(tPoly)
@@ -734,13 +737,17 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             tPoly = tPoly[idx]
             np.append(tPoly, 360)
             rs = np.interp(spokes, tPoly, rPoly)
-            # print(len(rs))
-            for r in rs:
+            for j, r in enumerate(rs):
                 lines.append("%f\n" % r)
+                verts[vId, :] = [r, spokes[j], z]
+                vId += 1
 
         # lines.append("%f\n" % r)
         with open(filename, 'w') as f:
             f.writelines(lines)
+        
+        if returnVerts:
+            return verts
 
 
 
