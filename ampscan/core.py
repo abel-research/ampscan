@@ -8,6 +8,7 @@ Copyright: Joshua Steer 2020, Joshua.Steer@soton.ac.uk
 import numpy as np
 import os
 import struct
+import math
 
 from pyrsistent import v
 from ampscan.trim import trimMixin
@@ -54,7 +55,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         self.landmarks = {}
         if isinstance(data, str):
             if data.lower().endswith('.aop'):
-                self.read_aop(data, struc)
+                self.read_aop(data, unify, struc)
             else:
                 self.read_stl(data, unify, struc)
         elif isinstance(data, dict):
@@ -171,7 +172,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             self.calcStruct()
         self.values = np.zeros([len(self.vert)])
 
-    def read_aop(self, filename,struc=True):
+    def read_aop(self, filename, unify=True, struc=True):
         """
         Function to read .aop file from filename and import data into 
         the AmpObj 
@@ -255,7 +256,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         # slices
         nSlices = int(lines[lID])
         lID += 1
-        sliceDist = np.deg2rad(float(lines[lID]))
+        sliceDist = float(lines[lID])
         lID += 1
         # Create the slices array
         if sliceDist == 0: 
@@ -267,14 +268,13 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             slices = np.asarray(slices)
         else:
             # regular spacing so compute 
-            slices = np.arange(0, 2*np.pi, sliceDist)
+            slices = np.array([i * sliceDist for i in range(nSlices)])
 
         # set up the vert and faces arrays 
         nVerts = nSlices * nSpokes;
         nFaces = (nSlices - 1) * (nSpokes * 2);
         self.vert = np.zeros([nVerts, 3], dtype=float)
         self.faces = np.zeros([nFaces, 3], dtype=int)
-
         # Read in the radii as verts
         for i in range(nSlices):
             z = slices[i];
@@ -300,7 +300,12 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
                 self.faces[fidx, :] = [v0, v1, v3];
                 self.faces[fidx + 1, :] = v1, v2, v3;
                 fidx += 2;
-
+        # Call function to unify vertices of the array
+        self.calcStruct()
+        if unify is True:
+            self.unifyVert()
+        # Call function to calculate the edges array
+#        self.fixNorm()
         if struc is True:
             self.calcStruct()
         self.values = np.zeros([len(self.vert)])
@@ -560,10 +565,10 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             data_write['vertices'] = np.reshape(fv, (len(self.faces), 9))
             data_write.tofile(fh)
 
-    def save_aop(self, filename, slices=100, spokes=72, closeEnd = True, centreEnd = True, 
+    def save_aop(self, filename, slices=100, spokes=72, sliceInterval = None, spokeInterval = None, closeEnd = True, centreEnd = True, 
                 side=None, adaptive=False, commments=None, landmarks=False, returnVerts=False):
         r"""
-        Function to save the AmpObj as a binary .stl file 
+        Function to save the AmpObj as an aop file 
         
         Parameters
         -----------
@@ -573,6 +578,10 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             Either number of evenly spaced spokes or an array of spoke theta (in degrees)
         slices: int or array_like
             Either number of evenly spaced slices or an array of slice heights
+        spokeInterval: float
+            Target spoke interval in degrees, will override spokes variable, must be less than 360
+        slicesInterval: float
+            Target slice interval in mm, will override slices variable
         closeEnd: bool, default True
             If True, then this will overwrite the most distal slice to close the shpae
         centreEnd: bool, default True
@@ -594,9 +603,16 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             cylindrical co-ordinates (r, theta, z)
 
         """
+        
         minZ = self.getVert()[:, 2].min()
         maxZ = self.getVert()[:, 2].max()
         totZ = maxZ - minZ
+
+        if sliceInterval is not None:
+            slices = math.floor(totZ/sliceInterval)
+
+        if spokeInterval is not None:
+            spokes = math.floor(360/spokeInterval)
 
         if centreEnd:
             distVLog = self.getVert()[:, 2] < (minZ + (totZ * 0.05))
@@ -730,7 +746,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             y = p[:-1, 1] - yShift
             z = slices[i] - minSl
             rPoly = ((x ** 2) + (y ** 2)) ** 0.5
-            tPoly = np.rad2deg(np.arctan2(y, x)) + 180
+            tPoly = np.rad2deg(np.arctan2(y, x))
+            tPoly[tPoly < 0] += 360
             idx = np.argsort(tPoly)
             rPoly = rPoly[idx]
             np.append(rPoly, rPoly[0])
@@ -779,6 +796,18 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
 
         """
         self.translate(-self.vert.mean(axis=0))
+
+    def scale(self, sf):
+        r"""
+        Scale the vertices of the AmpObject by some scaling factor 
+
+        Parameters
+        ----------
+        sf : float
+            The scaling factor to apply to the verts
+
+        """
+        self.vert *= sf
 
     def centreStatic(self, static):
         r"""
