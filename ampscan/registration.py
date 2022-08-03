@@ -140,9 +140,11 @@ class registration(object):
         mag = (normals**2).sum(axis=1)
         for step in np.arange(steps, 0, -1, dtype=float):
             # Index of 10 centroids nearest to each baseline vertex
+            
             ind = tTree.query(self.reg.vert, neigh)[1]
             if ind.ndim == 1:
                 ind = ind[:, None]
+            ind[ind == fC.shape[0]] = 0
             # Define normals for faces of nearest faces
             norms = normals[ind]
             # Get a point on each face

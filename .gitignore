@@ -55,6 +55,7 @@ tests/Example_write.aop
 tests/aop_test.stl
 tests/aop_write.aop
 tests/aop_write_2.aop
+tests/external_tests
 
 tests/reg_test*
 
