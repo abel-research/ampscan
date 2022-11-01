@@ -755,12 +755,14 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             z = slices[i] - minSl
             rPoly = ((x ** 2) + (y ** 2)) ** 0.5
             tPoly = np.rad2deg(np.arctan2(y, x))
-            tPoly[tPoly < -90] += 360
+            #  Increase range for interpolation
+            idx = tPoly < 0
+            rPoly = np.append(rPoly, rPoly[idx])
+            tPoly = np.append(tPoly, tPoly[idx] + 360)
+            # Sort by angle
             idx = np.argsort(tPoly)
             rPoly = rPoly[idx]
-            np.append(rPoly, rPoly[0])
             tPoly = tPoly[idx]
-            np.append(tPoly, 270)
             rs = np.interp(spokes, tPoly, rPoly)
             rs = np.flip(rs)
             for j, r in enumerate(rs):
