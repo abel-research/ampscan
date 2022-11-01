@@ -251,7 +251,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             spokes = np.asarray(spokes)
         else:
             # regular spacing so compute 
-            spokes = np.arange(0, 2*np.pi, spokeDist)
+            spokes = np.arange(-0.5*np.pi, 1.5*np.pi, spokeDist)
+            spokes = np.flip(spokes)
 
         # slices
         nSlices = int(lines[lID])
@@ -275,12 +276,19 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         nFaces = (nSlices - 1) * (nSpokes * 2);
         self.vert = np.zeros([nVerts, 3], dtype=float)
         self.faces = np.zeros([nFaces, 3], dtype=int)
+        self.values = np.zeros([len(self.vert)])
         # Read in the radii as verts
         for i in range(nSlices):
             z = slices[i];
             for j in range(nSpokes):
                 idx = (i * nSpokes) + j;
-                r = float(lines[lID])
+                line = lines[lID].split(' ')
+                r = float(line[0])
+                if len(line) > 1:
+                    try: 
+                        self.values[idx] = float(line[1])
+                    except:
+                        self.values[idx] = 0
                 theta = spokes[j];
                 x = r * np.cos(theta)
                 y = r * np.sin(theta)
@@ -297,8 +305,8 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
                 v1 = cur_stack_idx + next_spoke;
                 v2 = next_stack_idx + next_spoke;
                 v3 = next_stack_idx + sp;
-                self.faces[fidx, :] = [v0, v1, v3];
-                self.faces[fidx + 1, :] = v1, v2, v3;
+                self.faces[fidx, :] = [v0, v3, v1];
+                self.faces[fidx + 1, :] = v1, v3, v2;
                 fidx += 2;
         # Call function to unify vertices of the array
         self.calcStruct()
@@ -308,7 +316,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
 #        self.fixNorm()
         if struc is True:
             self.calcStruct()
-        self.values = np.zeros([len(self.vert)])
+        
         
     def calcStruct(self, norm=True, edges=True, 
                    edgeFaces=True, faceEdges=True, vNorm=False):
@@ -673,7 +681,7 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
         # Write the spokes 
         if isinstance(spokes, int):
             spacing = (360) / spokes
-            spokes = np.arange(0, 360, spacing)
+            spokes = np.arange(-90, 270, spacing)
             nSpokes = len(spokes)
             lines.append("%i\n" % nSpokes)
             lines.append("%f\n" % spacing)
@@ -747,13 +755,14 @@ class AmpObject(trimMixin, smoothMixin, visMixin):
             z = slices[i] - minSl
             rPoly = ((x ** 2) + (y ** 2)) ** 0.5
             tPoly = np.rad2deg(np.arctan2(y, x))
-            tPoly[tPoly < 0] += 360
+            tPoly[tPoly < -90] += 360
             idx = np.argsort(tPoly)
             rPoly = rPoly[idx]
             np.append(rPoly, rPoly[0])
             tPoly = tPoly[idx]
-            np.append(tPoly, 360)
+            np.append(tPoly, 270)
             rs = np.interp(spokes, tPoly, rPoly)
+            rs = np.flip(rs)
             for j, r in enumerate(rs):
                 lines.append("%f\n" % r)
                 verts[vId, :] = [r, spokes[j], z]
