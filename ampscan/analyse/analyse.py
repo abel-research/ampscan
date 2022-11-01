@@ -180,6 +180,8 @@ def calc_widths(polys):
     r"""
     Calculate the coronal and sagittal widths of each polygon from the slicing of the AmpObject  
 
+    Assumes that coronal width corresponds with the x-axis 
+
     Parameters
     ----------
     polys: list
@@ -203,7 +205,7 @@ def calc_widths(polys):
     ind.remove(ix)
     for i, p in enumerate(polys):
         # Get the widths through min - max 
-        sag_width[i], cor_width[i] = p[:, ind].max(axis=0) - p[:, ind].min(axis=0)
+        cor_width[i], sag_width[i] = p[:, ind].max(axis=0) - p[:, ind].min(axis=0)
     return cor_width, sag_width
 
 def calc_csa(polys):
